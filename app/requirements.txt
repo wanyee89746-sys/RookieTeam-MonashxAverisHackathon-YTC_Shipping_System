@@ -1,4 +1,10 @@
-anthropic
+#AI pipeline and document-processing dependencies
+#Used by the application logic for AI integration
+#processing PDF, Word, xlsx
+#Keep AI and document-processing libraries here
+
+google-genai
+python-dotenv
 python-docx
 openpyxl
 pdfplumber

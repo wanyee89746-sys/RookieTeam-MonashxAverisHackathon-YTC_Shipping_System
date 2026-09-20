@@ -1,3 +1,7 @@
+#Backend/API dependencies
+#Used for the main FastAPI backend and API server
+#Keep backend framework and server dependencies here.
+
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.15.1
