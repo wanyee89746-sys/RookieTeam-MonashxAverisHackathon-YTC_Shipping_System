@@ -86,6 +86,12 @@ def process_email(inbox: Inbox, email: dict) -> dict:
         result["review_reason"] = reason
         return result
 
+    # Safety check: never send failed extraction results to comparator
+    if si_fields is None or bl_fields is None:
+        result["status"] = "NEEDS_REVIEW"
+        result["review_reason"] = "extraction_failed"
+        return result
+
     has_defect, defects = compare(si_fields, bl_fields)
     result["status"] = "MISMATCH" if has_defect else "OK"
     result["has_defect"] = has_defect
