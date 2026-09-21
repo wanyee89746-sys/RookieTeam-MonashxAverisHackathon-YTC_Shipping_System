@@ -5,3 +5,4 @@ __pycache__/
 data/ground_truth.json
 logs.json
 submission.json
+.llm_cache.json
