@@ -1,0 +1,376 @@
+{
+  "37984fff7e380cd4a358924bedbaa555f86b9ae2eb152d0207eb15d101d46aed": {
+    "email_116": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited phishing attempt disguised as a delivery notification."
+    },
+    "email_134": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited phishing attempt disguised as a delivery notification despite the marketing subject line."
+    }
+  },
+  "1d2542c12b362eb571195b9b003ab29d64c14c09e94c0f16156088242cff48dc": {
+    "email_142": {
+      "category": "GENERAL",
+      "confidence": 0.99,
+      "reasoning": "This is an internal New Year greeting and operational notice from management."
+    },
+    "email_147": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "This is an internal update and reminder about outstanding bills of lading."
+    },
+    "email_150": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "This is an unsolicited promotional marketing email offering a discount on logistics software."
+    },
+    "email_159": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "This is an internal operational reminder concerning outstanding bills of lading."
+    }
+  },
+  "a04fb80933af61afc083b5ba1acb2bd6e31e24e99a7d0a2440485cb380ea588f": {
+    "email_180": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email promotes an unsolicited software discount offer characteristic of marketing scams."
+    },
+    "email_184": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email uses a misleading subject line to promote an unrelated commercial software offer."
+    },
+    "email_185": {
+      "category": "GENERAL",
+      "confidence": 1.0,
+      "reasoning": "The email provides a routine operational update and loading summary with no specific shipping instruction or invoice action required."
+    }
+  },
+  "27654f8c7890ed0af453844a3142b210f9213f7eeb90047a2b844a71f3b22f3d": {
+    "email_188": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited promotional marketing message offering a discount on software."
+    }
+  },
+  "217c36be0329fea6c73dabe3b1a9bab0ac2e6329005df2b2010a45a686067d03": {
+    "email_218": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email is an internal operational update about loading status and document schedules."
+    },
+    "email_222": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The email contains unsolicited promotional marketing for a logistics software suite."
+    },
+    "email_226": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The email is a classic advance-fee scam asking for bank details in exchange for money."
+    }
+  },
+  "4e39c5adae219ab08cbfcbf14c4bac08bafcbd73ee04cf68ab946b2cda0d9b0b": {
+    "email_255": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "Internal reminder to action outstanding bills of lading."
+    },
+    "email_258": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "Operational update regarding vessel loading status."
+    }
+  },
+  "906e6ef3daab5fa2f6b14e6c2c5999235082a40a5714ce592bcbf9df7d857568": {
+    "email_116": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited phishing attempt regarding a package delivery fee with a suspicious link.",
+      "method": "GEMINI"
+    }
+  },
+  "bda41b351690bef7652e7be22c8e692ec39462bfd20aea3c8eb41440ad104a8f": {
+    "email_011": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email is an automated status update requesting action on general pending items.",
+      "method": "GEMINI"
+    }
+  },
+  "432b33f3a3391adf63d7b27356cfe94e43b8c0304d2fcd0ef7fa556da01feed4": {
+    "email_025": {
+      "category": "BL_COMPARISON",
+      "confidence": 1.0,
+      "reasoning": "The sender explicitly asks to check the draft BL against the SI and report discrepancies.",
+      "method": "GEMINI"
+    },
+    "email_026": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email contains typical promotional phishing language offering logistics automation and discounts.",
+      "method": "GEMINI"
+    },
+    "email_031": {
+      "category": "BL_COMPARISON",
+      "confidence": 1.0,
+      "reasoning": "The sender explicitly requests to check the draft BL against the SI for any discrepancies.",
+      "method": "GEMINI"
+    },
+    "email_032": {
+      "category": "BL_COMPARISON",
+      "confidence": 1.0,
+      "reasoning": "The message asks to review and verify the draft BL against the shipping instructions.",
+      "method": "GEMINI"
+    },
+    "email_034": {
+      "category": "BL_COMPARISON",
+      "confidence": 1.0,
+      "reasoning": "The email requests checking the draft BL against the SI and flagging any mismatches.",
+      "method": "GEMINI"
+    },
+    "email_036": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.9,
+      "reasoning": "The email asks to send and review the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_037": {
+      "category": "GENERAL",
+      "confidence": 1.0,
+      "reasoning": "This is an internal status update regarding loading completion and delivery planning.",
+      "method": "GEMINI"
+    },
+    "email_038": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.9,
+      "reasoning": "The body requests the draft BL to be sent for checking.",
+      "method": "GEMINI"
+    }
+  },
+  "0fab12b395eb24bfd29af2743123b022187278fa3efefa52c6c35ba5e9d1143a": {
+    "email_001": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender explicitly provides the SI and draft BL and asks to check the details.",
+      "method": "GEMINI"
+    },
+    "email_003": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.9,
+      "reasoning": "The sender asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_004": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender attaches the SI and draft BL and asks to check the details.",
+      "method": "GEMINI"
+    },
+    "email_006": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.9,
+      "reasoning": "The sender asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_011": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "This is an automated operational report listing outstanding bills of lading.",
+      "method": "GEMINI"
+    },
+    "email_013": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender attaches the SI and draft BL and asks to check the details.",
+      "method": "GEMINI"
+    },
+    "email_016": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.9,
+      "reasoning": "The sender asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_018": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.9,
+      "reasoning": "The sender asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    }
+  },
+  "601b99a06742eb76f0f31a9227aad4fadb98a0d28d5454112fdb2f3f23ad70d6": {
+    "email_001": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender explicitly provides the SI and draft BL and asks to check details and confirm.",
+      "method": "GEMINI"
+    },
+    "email_003": {
+      "category": "SI_REQUEST",
+      "confidence": 0.9,
+      "reasoning": "The sender requests the draft BL to be sent for checking.",
+      "method": "GEMINI"
+    },
+    "email_004": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender attaches the SI and draft BL and asks to check the details.",
+      "method": "GEMINI"
+    },
+    "email_006": {
+      "category": "SI_REQUEST",
+      "confidence": 0.9,
+      "reasoning": "The sender requests to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_011": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "An automated summary update requesting the team to action pending items.",
+      "method": "GEMINI"
+    },
+    "email_013": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender provides the SI and draft BL and asks to check the details and confirm.",
+      "method": "GEMINI"
+    },
+    "email_016": {
+      "category": "SI_REQUEST",
+      "confidence": 0.9,
+      "reasoning": "The sender asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_018": {
+      "category": "SI_REQUEST",
+      "confidence": 0.9,
+      "reasoning": "The sender requests to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_025": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.98,
+      "reasoning": "The sender explicitly asks to check the draft BL against the SI and revert with discrepancies.",
+      "method": "GEMINI"
+    }
+  },
+  "25abd44bce19cd8bb5d11805899a816f70d51464e4729a634449aa110ed11567": {
+    "email_026": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The email is an unsolicited promotional offer promoting a logistics automation suite.",
+      "method": "GEMINI"
+    },
+    "email_031": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.98,
+      "reasoning": "The sender explicitly asks to check the draft BL against the SI for discrepancies.",
+      "method": "GEMINI"
+    },
+    "email_032": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.98,
+      "reasoning": "The sender requests to check the draft BL against the SI and report discrepancies.",
+      "method": "GEMINI"
+    },
+    "email_034": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.98,
+      "reasoning": "The body explicitly asks to check the draft BL against the SI and revert with discrepancies.",
+      "method": "GEMINI"
+    },
+    "email_036": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The email asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_037": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email provides an update on loading status and delivery planning as an informational notice.",
+      "method": "GEMINI"
+    },
+    "email_038": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The email asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    },
+    "email_043": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.98,
+      "reasoning": "The sender attaches the SI and draft BL and asks to check details and confirm.",
+      "method": "GEMINI"
+    },
+    "email_044": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.98,
+      "reasoning": "The sender provides the SI and draft BL and asks to check the details and confirm.",
+      "method": "GEMINI"
+    },
+    "email_047": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The email asks to send the draft BL for checking.",
+      "method": "GEMINI"
+    }
+  },
+  "90e13cdb94663bdc699c13e80f2b07655821f0efd3468619b70370d0ab01deaf": {
+    "email_049": {
+      "category": "SI_REQUEST",
+      "confidence": 0.95,
+      "reasoning": "The sender is explicitly asking to receive the draft Bill of Lading for checking.",
+      "method": "GEMINI"
+    },
+    "email_050": {
+      "category": "SI_REQUEST",
+      "confidence": 0.95,
+      "reasoning": "The current email explicitly requests the draft Bill of Lading for checking.",
+      "method": "GEMINI"
+    }
+  },
+  "862d11c0c32b2d34c084e0629a60257c7721bf765c3bc8cd55c41ec6b4911534": {
+    "email_026": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited promotional offer attempting to sell logistics software.",
+      "method": "GEMINI"
+    },
+    "email_037": {
+      "category": "GENERAL",
+      "confidence": 1.0,
+      "reasoning": "The email provides an internal update regarding loading status and documentation for planning purposes.",
+      "method": "GEMINI"
+    }
+  },
+  "b77789382ca0958201ea90e7c4d19d0cc51cdec9a6b2b377cdfb9238ef8ea859": {
+    "email_053": {
+      "category": "GENERAL",
+      "confidence": 1.0,
+      "reasoning": "This is an automated or general office update announcement regarding holiday operations.",
+      "method": "GEMINI"
+    }
+  },
+  "3ca1e97ed71f16501a77332159414a86f5ba22d06f5e6e5fa7e695b52b23a17d": {
+    "email_076": {
+      "category": "GENERAL",
+      "confidence": 0.9,
+      "reasoning": "The email is an automated or routine operational update regarding billing and pending items.",
+      "method": "GEMINI"
+    }
+  },
+  "40bc55c8e46cb37ff16a9c5b0e52cca543d4e77534a12811cd60054c5a5c275f": {
+    "shipper": null,
+    "consignee": null,
+    "notify_party": null,
+    "port_of_loading": null,
+    "port_of_discharge": null,
+    "container_count": null,
+    "gross_weight_kg": null
+  }
+}

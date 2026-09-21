@@ -1,10 +1,13 @@
 import json
 import os
+import random
+
 from loader import Inbox
-from classifier import classify
+from classifier import classify_batch
 from extractor import extract_fields
 from comparator import compare
 from escalation import check_review
+
 
 def read_attachment_text(inbox: Inbox, path: str) -> str | None:
     """Return plain text for an attachment, or None if unreadable/empty."""
@@ -24,6 +27,7 @@ def read_attachment_text(inbox: Inbox, path: str) -> str | None:
         return _xlsx_text(raw)
     return None
 
+
 def _pdf_text(raw: bytes) -> str | None:
     import io
     from pypdf import PdfReader
@@ -33,6 +37,7 @@ def _pdf_text(raw: bytes) -> str | None:
         return text if len(text.strip()) > 10 else None  # image-only -> None
     except Exception:
         return None
+
 
 def _docx_text(raw: bytes) -> str | None:
     import io
@@ -47,6 +52,7 @@ def _docx_text(raw: bytes) -> str | None:
     except Exception:
         return None
 
+
 def _xlsx_text(raw: bytes) -> str | None:
     import io
     import openpyxl
@@ -59,16 +65,14 @@ def _xlsx_text(raw: bytes) -> str | None:
     except Exception:
         return None
 
-def process_email(inbox: Inbox, email: dict) -> dict:
-    eid = email["email_id"]
-    result = {"category": "GENERAL", "status": "OK", "review_reason": None,
+
+def process_comparison(inbox: Inbox, email: dict) -> dict:
+    """Runs extraction/comparison/escalation for an email that has
+    ALREADY been classified as BL_COMPARISON. Deterministic (comparator,
+    escalation rules) except for the extraction stage's Gemini fallback,
+    which only fires when Python extraction is insufficient."""
+    result = {"category": "BL_COMPARISON", "status": "OK", "review_reason": None,
                "defect_fields": [], "has_defect": False}
-
-    cls = classify(email)
-    result["category"] = cls["category"]
-
-    if result["category"] != "BL_COMPARISON":
-        return result
 
     atts = email.get("attachments", [])
     si_path = next((a for a in atts if "_SI" in a), None)
@@ -86,11 +90,19 @@ def process_email(inbox: Inbox, email: dict) -> dict:
         result["review_reason"] = reason
         return result
 
-    # Safety check: never send failed extraction results to comparator
+    # If there are no attachments and check_review() did not
+    # explicitly request review, treat this as a valid comparison
+    # request with no document discrepancy to report.
+    if si_path is None and bl_path is None:
+        return result
+
+    # Safety check: if attachments exist but extraction failed,
+    # escalate instead of sending incomplete data to comparator.
     if si_fields is None or bl_fields is None:
         result["status"] = "NEEDS_REVIEW"
         result["review_reason"] = "extraction_failed"
         return result
+
 
     has_defect, defects = compare(si_fields, bl_fields)
     result["status"] = "MISMATCH" if has_defect else "OK"
@@ -98,16 +110,31 @@ def process_email(inbox: Inbox, email: dict) -> dict:
     result["defect_fields"] = defects
     return result
 
+
 def process_one(source: str, email_id: str):
-    """Test a single email and print the result — no file writes."""
+    """Test a single email end-to-end and print the result — no file
+    writes. Useful for debugging one case without burning batch quota."""
     inbox = Inbox(source)
     email = inbox.get(email_id)
-    result = process_email(inbox, email)
+
+    classified = classify_batch([email])
+    cat = classified[email_id]["category"]
+
+    if cat != "BL_COMPARISON":
+        result = {"category": cat, "status": "OK", "review_reason": None,
+                   "defect_fields": [], "has_defect": False}
+    else:
+        result = process_comparison(inbox, email)
+
     print(json.dumps({email_id: result}, indent=2))
     return result
 
 
-def run(source: str, out_path: str = "submission.json"):
+def run(
+    source: str,
+    out_path: str = "submission.json",
+    limit: int | None = None,
+):
     inbox = Inbox(source)
     emails = list(inbox)
 
@@ -119,21 +146,54 @@ def run(source: str, out_path: str = "submission.json"):
         print(f"resuming: {len(submission)} already done, skipping those")
 
     remaining = [e for e in emails if e["email_id"] not in submission]
+    if limit is not None:
+        remaining = remaining[:limit]
+        print(f"[LIMIT] processing only {len(remaining)} emails")
     print(f"{len(remaining)}/{len(emails)} left to process")
 
+    if not remaining:
+        print(f"nothing to do: {out_path} already complete")
+        return
+
+    # -------------------------------------------------------------
+    # Stage 1: classify ALL remaining emails in batches.
+    # Rule-based catches the unambiguous bulk for free; only genuinely
+    # ambiguous emails go to Gemini, chunked ~10/call instead of one
+    # call per email — this is the main lever for staying inside the
+    # free-tier quota across 520 emails.
+    # -------------------------------------------------------------
+    CLASSIFY_BATCH = 25
+    classified = {}
+    for i in range(0, len(remaining), CLASSIFY_BATCH):
+        chunk = remaining[i:i + CLASSIFY_BATCH]
+        classified.update(classify_batch(chunk))
+        with open("classification_debug.json", "w", encoding="utf-8") as f:
+            json.dump(classified, f, indent=2, ensure_ascii=False)
+        print(f"[CLASSIFY] {min(i + CLASSIFY_BATCH, len(remaining))}/{len(remaining)} classified")
+
+    # -------------------------------------------------------------
+    # Stage 2: only BL_COMPARISON emails need extraction/comparison/
+    # escalation. Everything else is resolved directly from Stage 1.
+    # -------------------------------------------------------------
     for i, email in enumerate(remaining, 1):
         eid = email["email_id"]
-        try:
-            submission[eid] = process_email(inbox, email)
-        except Exception as e:
-            # STOP on failure instead of silently writing a GENERAL/OK stub,
-            # so you can inspect and restart from exactly this email
-            print(f"[FAILED] {eid}: {e}")
-            with open(out_path, "w") as f:
-                json.dump(submission, f, indent=2)
-            print(f"progress saved to {out_path} ({len(submission)} done). "
-                  f"Fix the issue and re-run — it will resume from {eid}.")
-            raise
+        cat = classified[eid]["category"]
+
+        if cat != "BL_COMPARISON":
+            submission[eid] = {"category": cat, "status": "OK", "review_reason": None,
+                                 "defect_fields": [], "has_defect": False}
+        else:
+            try:
+                submission[eid] = process_comparison(inbox, email)
+            except Exception as e:
+                # STOP on failure instead of silently writing a GENERAL/OK
+                # stub, so you can inspect and restart exactly from here.
+                print(f"[FAILED] {eid}: {e}")
+                with open(out_path, "w") as f:
+                    json.dump(submission, f, indent=2)
+                print(f"progress saved to {out_path} ({len(submission)} done). "
+                      f"Fix the issue and re-run — it will resume from {eid}.")
+                raise
 
         if i % 10 == 0:
             with open(out_path, "w") as f:
@@ -145,11 +205,66 @@ def run(source: str, out_path: str = "submission.json"):
     print(f"done: wrote {out_path}")
 
 
+def run_holdout_eval(source: str, ground_truth_path: str, holdout_frac: float = 0.1, seed: int = 42):
+    """Dev-time generalization check: classify a random held-out slice
+    and score ONLY that slice against ground truth. Run once per change,
+    don't iterate rules against it directly — treat it as a stand-in
+    for unseen real emails so you don't end up overfitting to the
+    dataset by tuning against the full ground truth or /submit endpoint
+    on every change.
+    """
+    inbox = Inbox(source)
+    emails = list(inbox)
+    with open(ground_truth_path) as f:
+        gt = json.load(f)
+
+    rng = random.Random(seed)
+    holdout_ids = set(rng.sample([e["email_id"] for e in emails], int(len(emails) * holdout_frac)))
+    holdout = [e for e in emails if e["email_id"] in holdout_ids]
+
+    classified = classify_batch(holdout)
+
+    correct = 0
+    by_cat_total = {}
+    by_cat_correct = {}
+    for e in holdout:
+        eid = e["email_id"]
+        true_cat = gt[eid]["category"]
+        pred_cat = classified[eid]["category"]
+
+        by_cat_total[true_cat] = by_cat_total.get(true_cat, 0) + 1
+        if pred_cat == true_cat:
+            correct += 1
+            by_cat_correct[true_cat] = by_cat_correct.get(true_cat, 0) + 1
+
+    print(f"\nHoldout classification accuracy: {correct}/{len(holdout)} = {correct / len(holdout):.2%}\n")
+    for cat, total in sorted(by_cat_total.items()):
+        c = by_cat_correct.get(cat, 0)
+        print(f"  {cat:16s} {c}/{total} = {c / total:.2%}")
+
+
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) >= 3 and sys.argv[1] == "test":
+
+    if len(sys.argv) >= 2 and sys.argv[1] == "test":
+        eid = sys.argv[2]
         src = sys.argv[3] if len(sys.argv) > 3 else "."
-        process_one(src, sys.argv[2])
+        process_one(src, eid)
+    elif len(sys.argv) >= 2 and sys.argv[1] == "holdout":
+        src = sys.argv[2] if len(sys.argv) > 2 else "."
+        gt = sys.argv[3] if len(sys.argv) > 3 else "ground_truth.json"
+        run_holdout_eval(src, gt)
     else:
         src = sys.argv[1] if len(sys.argv) > 1 else "."
-        run(src)
+
+        limit = None
+
+        if "--limit" in sys.argv:
+            idx = sys.argv.index("--limit")
+
+            if idx + 1 >= len(sys.argv):
+                raise ValueError("--limit requires a number")
+
+            limit = int(sys.argv[idx + 1])
+
+        run(src, limit=limit)

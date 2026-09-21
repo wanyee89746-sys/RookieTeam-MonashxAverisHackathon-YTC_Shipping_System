@@ -1,19 +1,16 @@
+import email
 import os
 import json
-import time
 import re
 
 from dotenv import load_dotenv
 from google import genai
 
-# Load .env
+from ratelimit_cache import RateLimiter, LLMCache, call_with_backoff
+
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
-# Create Gemini client
-client = genai.Client(
-    api_key=os.environ["GEMINI_API_KEY"]
-)
-
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 CATEGORIES = [
@@ -21,365 +18,396 @@ CATEGORIES = [
     "SI_REQUEST",
     "INVOICE_QUERY",
     "GENERAL",
-    "SPAM"
+    "SPAM",
 ]
 
+_limiter = RateLimiter(calls_per_minute=12)
+_cache = LLMCache()
 
-# =========================================================
-# GEMINI FALLBACK PROMPT
-# =========================================================
 
-_PROMPT = """You classify shipping-ops emails into exactly one category.
+_FEWSHOT = """
+Examples (illustrating INTENT, not exact wording — real emails vary a lot):
 
-Categories:
+1) "Please compare the attached SI and draft BL and flag any mismatch."
+   -> BL_COMPARISON
 
-- SI_REQUEST:
-  The email provides, sends, submits, or requests a Shipping Instruction (SI).
+2) "Attached is the shipping instruction for booking XYZ. Please issue the draft BL."
+   -> SI_REQUEST
 
-- BL_COMPARISON:
-  The email explicitly asks to compare, check, verify, or confirm
-  information between an SI and a draft BL / BL.
+3) "The GR is still missing on invoice 12345, please advise."
+   -> INVOICE_QUERY
 
-- INVOICE_QUERY:
-  Billing, GR, invoice cancellation, D&D/local charges, freight queries,
-  payment queries, or other invoice-related questions.
+4) "Vessel berthed on schedule, documents to follow. FYI only."
+   -> GENERAL
 
-- GENERAL:
-  Internal updates, berthing reports, reminders, HR, RPA bot notices,
-  operational information, or other normal business emails.
-
-- SPAM:
-  Prizes, phishing, scams, unrelated marketing, or unrelated spam.
-
-Classification priority:
-
-1. If the current email explicitly asks to compare/check/confirm SI against
-   a draft BL, classify as BL_COMPARISON.
-2. Otherwise, if the current email provides/sends/submits a Shipping
-   Instruction, classify as SI_REQUEST.
-3. Otherwise classify according to the remaining categories.
-
-Do not classify an email as BL_COMPARISON merely because it contains
-the words "draft BL".
-
-Judge the purpose of the CURRENT email, not quoted/replied text.
-
-Subject: {subject}
-From: {frm}
-Body: {body}
-
-Respond with ONLY this JSON:
-{{"category": "<one of {cats}>", "confidence": <0-1 float>, "reasoning": "<one sentence>"}}
+5) "You've won a prize! Click here to claim."
+   -> SPAM
 """
 
 
-# =========================================================
-# PYTHON RULE-BASED CLASSIFICATION
-# =========================================================
+_PROMPT = """You classify shipping-operations emails into exactly one category,
+based on the sender's INTENT, not on specific phrases or subject-line codes.
+
+Categories:
+- SI_REQUEST: provides/submits/sends a Shipping Instruction, or asks for one.
+- BL_COMPARISON: explicitly asks to compare/check/verify SI against a draft BL.
+- INVOICE_QUERY: billing, GR, invoice, D&D/detention, local charges, freight/payment questions.
+- GENERAL: internal updates, reports, reminders, HR, automated/bot notices.
+- SPAM: prizes, phishing, unrelated marketing/scams.
+
+{fewshot}
+
+Important:
+- Classify the CURRENT email only.
+- Ignore quoted/forwarded thread content when judging intent unless the current message has no content of its own.
+- Do not invent facts.
+- Return exactly one category per email.
+
+Return a JSON array, one object per input email, IN THE SAME ORDER:
+
+{{"id": "<email_id>", "category": "<one of {cats}>",
+"confidence": <0-1>, "reasoning": "<one short sentence>"}}
+
+EMAILS:
+{emails_block}
+"""
+
 
 def _clean_text(text: str) -> str:
-    """Normalize email text for rule matching."""
-    text = text or ""
-    text = text.upper()
-    text = re.sub(r"\s+", " ", text)
-    return text.strip()
+    text = (text or "").upper()
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def _rule_classify(email: dict) -> dict | None:
-    """
-    Try to classify obvious emails without using Gemini.
-
-    Returns a classification dictionary when confidence is high.
-    Returns None when Gemini should handle the email.
-    """
-
     subject = _clean_text(email.get("subject", ""))
     body = _clean_text(email.get("body", ""))
 
-    text = f"{subject} {body}"
+    text = subject + " " + body
 
     # ---------------------------------------------------------
-    # 1. SPAM
+    # SPAM
     # ---------------------------------------------------------
-
     spam_patterns = [
-        "CONGRATULATIONS YOU HAVE WON",
         "YOU HAVE WON",
-        "YOU ARE A WINNER",
         "CLAIM YOUR PRIZE",
         "CLAIM YOUR REWARD",
         "FREE GIFT",
         "LOTTERY",
-        "URGENT PAYMENT",
         "VERIFY YOUR ACCOUNT",
         "CLICK HERE TO CLAIM",
         "NIGERIAN PRINCE",
+        "GUARANTEED RETURNS",
     ]
 
-    if any(pattern in text for pattern in spam_patterns):
+    if any(p in text for p in spam_patterns):
         return {
             "category": "SPAM",
-            "confidence": 0.99,
-            "reasoning": "Rule-based detection identified clear spam indicators."
+            "confidence": 0.97,
+            "reasoning": "rule: spam markers",
+            "method": "RULE",
         }
 
     # ---------------------------------------------------------
-    # 2. BL_COMPARISON
+    # BL COMPARISON
     # ---------------------------------------------------------
 
-    comparison_patterns = [
-        "COMPARE THE SI AND DRAFT BL",
-        "COMPARE SI AND DRAFT BL",
-        "COMPARE THE SI WITH THE DRAFT BL",
-        "COMPARE SI WITH DRAFT BL",
-        "CHECK SI AGAINST DRAFT BL",
-        "CHECK THE SI AGAINST THE DRAFT BL",
-        "CHECK SI VS BL",
-        "CHECK THE SI VS BL",
-        "SI AND DRAFT BL",
-        "SI VS BL",
-        "SI AGAINST BL",
-        "CONFIRM SI AND BL MATCH",
-        "CONFIRM WHETHER SI AND BL MATCH",
-        "CHECK WHETHER SI AND BL MATCH",
-        "COMPARE SI WITH BL",
-        "COMPARE THE SI WITH BL",
-        "SEND DRAFT BL FOR CHECKING",
-        "SEND THE DRAFT BL FOR CHECKING",
-        "DRAFT BL FOR CHECKING",
-    ]
+    # A draft BL being sent for checking/review is a comparison intent,
+    # even when the email does not explicitly mention "SI".
+    has_si = (
+        "SHIPPING INSTRUCTION" in text
+        or "SUBMIT SI" in text
+        or "PLEASE FIND SHIPPING INSTRUCTION" in text
+        or "ATTACHED SI" in text
+    )
 
-    if any(pattern in text for pattern in comparison_patterns):
-        return {
-            "category": "BL_COMPARISON",
-            "confidence": 0.98,
-            "reasoning": "The email explicitly requests SI and BL comparison or checking."
-        }
+    has_bl = (
+        "DRAFT BL" in text
+        or "BL" in text
+        or "BILL OF LADING" in text
+        or "DRAFT BILL OF LADING" in text
+    )
 
-    # More general comparison wording.
-    has_si = "SI" in text or "SHIPPING INSTRUCTION" in text
-    has_bl = "BL" in text or "BILL OF LADING" in text
-    comparison_words = [
+    compare_words = [
         "COMPARE",
         "CHECK",
-        "VERIFY",
-        "CONFIRM",
-        "MATCH",
         "CHECKING",
+        "VERIFY",
+        "CONFIRM MATCH",
+        "AGAINST",
+        "MATCH",
+        "MATCHES",
+        "CORRESPOND",
+        "CONSISTENT",
     ]
 
-    if has_si and has_bl and any(word in text for word in comparison_words):
+    if has_bl and any(w in text for w in compare_words):
         return {
             "category": "BL_COMPARISON",
-            "confidence": 0.90,
-            "reasoning": "The email contains SI and BL references together with comparison/checking language."
-        }
-
-    # ---------------------------------------------------------
-    # 3. SI_REQUEST
-    # ---------------------------------------------------------
-
-    si_patterns = [
-        "PLEASE FIND SHIPPING INSTRUCTION",
-        "PLEASE FIND SHIPPING INSTRUCTIONS",
-        "PLEASE FIND SI",
-        "SHIPPING INSTRUCTION FOR",
-        "SHIPPING INSTRUCTIONS FOR",
-        "CUST SI",
-        "CUSTOMER SI",
-        "HEREWITH SI",
-        "HERE IS THE SI",
-        "ATTACHED SI",
-        "ATTACH SI",
-        "SUBMIT SI",
-        "SUBMISSION OF SI",
-    ]
-
-    if any(pattern in text for pattern in si_patterns):
-        return {
-            "category": "SI_REQUEST",
-            "confidence": 0.98,
-            "reasoning": "The email clearly provides or submits a Shipping Instruction."
-        }
-
-    # Strong SI field combination.
-    si_field_signals = [
-        "SHIPPER",
-        "CONSIGNEE",
-        "NOTIFY PARTY",
-        "PORT OF LOADING",
-        "PORT OF DISCHARGE",
-        "GROSS WEIGHT",
-    ]
-
-    si_signal_count = sum(signal in text for signal in si_field_signals)
-
-    if si_signal_count >= 4 and has_si:
-        # "draft BL" alone should not turn this into comparison.
-        return {
-            "category": "SI_REQUEST",
             "confidence": 0.95,
-            "reasoning": "The email contains multiple Shipping Instruction fields and is providing SI information."
+            "reasoning": "rule: draft BL/checking intent",
+            "method": "RULE",
         }
-    # ---------------------------------------------------------
-    # 4. INVOICE_QUERY
-    # ---------------------------------------------------------
 
-    invoice_patterns = [
-        "INVOICE",
-        "INVOICING",
-        "CREDIT NOTE",
-        "DEBIT NOTE",
-        "D&D CHARGE",
-        "D&D CHARGES",
-        "DEMURRAGE",
-        "DETENTION",
-        "LOCAL CHARGE",
-        "LOCAL CHARGES",
-        "FREIGHT CHARGE",
-        "FREIGHT QUERY",
-        "PAYMENT QUERY",
-        "PAYMENT STATUS",
-        "GR QUERY",
+    # ---------------------------------------------------------
+    # SI REQUEST
+    # ---------------------------------------------------------
+    si_provide_words = [
+        "PLEASE FIND SHIPPING INSTRUCTION",
+        "ATTACHED SI",
+        "SUBMIT SI",
+        "HEREWITH SI",
+        "SHIPPING INSTRUCTION ATTACHED",
+        "PLEASE FIND SI",
     ]
 
-    if any(pattern in text for pattern in invoice_patterns):
+    # General operational reminders should not be classified as SI_REQUEST
+    # merely because they contain "submit SI".
+    is_reminder = (
+        "REMINDER" in text
+        or "PENDING SHIPMENTS" in text
+        or "END OF DAY" in text
+        or "OUTSTANDING LIST" in text
+    )
 
-        # Shipping Instruction / BL emails take priority
-        # over invoice words that may appear inside the document.
-        if (
-            "SHIPPING INSTRUCTION" in text
-            or "CUST SI" in text
-            or "SI REQUEST" in text
-            or "SI AND DRAFT BL" in text
-            or "COMPARE SI" in text
-            or "COMPARE THE SI" in text
-        ):
-            return None
-
-    # ---------------------------------------------------------
-    # 5. GENERAL
-    # ---------------------------------------------------------
-
-    general_patterns = [
-        "BERTHING",
-        "BERTHED",
-        "VESSEL ARRIVAL",
-        "VESSEL DEPARTURE",
-        "OPERATIONAL UPDATE",
-        "RPA BOT",
-        "AUTOMATED NOTIFICATION",
-        "REMINDER",
-        "MEETING REMINDER",
-    ]
-
-    if any(pattern in text for pattern in general_patterns):
+    if is_reminder:
         return {
             "category": "GENERAL",
             "confidence": 0.90,
-            "reasoning": "Rule-based detection identified a routine operational or administrative email."
+            "reasoning": "rule: operational reminder",
+            "method": "RULE",
         }
 
-    # No strong rule → use Gemini.
+    if any(w in body for w in si_provide_words):
+        return {
+            "category": "SI_REQUEST",
+            "confidence": 0.90,
+            "reasoning": "rule: SI provided/submitted",
+            "method": "RULE",
+        }
+    # ---------------------------------------------------------
+    # INVOICE
+    # ---------------------------------------------------------
+    invoice_words = [
+        "INVOICE",
+        "D&D CHARGE",
+        "DEMURRAGE",
+        "DETENTION",
+        "LOCAL CHARGE",
+        "GR QUERY",
+        "PAYMENT QUERY",
+    ]
+
+    if any(w in text for w in invoice_words) and not has_bl:
+        return {
+            "category": "INVOICE_QUERY",
+            "confidence": 0.85,
+            "reasoning": "rule: billing vocabulary",
+            "method": "RULE",
+        }
+
+    # ---------------------------------------------------------
+    # GENERAL
+    # ---------------------------------------------------------
+    general_words = [
+        "BERTHING",
+        "BERTHED",
+        "RPA BOT",
+        "AUTOMATED NOTIFICATION",
+        "REMINDER",
+    ]
+
+    if any(w in text for w in general_words):
+        return {
+            "category": "GENERAL",
+            "confidence": 0.85,
+            "reasoning": "rule: operational/admin vocabulary",
+            "method": "RULE",
+        }
+
+    # No confident rule match.
     return None
 
 
-# =========================================================
-# GEMINI CLASSIFICATION
-# =========================================================
+def classify_batch(emails: list[dict]) -> dict[str, dict]:
+    """
+    Hybrid classification:
 
-def _gemini_classify(email: dict) -> dict:
+    1. Try deterministic rules first.
+    2. Send only ambiguous emails to Gemini.
+    3. Record whether RULE or GEMINI produced the answer.
+    """
 
-    prompt = _PROMPT.format(
-        subject=email.get("subject", ""),
-        frm=email.get("from", ""),
-        body=(email.get("body", "") or "")[:2000],
-        cats=" | ".join(CATEGORIES),
+    results = {}
+    ambiguous = []
+
+    rule_count = 0
+
+    for e in emails:
+        r = _rule_classify(e)
+
+        if r is not None:
+            results[e["email_id"]] = r
+            rule_count += 1
+        else:
+            ambiguous.append(e)
+
+    gemini_count = 0
+
+    CHUNK = 10
+
+    for i in range(0, len(ambiguous), CHUNK):
+        chunk = ambiguous[i:i + CHUNK]
+
+        chunk_results = _gemini_classify_chunk(chunk)
+
+        results.update(chunk_results)
+        gemini_count += len(chunk)
+
+    print(
+        f"[CLASSIFY] rules={rule_count}, "
+        f"Gemini={gemini_count}"
     )
 
-    for attempt in range(5):
-        try:
-            resp = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt,
-                config={"response_mime_type": "application/json"},
+    return results
+
+
+def _gemini_classify_chunk(chunk: list[dict]) -> dict[str, dict]:
+    cache_key = _cache.key(
+        "classify",
+        *[
+            (
+                e["email_id"],
+                e.get("subject"),
+                e.get("body"),
             )
-            break
+            for e in chunk
+        ],
+    )
 
-        except Exception as e:
-            error_text = str(e)
+    cached = _cache.get(cache_key)
 
-            if "429" in error_text or "RESOURCE_EXHAUSTED" in error_text:
-                wait_time = 10 * (attempt + 1)
+    if cached is not None:
+        print(f"[CACHE] classification cache hit ({len(chunk)} emails)")
+        return cached
 
-                print(
-                    f"Gemini quota reached. "
-                    f"Waiting {wait_time} seconds before retry..."
-                )
+    emails_block = "\n\n".join(
+        f"id: {e['email_id']}\n"
+        f"subject: {e.get('subject', '')}\n"
+        f"from: {e.get('from', '')}\n"
+        f"body: {(e.get('body') or '')[:1500]}"
+        for e in chunk
+    )
 
-                time.sleep(wait_time)
+    prompt = _PROMPT.format(
+        fewshot=_FEWSHOT,
+        cats=" | ".join(CATEGORIES),
+        emails_block=emails_block,
+    )
 
-            else:
-                if attempt == 4:
-                    raise
+    _limiter.wait()
 
-                wait_time = 2 ** attempt
+    def _call():
+        return client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json",
+            },
+        )
 
-                print(
-                    f"Gemini request failed. "
-                    f"Retrying in {wait_time} seconds..."
-                )
+    resp = call_with_backoff(_call)
 
-                time.sleep(wait_time)
+    # ---------------------------------------------------------
+    # Token usage logging
+    # ---------------------------------------------------------
+    usage = getattr(resp, "usage_metadata", None)
 
-    else:
-        raise RuntimeError(
-            "Gemini request failed after all retries."
+    if usage is not None:
+        input_tokens = getattr(
+            usage,
+            "prompt_token_count",
+            0,
+        )
+
+        output_tokens = getattr(
+            usage,
+            "candidates_token_count",
+            0,
+        )
+
+        total_tokens = getattr(
+            usage,
+            "total_token_count",
+            0,
+        )
+
+        print(
+            f"[TOKENS] input={input_tokens}, "
+            f"output={output_tokens}, "
+            f"total={total_tokens}"
         )
 
     try:
         data = json.loads(resp.text)
 
-        if data["category"] not in CATEGORIES:
-            raise ValueError(data["category"])
+        out = {}
 
-        return data
+        for item in data:
+            eid = item["id"]
 
-    except Exception:
+            cat = item.get("category", "GENERAL")
+
+            if cat not in CATEGORIES:
+                cat = "GENERAL"
+
+            out[eid] = {
+                "category": cat,
+                "confidence": item.get("confidence", 0.5),
+                "reasoning": item.get("reasoning", ""),
+                "method": "GEMINI",
+            }
+
+        # Safety fallback
+        for e in chunk:
+            out.setdefault(
+                e["email_id"],
+                {
+                    "category": "GENERAL",
+                    "confidence": 0.0,
+                    "reasoning": "parse_fallback",
+                    "method": "GEMINI",
+                },
+            )
+
+        _cache.set(cache_key, out)
+
+        return out
+
+    except Exception as err:
+
+        print(
+            f"[CLASSIFY] batch parse failed: {err}"
+        )
+
         return {
-            "category": "GENERAL",
-            "confidence": 0.0,
-            "reasoning": "parse_error"
+            e["email_id"]: {
+                "category": "GENERAL",
+                "confidence": 0.0,
+                "reasoning": "parse_error",
+                "method": "GEMINI",
+            }
+            for e in chunk
         }
 
 
-# =========================================================
-# PUBLIC FUNCTION
-# =========================================================
-
 def classify(email: dict) -> dict:
     """
-    Classify email.
-
-    First attempt:
-        Python rule-based classification.
-
-    Fallback:
-        Gemini for ambiguous emails.
+    Classify one email.
     """
 
-    rule_result = _rule_classify(email)
+    r = _rule_classify(email)
 
-    if rule_result is not None:
-        print(
-            f"[RULE] {email.get('email_id', '?')} "
-            f"-> {rule_result['category']}"
-        )
-        return rule_result
+    if r is not None:
+        return r
 
-    print(
-        f"[GEMINI] {email.get('email_id', '?')} "
-        f"-> ambiguous, using Gemini"
-    )
-
-    return _gemini_classify(email)
+    return classify_batch([email])[email["email_id"]]

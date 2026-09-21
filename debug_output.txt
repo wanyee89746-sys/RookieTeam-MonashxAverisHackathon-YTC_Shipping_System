@@ -1,0 +1,2310 @@
+======================================================================
+DEBUG COMPARISON OUTPUT
+======================================================================
+Output file: debug_output.txt
+Emails selected: 24
+======================================================================
+
+======================================================================
+email_009
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5ALT-19136 _ MERSIN_TURKEY _ PACIFIC OFFICE (M) SDN BHD _ YMJAI430980500
+
+--- BODY ---
+WARNING: This email originated outside of our organisation. As a security measure, please exercise caution with E-Mail content and any links or attachments.
+
+Dear Ooi,
+
+Please find attached the shipping instruction and the draft bill of lading for I978820812 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Lee Guan Cheng
+Shipping Documentation
+DID : +971 04 4938233
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Teo Ei Leen <eileen_teo@aprilasia.com>
+Sent: Friday, January 23, 2026 3:50 PM
+Subject: RE: 5ALT-19136
+
+Please follow the previous instruction. Thank you.
+From: Teo Ei Leen <eileen_teo@aprilasia.com>
+Sent: Friday, January 16, 2026 8:38 PM
+Subject: RE: 5ALT-19136
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_009_SI.txt
+BL file: attachments/email_009_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper (Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+CONSIGNEE: PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+NOTIFY PARTY: PACIFIC OFFICE (M) SDN BHD
+Load Port: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Discharge Port: MERSIN, TURKEY (TRMER)
+No. of Containers or Packages: 1 x 40'HC
+Gross Wt (kgs): 20,381 KG
+Vessel: NAP 914 V.BS007
+Voy.: QI540A
+Description: COATED IVORY BOARD
+HS Code: 48105900
+Booking Reference: I978820812
+OC No.: 5ALT-19136
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper/Exporter: ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+Consignee (Non-Negotiable): PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify: PACIFIC OFFICE (M) SDN BHD
+POL: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Discharge Port: MERSIN, TURKEY (TRMER)
+No. of Containers or Packages: 1 x 40'HC
+Gross Weight (KG): 20,381 KG
+Ocean Vessel: NAP 914 V.BS007
+Voy. No: QI540A
+Description of Goods: COATED IVORY BOARD
+Bill of Lading No.: YMJAI430980500
+Booking No.: I978820812
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "(Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "PACIFIC OFFICE (M) SDN BHD",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "MERSIN, TURKEY (TRMER)",
+  "container_count": 1,
+  "gross_weight_kg": 20381
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "(Non-Negotiable): PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "PACIFIC OFFICE (M) SDN BHD",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "MERSIN, TURKEY (TRMER)",
+  "container_count": 1,
+  "gross_weight_kg": 20381
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'shipper']
+
+======================================================================
+email_013
+======================================================================
+
+--- SUBJECT ---
+AFEMY - MOMBASA_KENYA - CMA(SIJ4216073) - 5RFR-36541 - 5250074586 - ROXCEL TRADING GMBH - OA_CFR
+
+--- BODY ---
+WARNING: This email originated outside of our organisation. As a security measure, please exercise caution with E-Mail content and any links or attachments.
+
+Hi Elisa,
+
+Attached are the SI and draft BL for OC 5RFR-36541 (ASIA SYMBOL FOOD SERVICE BOARD). Please check the details and confirm.
+
+Best Regards,
+Lee Guan Cheng
+Shipping Documentation
+DID : +971 04 4938213
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Nirmala Patwa <nirmala@fujitogrp.com>
+Sent: Thursday, December 11, 2026 5:30 AM
+Subject: RE: 5RFR-36541
+
+Please follow the previous instruction. Thank you.
+From: Logistics <logistics@algurg.ae>
+Sent: Friday, December 22, 2026 9:39 PM
+Subject: RE: 5RFR-36541
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_013_SI.txt
+BL file: attachments/email_013_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper (Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+CONSIGNEE: ROXCEL TRADING GMBH
+  OPERNRING 3-5; 1010 VIENNA, AUSTRIA
+Notify Party: ROXCEL TRADING GMBH
+Port of Loading: SINGAPORE (SGSIN)
+Port of Discharge (POD): MOMBASA, KENYA (KEMBA)
+No. of Containers: 3 x 40'HC
+Gross Weight毛重(KGS): 67,311 KG
+Vessel: VISION 202 V.002
+Voy.: 11S
+Kinds of Packages; Description of Goods: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+HS Code: 48109200
+BOOKING NO.: SIJ3754330
+OC No.: 5RFR-36541
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+Consignee (Non-Negotiable): ROXCEL TRADING GMBH
+  OPERNRING 3-5; 1010 VIENNA, AUSTRIA
+NOTIFY PARTY: ROXCEL TRADING GMBH
+POL: SINGAPORE (SGSIN)
+Port of Discharge: TUTICORIN, INDIA (KEMBA)
+Container Count: 3 x 40'HC
+Gross Weight毛重(KGS): 67,311 KG
+Export Carrier (vessel, voyage): VISION 202 V.002
+Voy. No: 11S
+Description: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+B/L No.: SIJ4216073
+Booking No.: SIJ3754330
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "(Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "ROXCEL TRADING GMBH\n  OPERNRING 3-5; 1010 VIENNA, AUSTRIA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "SINGAPORE (SGSIN)",
+  "port_of_discharge": "MOMBASA, KENYA (KEMBA)",
+  "container_count": 3,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "(Non-Negotiable): ROXCEL TRADING GMBH\n  OPERNRING 3-5; 1010 VIENNA, AUSTRIA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "SINGAPORE (SGSIN)",
+  "port_of_discharge": "TUTICORIN, INDIA (KEMBA)",
+  "container_count": 3,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'gross_weight_kg', 'port_of_discharge']
+
+======================================================================
+email_025
+======================================================================
+
+--- SUBJECT ---
+RE_ TO CONFIRM DOCS _ 5SUS-86999 _ FREMANTLE_AUSTRALIA _ CERIEX _ SIN204711671
+
+--- BODY ---
+Dear Arlene,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. SIN204711671.
+
+Best Regards,
+Teo Ei Leen
+Shipping Documentation
+DID : +971 04 4938294
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Chella Perumal <chella.perumal@psabdp.com>
+Sent: Friday, January 1, 2026 3:26 AM
+Subject: RE: 5SUS-86999
+
+Please follow the previous instruction. Thank you.
+From: Mitchelle Ting <mitchelle_ting@aprilasia.com>
+Sent: Friday, December 24, 2026 2:40 PM
+Subject: RE: 5SUS-86999
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_025_SI.txt
+BL file: attachments/email_025_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper/Exporter: APRIL FAR EAST (M) SDN BHD
+  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+Consignee: CERIEX
+  ZONE INDUSTRIELLE; CONAKRY, GUINEA
+NOTIFY PARTY: ROXCEL TRADING GMBH
+Port of Loading: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Port of Discharge (POD): FREMANTLE, AUSTRALIA (AUFRE)
+No. of Containers: 6 x 20'GP
+Gross Weight (KG): 135,126 KG
+Vessel Name: MMSS 2507 V.257087E
+Voy.: 11S
+Description of Goods: MULTIPURPOSE PAPER - A4 - PAPERONE COPIER
+HS Code: 48025600
+Booking No.: SIN902294131
+OC No.: 5SUS-86999
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper: APRIL FAR EAST (M) SDN BHD
+  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+Consignee (Non-Negotiable): CERIEX
+  ZONE INDUSTRIELLE; CONAKRY, GUINEA
+Notify: ROXCEL TRADING GMBH
+Port of Loading (POL): PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Discharge Port: BUSAN, SOUTH KOREA (AUFRE)
+Total Containers: 5 x 20'GP
+Gross Weight (KG): 135,126 KG
+Vessel Name: MMSS 2507 V.257087E
+Voy.: 11S
+Description of Goods: MULTIPURPOSE PAPER - A4 - PAPERONE COPIER
+Bill of Lading No.: SIN204711671
+Booking No.: SIN902294131
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD\n  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "CERIEX\n  ZONE INDUSTRIELLE; CONAKRY, GUINEA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "FREMANTLE, AUSTRALIA (AUFRE)",
+  "container_count": 6,
+  "gross_weight_kg": 135126
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD\n  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "(Non-Negotiable): CERIEX\n  ZONE INDUSTRIELLE; CONAKRY, GUINEA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "BUSAN, SOUTH KOREA (AUFRE)",
+  "container_count": 5,
+  "gross_weight_kg": 135126
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'container_count', 'port_of_discharge']
+
+======================================================================
+email_031
+======================================================================
+
+--- SUBJECT ---
+AFEMY - MOMBASA_KENYA - ONE(SINF87558867) - 5RCY-36057 - 5250076627 - VITAL SOLUTIONS PTE. LTD. - DP
+
+--- BODY ---
+WARNING: This email originated outside of our organisation. As a security measure, please exercise caution with E-Mail content and any links or attachments.
+
+Dear Mitchelle,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. SINF87558867.
+
+Best Regards,
+Teo Ei Leen
+Shipping Documentation
+DID : +971 04 4938258
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Export Team <exports@ifpla.com>
+Sent: Friday, January 19, 2026 7:55 PM
+Subject: RE: 5RCY-36057
+
+Please follow the previous instruction. Thank you.
+From: Mitchelle Ting <mitchelle_ting@aprilasia.com>
+Sent: Monday, January 6, 2026 10:39 PM
+Subject: RE: 5RCY-36057
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_031_SI.txt
+BL file: attachments/email_031_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper: APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee (Non-Negotiable): VITAL SOLUTIONS PTE. LTD.
+  77 ROBINSON ROAD; #21-01 ROBINSON 77; SINGAPORE 068896
+NOTIFY PARTY: VITAL SOLUTIONS PTE. LTD.
+PORT OF LOADING: NHAVA SHEVA, INDIA (INNSA)
+Port of Discharge: MOMBASA, KENYA (KEMBA)
+No. of Containers: 1 x 20'GP
+Gross Wt (kgs): 21,114 KG
+Vessel Name: PACIFIC SUN 1 V.251073E
+Voy.: QI540A
+Description of Goods: UNCOATED WOODFREE PAPER IN REAMS
+HS Code: 48025700
+Booking Ref: ONEYSINF53396
+OC No.: 5RCY-36057
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+CONSIGNEE: VITAL SOLUTIONS PTE. LTD.
+  77 ROBINSON ROAD; #21-01 ROBINSON 77; SINGAPORE 068896
+Notify Party: VITAL SOLUTIONS PTE. LTD.
+Port of Loading: NHAVA SHEVA, INDIA (INNSA)
+POD: MOMBASA, KENYA (KEMBA)
+Container Count: 3 x 20'GP
+Gross Wt (kgs): 23,114 KG
+Ocean Vessel: PACIFIC SUN 1 V.251073E
+Voyage: QI540A
+Description of Goods: UNCOATED WOODFREE PAPER IN REAMS
+Bill of Lading No.: SINF87558867
+Booking Reference: ONEYSINF53396
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "(Non-Negotiable): VITAL SOLUTIONS PTE. LTD.\n  77 ROBINSON ROAD; #21-01 ROBINSON 77; SINGAPORE 068896",
+  "notify_party": "VITAL SOLUTIONS PTE. LTD.",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "MOMBASA, KENYA (KEMBA)",
+  "container_count": 1,
+  "gross_weight_kg": 21114
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "VITAL SOLUTIONS PTE. LTD.\n  77 ROBINSON ROAD; #21-01 ROBINSON 77; SINGAPORE 068896",
+  "notify_party": "VITAL SOLUTIONS PTE. LTD.",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "MOMBASA, KENYA (KEMBA)",
+  "container_count": 3,
+  "gross_weight_kg": 23114
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'container_count', 'gross_weight_kg', 'shipper']
+
+======================================================================
+email_043
+======================================================================
+
+--- SUBJECT ---
+RE_ AFRT - KLAIPEDA_LITHUANIA - CMA(SIJ5991022) - 5RAE-97643 - 5250078156 - PACIFIC OFFICE (M) SDN BHD - OA_CFR
+
+--- BODY ---
+Hi Ooi,
+
+Attached are the SI and draft BL for OC 5RAE-97643 (PAPERBOARD). Please check the details and confirm.
+
+Best Regards,
+Lee Guan Cheng
+Shipping Documentation
+DID : +971 04 4938276
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_043_SI.txt
+BL file: attachments/email_043_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper (Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+CONSIGNEE: PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify Party: PACIFIC OFFICE (M) SDN BHD
+PORT OF LOADING: NHAVA SHEVA, INDIA (INNSA)
+PORT OF DISCHARGE: KLAIPEDA, LITHUANIA (LTKLJ)
+No. of Containers or Packages: 3 x 20'GP
+Gross Weight毛重(KGS): 68,649 KG
+Ocean Vessel: NAP 914 V.BS007
+Voy.: 051NW1
+Description: PAPERBOARD
+HS Code: 48109200
+Booking No.: SIJ9014767
+OC No.: 5RAE-97643
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper: ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+Consignee (Non-Negotiable): PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify: PACIFIC OFFICE (M) SDN BHD
+Port of Loading (POL): NHAVA SHEVA, INDIA (INNSA)
+POD: KLAIPEDA, LITHUANIA (LTKLJ)
+No. of Containers: 5 x 20'GP
+Gross Weight毛重(KGS): 68,649 KG
+Vessel Name: NAP 914 V.BS007
+Voyage: 051NW1
+Description of Goods: PAPERBOARD
+B/L No.: SIJ5991022
+Booking Reference: SIJ9014767
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "(Principal or Seller): ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "PACIFIC OFFICE (M) SDN BHD",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "KLAIPEDA, LITHUANIA (LTKLJ)",
+  "container_count": 3,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "(Non-Negotiable): PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "PACIFIC OFFICE (M) SDN BHD",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "KLAIPEDA, LITHUANIA (LTKLJ)",
+  "container_count": 5,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'container_count', 'gross_weight_kg', 'shipper']
+
+======================================================================
+email_046
+======================================================================
+
+--- SUBJECT ---
+RE_ AFEMY - SAVANNAH_US - EVER(EGLV552312432921) - 5ALT-79955 - 5250072717 - SAFQA LIMITED - OA_CFR
+
+--- BODY ---
+Dear Teo,
+
+Please find attached the shipping instruction and the draft bill of lading for 070500227799 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Syed Faraz Ali
+Shipping Documentation
+DID : +971 04 4938259
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_046_SI.txt
+BL file: attachments/email_046_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee: SAFQA LIMITED
+  P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X
+NOTIFY PARTY: TOPKOPY MIDDLE EAST FZE
+Port of Loading: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+PORT OF DISCHARGE: SAVANNAH, US (USSAV)
+Total Containers: 12 x 20'FCL
+Gross Weight毛重(KGS): 257,340 KG
+Vessel Name: MARCOPOLO 810 V.BS005
+Voyage No.: BS291
+Kinds of Packages; Description of Goods: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+HS Code: 48109200
+BOOKING NO.: 070500227799
+OC No.: 5ALT-79955
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee: SAFQA LIMITED
+  P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X
+Notify: MOORIM SP CO., LTD
+Port of Loading: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+POD: SAVANNAH, US (USSAV)
+No. of Containers or Packages: 12 x 20'FCL
+Gross Weight毛重(KGS): 257,340 KG
+Vessel Name: MARCOPOLO 810 V.BS005
+Voy.: BS291
+Description of Goods: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+B/L NUMBER: EGLV552312432921
+Booking Reference: 070500227799
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "SAFQA LIMITED\n  P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X",
+  "notify_party": "TOPKOPY MIDDLE EAST FZE",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "SAVANNAH, US (USSAV)",
+  "container_count": 12,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "SAFQA LIMITED\n  P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X",
+  "notify_party": "MOORIM SP CO., LTD",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "SAVANNAH, US (USSAV)",
+  "container_count": 12,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['gross_weight_kg', 'notify_party']
+
+======================================================================
+email_051
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5RSG-51522 _ SAVANNAH_US _ KPP-ANTALIS (SINGAPORE) PTE. LTD. _ HLCUSIN613750606
+
+--- BODY ---
+Hi Elisa,
+
+Attached are the SI and draft BL for OC 5RSG-51522 (UNCOATED WOODFREE PAPER IN REA). Please check the details and confirm.
+
+Best Regards,
+Hari Mardianto
+Shipping Documentation
+DID : +971 04 4938270
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_051_SI.txt
+BL file: attachments/email_051_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+SHIPPER: ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+To the Order of: KPP-ANTALIS (SINGAPORE) PTE. LTD.
+  8 TEMASEK BOULEVARD; #42-01 SUNTEC TOWER 3; SINGAPORE 038988
+NOTIFY PARTY: KPP-ANTALIS (SINGAPORE) PTE. LTD.
+Port of Loading (POL): NHAVA SHEVA, INDIA (INNSA)
+Discharge Port: SAVANNAH, US (USSAV)
+No. of Containers or Packages: 3 x 20'FCL
+Gross Weight毛重(KGS): 60,645 KG
+Vessel: PACIFIC SUN 1 V.251073E
+Voyage No.: BS291
+Description of Goods: UNCOATED WOODFREE PAPER IN REAMS
+HS Code: 48025700
+Booking Reference: 85361530
+OC No.: 5RSG-51522
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper/Exporter: ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+To the Order of: KPP-ANTALIS (SINGAPORE) PTE. LTD.
+  8 TEMASEK BOULEVARD; #42-01 SUNTEC TOWER 3; SINGAPORE 038988
+Notify: KPP-ANTALIS (SINGAPORE) PTE. LTD.
+Port of Loading: NHAVA SHEVA, INDIA (INNSA)
+POD: SAVANNAH, US (USSAV)
+Container Count: 3 x 20'FCL
+Gross Wt (kgs): 60,645 KG
+Vessel Name: PACIFIC SUN 1 V.251073E
+Voyage No.: BS291
+Commodity: UNCOATED WOODFREE PAPER IN REAMS
+Bill of Lading No.: HLCUSIN613750606
+Booking Reference: 85361530
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "KPP-ANTALIS (SINGAPORE) PTE. LTD.\n  8 TEMASEK BOULEVARD; #42-01 SUNTEC TOWER 3; SINGAPORE 038988",
+  "notify_party": "KPP-ANTALIS (SINGAPORE) PTE. LTD.",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "SAVANNAH, US (USSAV)",
+  "container_count": 3,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "KPP-ANTALIS (SINGAPORE) PTE. LTD.\n  8 TEMASEK BOULEVARD; #42-01 SUNTEC TOWER 3; SINGAPORE 038988",
+  "notify_party": "KPP-ANTALIS (SINGAPORE) PTE. LTD.",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "SAVANNAH, US (USSAV)",
+  "container_count": 3,
+  "gross_weight_kg": 60645
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['gross_weight_kg']
+
+======================================================================
+email_107
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5RFR-36884 _ MOMBASA_KENYA _ KTP CO., LTD _ OOLU1815997062
+
+--- BODY ---
+Dear Deswita,
+
+Please find attached the shipping instruction and the draft bill of lading for PSGSE9620153 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Teo Ei Leen
+Shipping Documentation
+DID : +971 04 4938254
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_107_SI.xlsx
+BL file: attachments/email_107_BL.docx
+
+--- SI TEXT ---
+APRIL FINE PAPER TRADING (MIDDLE EAST) FZE	
+	
+BL INSTRUCTION	3069872050
+Shipper/Exporter	APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee (Non-Negotiable)	KTP CO., LTD | KTP BLDG., 36 SANGWON-GIL; SEOUNGDONG-GU, SEOUL, SOUTH KOREA; TEL:02-2285-6025
+Notify	KTP CO., LTD | KTP BLDG., 36 SANGWON-GIL; SEOUNGDONG-GU, SEOUL, SOUTH KOREA; TEL:02-2285-6025
+POL	PORT KLANG (WESTPORT), MALAYSIA
+Port of Discharge	MOMBASA, KENYA
+Total Containers	2 x 40'HC
+GROSS WEIGHT	41124
+Export Carrier (vessel, voyage)	SOLID 16 V.044NW2
+Kinds of Packages; Description of Goods	COATED IVORY BOARD
+HS CODE	48105900
+BOOKING NO.	PSGSE9620153
+FREIGHT	PREPAID
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+B/L NO.(提单号): OOLU1815997062
+ORDER NO.: 3069872050   FREIGHT PREPAID
+SHIPPER (发货人) | APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+#813, 4 EA, DUBAI AIRPORT FREE ZONE
+P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+To the Order of (收货人) | VITAL SOLUTIONS PTE. LTD.
+KTP BLDG., 36 SANGWON-GIL
+SEOUNGDONG-GU, SEOUL, SOUTH KOREA
+TEL:02-2285-6025
+Notify Party (通知人) | KTP CO., LTD
+KTP BLDG., 36 SANGWON-GIL
+SEOUNGDONG-GU, SEOUL, SOUTH KOREA
+TEL:02-2285-6025
+Port of Loading (装货港) | PORT KLANG (WESTPORT), MALAYSIA
+PORT OF DISCHARGE (卸货港) | MOMBASA, KENYA
+Total Containers (箱数) | 3 x 40'HC
+Gross Weight毛重(KGS) (毛重 KGS) | 41,124
+Vessel (船名) | SOLID 16 V.044NW2
+Description (货名) | COATED IVORY BOARD
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "KTP CO., LTD | KTP BLDG., 36 SANGWON-GIL; SEOUNGDONG-GU, SEOUL, SOUTH KOREA; TEL:02-2285-6025",
+  "notify_party": "KTP CO., LTD | KTP BLDG., 36 SANGWON-GIL; SEOUNGDONG-GU, SEOUL, SOUTH KOREA; TEL:02-2285-6025",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA",
+  "port_of_discharge": "MOMBASA, KENYA",
+  "container_count": 2,
+  "gross_weight_kg": 41124
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE",
+  "consignee": null,
+  "notify_party": "KTP CO., LTD",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA",
+  "port_of_discharge": "MOMBASA, KENYA",
+  "container_count": 3,
+  "gross_weight_kg": 41124
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'container_count']
+
+======================================================================
+email_119
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5APH-57532 _ SAVANNAH_US _ CLIFFORD PAPER INC _ MEDUUD104478
+
+--- BODY ---
+Dear Mitchelle,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. MEDUUD104478.
+
+Best Regards,
+Deswita Elvyani
+Shipping Documentation
+DID : +971 04 4938248
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Najiha Nur Hanna <hanna_azhari@aprilasia.com>
+Sent: Wednesday, January 12, 2026 5:23 PM
+Subject: RE: 5APH-57532
+
+Please follow the previous instruction. Thank you.
+From: Nirmala Patwa <nirmala@fujitogrp.com>
+Sent: Monday, January 15, 2026 4:51 AM
+Subject: RE: 5APH-57532
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_119_SI.txt
+BL file: attachments/email_119_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee (Non-Negotiable): CLIFFORD PAPER INC
+  70 EAST STREET; RIDGEFIELD, NJ 07657, USA
+Notify: CLIFFORD PAPER INC
+PORT OF LOADING: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Discharge Port: SAVANNAH, US (USSAV)
+No. of Containers: 15 x 40'HC
+Gross Weight毛重(KGS): 322,590 KG
+Export Carrier (vessel, voyage): NAP 914 V.BS007
+Voy.: BS291
+Commodity: UNCOATED WOODFREE PAPER IN REAMS
+HS Code: 48025700
+Booking No.: MSDUL0942598562
+OC No.: 5APH-57532
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee: CLIFFORD PAPER INC
+  70 EAST STREET; RIDGEFIELD, NJ 07657, USA
+Notify Party/Intermediate Consignee: CLIFFORD PAPER INC
+POL: SINGAPORE, SINGAPORE (MYPKG)
+PORT OF DISCHARGE: SAVANNAH, US (USSAV)
+No. of Containers or Packages: 15 x 40'HC
+Gross Weight (KG): 322,590 KG
+Vessel Name: NAP 914 V.BS007
+Voy.: BS291
+Description of Goods: UNCOATED WOODFREE PAPER IN REAMS
+B/L No.: MEDUUD104478
+Booking No.: MSDUL0942598562
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "(Non-Negotiable): CLIFFORD PAPER INC\n  70 EAST STREET; RIDGEFIELD, NJ 07657, USA",
+  "notify_party": "CLIFFORD PAPER INC",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "SAVANNAH, US (USSAV)",
+  "container_count": 15,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "CLIFFORD PAPER INC\n  70 EAST STREET; RIDGEFIELD, NJ 07657, USA",
+  "notify_party": "CLIFFORD PAPER INC",
+  "port_of_loading": "SINGAPORE, SINGAPORE (MYPKG)",
+  "port_of_discharge": "SAVANNAH, US (USSAV)",
+  "container_count": 15,
+  "gross_weight_kg": 322590
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'gross_weight_kg', 'port_of_loading']
+
+======================================================================
+email_121
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5RAE-73753 _ BRISBANE_AUSTRALIA _ CLIFFORD PAPER INC _ MCLSIN3934835
+
+--- BODY ---
+Dear Mitchelle,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. MCLSIN3934835.
+
+Best Regards,
+Teo Ei Leen
+Shipping Documentation
+DID : +971 04 4938258
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Mitchelle Ting <mitchelle_ting@aprilasia.com>
+Sent: Friday, January 21, 2026 3:29 PM
+Subject: RE: 5RAE-73753
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_121_SI.txt
+BL file: attachments/email_121_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper/Exporter: APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+CONSIGNEE: CLIFFORD PAPER INC
+  70 EAST STREET; RIDGEFIELD, NJ 07657, USA
+NOTIFY PARTY: CLIFFORD PAPER INC
+POL: NANTONG, CHINA (CNNTG)
+POD: BRISBANE, AUSTRALIA (AUBNE)
+Container Count: 1 x 20'GP
+GROSS WEIGHT: 20,842 KG
+Vessel Name: LE HAVRE V.QI540A
+Voyage No.: BS012
+Kinds of Packages; Description of Goods: FUJITO PAPERONE INKJET PAPER
+HS Code: 48025500
+Booking Reference: MCLSINJEA2564208
+OC No.: 5RAE-73753
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper: APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee: CLIFFORD PAPER INC
+  70 EAST STREET; RIDGEFIELD, NJ 07657, USA
+Notify Party: CLIFFORD PAPER INC
+Port of Loading: NANTONG, CHINA (CNNTG)
+Discharge Port: BRISBANE, AUSTRALIA (AUBNE)
+No. of Containers: 1 x 20'GP
+Gross Weight毛重(KGS): 21,342 KG
+Vessel Name: LE HAVRE V.QI540A
+Voyage No.: BS012
+Description: FUJITO PAPERONE INKJET PAPER
+B/L NUMBER: MCLSIN3934835
+BOOKING NO.: MCLSINJEA2564208
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "CLIFFORD PAPER INC\n  70 EAST STREET; RIDGEFIELD, NJ 07657, USA",
+  "notify_party": "CLIFFORD PAPER INC",
+  "port_of_loading": "NANTONG, CHINA (CNNTG)",
+  "port_of_discharge": "BRISBANE, AUSTRALIA (AUBNE)",
+  "container_count": 1,
+  "gross_weight_kg": 20842
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "CLIFFORD PAPER INC\n  70 EAST STREET; RIDGEFIELD, NJ 07657, USA",
+  "notify_party": "CLIFFORD PAPER INC",
+  "port_of_loading": "NANTONG, CHINA (CNNTG)",
+  "port_of_discharge": "BRISBANE, AUSTRALIA (AUBNE)",
+  "container_count": 1,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['gross_weight_kg']
+
+======================================================================
+email_132
+======================================================================
+
+--- SUBJECT ---
+AIE - CALLAO_PERU - MSC(MEDUUD479851) - 5RMY-18268 - 5250078615 - AL GURG STATIONERY LLC - OA_CFR
+
+--- BODY ---
+Dear Deswita,
+
+Please find attached the shipping instruction and the draft bill of lading for MSDUL0942558328 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Lee Guan Cheng
+Shipping Documentation
+DID : +971 04 4938260
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_132_SI.txt
+BL file: attachments/email_132_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper: APRIL FAR EAST (M) SDN BHD
+  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+Consignee (Non-Negotiable): AL GURG STATIONERY LLC
+  P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES
+NOTIFY PARTY: ROXCEL TRADING GMBH
+POL: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Port of Discharge: CALLAO, PERU (PECLL)
+Total Containers: 1 x 40'HC
+Gross Weight毛重(KGS): 20,262 KG
+Ocean Vessel: NAP 914 V.BS007
+Voyage No.: BS291
+Description of Goods: FUJITO PAPERONE INKJET PAPER
+HS Code: 48025500
+Booking No.: MSDUL0942558328
+OC No.: 5RMY-18268
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper: APRIL FAR EAST (M) SDN BHD
+  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+CONSIGNEE: AL GURG STATIONERY LLC
+  P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES
+Notify: ROXCEL TRADING GMBH
+Port of Loading: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Port of Discharge (POD): CALLAO, PERU (PECLL)
+No. of Containers: 1 x 40'HC
+Gross Weight毛重(KGS): 20,262 KG
+Export Carrier (vessel, voyage): NAP 914 V.BS007
+Voy. No: BS291
+Kinds of Packages; Description of Goods: FUJITO PAPERONE INKJET PAPER
+B/L NUMBER: MEDUUD479851
+Booking No.: MSDUL0942558328
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD\n  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "(Non-Negotiable): AL GURG STATIONERY LLC\n  P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "CALLAO, PERU (PECLL)",
+  "container_count": 1,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD\n  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "AL GURG STATIONERY LLC\n  P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "CALLAO, PERU (PECLL)",
+  "container_count": 1,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'gross_weight_kg']
+
+======================================================================
+email_144
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5RMY-98643 _ MERSIN_TURKEY _ NAGAPPA EXPORTS _ HLCUSIN086376599
+
+--- BODY ---
+Dear Teo,
+
+Please find attached the shipping instruction and the draft bill of lading for 16247314 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Lee Guan Cheng
+Shipping Documentation
+DID : +971 04 4938219
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Teo Ei Leen <eileen_teo@aprilasia.com>
+Sent: Tuesday, January 24, 2026 2:43 AM
+Subject: RE: 5RMY-98643
+
+Please follow the previous instruction. Thank you.
+From: Sathiyavani Munusamy <sathiya@april.com.my>
+Sent: Wednesday, January 6, 2026 11:56 AM
+Subject: RE: 5RMY-98643
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_144_SI.txt
+BL file: attachments/email_144_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper/Exporter: APRIL FINE PAPER TRADING
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee: NAGAPPA EXPORTS
+  NEW NO : 23, L-BLOCK, 17TH STREET; ANNA NAGAR EAST; CHENNAI, TAMIL NADU 600102; GST NO - 33AACFN6792L1ZU
+NOTIFY PARTY: NAGAPPA EXPORTS
+Port of Loading (POL): NHAVA SHEVA, INDIA (INNSA)
+Discharge Port: MERSIN, TURKEY (TRMER)
+Container Count: 12 x 40'HC
+Gross Weight毛重(KGS): 264,180 KG
+Export Carrier (vessel, voyage): SOLID 16 V.044NW2
+Voy. No: 11S
+Kinds of Packages; Description of Goods: PAPERBOARD
+HS Code: 48109200
+Booking Reference: 16247314
+OC No.: 5RMY-98643
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee: PACIFIC OFFICE (M) SDN BHD
+  NEW NO : 23, L-BLOCK, 17TH STREET; ANNA NAGAR EAST; CHENNAI, TAMIL NADU 600102; GST NO - 33AACFN6792L1ZU
+Notify: NAGAPPA EXPORTS
+Port of Loading: NHAVA SHEVA, INDIA (INNSA)
+Discharge Port: MERSIN, TURKEY (TRMER)
+Container Count: 11 x 40'HC
+Gross Weight (KG): 264,180 KG
+Export Carrier (vessel, voyage): SOLID 16 V.044NW2
+Voy.: 11S
+Description of Goods: PAPERBOARD
+Bill of Lading No.: HLCUSIN086376599
+BOOKING NO.: 16247314
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "NAGAPPA EXPORTS\n  NEW NO : 23, L-BLOCK, 17TH STREET; ANNA NAGAR EAST; CHENNAI, TAMIL NADU 600102; GST NO - 33AACFN6792L1ZU",
+  "notify_party": "NAGAPPA EXPORTS",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "MERSIN, TURKEY (TRMER)",
+  "container_count": 12,
+  "gross_weight_kg": null
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "PACIFIC OFFICE (M) SDN BHD\n  NEW NO : 23, L-BLOCK, 17TH STREET; ANNA NAGAR EAST; CHENNAI, TAMIL NADU 600102; GST NO - 33AACFN6792L1ZU",
+  "notify_party": "NAGAPPA EXPORTS",
+  "port_of_loading": "NHAVA SHEVA, INDIA (INNSA)",
+  "port_of_discharge": "MERSIN, TURKEY (TRMER)",
+  "container_count": 11,
+  "gross_weight_kg": 264180
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'container_count', 'gross_weight_kg', 'shipper']
+
+======================================================================
+email_145
+======================================================================
+
+--- SUBJECT ---
+RE_ TO CONFIRM DOCS _ 5RSG-68872 _ BUSAN_SOUTH KOREA _ PACIFIC OFFICE (M) SDN BHD _ MCLSIN6944869
+
+--- BODY ---
+Dear Elisa,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. MCLSIN6944869.
+
+Best Regards,
+Syed Faraz Ali
+Shipping Documentation
+DID : +971 04 4938289
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Hari Mardianto <hari_mardianto@aprilasia.com>
+Sent: Friday, January 18, 2026 8:22 AM
+Subject: RE: 5RSG-68872
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_145_SI.txt
+BL file: attachments/email_145_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+SHIPPER: APRIL FINE PAPER TRADING
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee (Non-Negotiable): PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify Party/Intermediate Consignee: PACIFIC OFFICE (M) SDN BHD
+Port of Loading: NANTONG, CHINA (CNNTG)
+Port of Discharge (POD): BUSAN, SOUTH KOREA (KRPUS)
+Total Containers: 15 x 20'FCL
+GROSS WEIGHT: 313,380 KG
+Vessel: NAP 914 V.BS007
+Voy. No: BS012
+Commodity: MULTIPURPOSE PAPER - A4 - PAPERONE COPIER
+HS Code: 48025600
+Booking Reference: MCLSINJEA2559463
+OC No.: 5RSG-68872
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee (Non-Negotiable): PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify Party: PACIFIC OFFICE (M) SDN BHD
+Port of Loading (POL): NANTONG, CHINA (CNNTG)
+POD: BUSAN, SOUTH KOREA (KRPUS)
+Total Containers: 15 x 20'FCL
+Gross Weight毛重(KGS): 313,380 KG
+Vessel Name: NAP 914 V.BS007
+Voyage: BS012
+Description of Goods: MULTIPURPOSE PAPER - A4 - PAPERONE COPIER
+B/L No.: MCLSIN6944869
+BOOKING NO.: MCLSINJEA2559463
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "(Non-Negotiable): PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "PACIFIC OFFICE (M) SDN BHD",
+  "port_of_loading": "NANTONG, CHINA (CNNTG)",
+  "port_of_discharge": "BUSAN, SOUTH KOREA (KRPUS)",
+  "container_count": 15,
+  "gross_weight_kg": 313380
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "(Non-Negotiable): PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "PACIFIC OFFICE (M) SDN BHD",
+  "port_of_loading": "NANTONG, CHINA (CNNTG)",
+  "port_of_discharge": "BUSAN, SOUTH KOREA (KRPUS)",
+  "container_count": 15,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['gross_weight_kg', 'shipper']
+
+======================================================================
+email_174
+======================================================================
+
+--- SUBJECT ---
+RE_ TO CONFIRM DOCS _ 5RMY-99499 _ CONAKRY_GUINEA _ TOAN LUC PAPER JOINT STOCK COMPANY _ OOLU1252056647
+
+--- BODY ---
+Dear Hari,
+
+Please find attached the shipping instruction and the draft bill of lading for PSGSE4231220 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Elisa Tukiman
+Shipping Documentation
+DID : +971 04 4938291
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Elisa Tukiman <elisa_tukiman@april.com.my>
+Sent: Friday, December 17, 2026 2:35 AM
+Subject: RE: 5RMY-99499
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_174_SI.txt
+BL file: attachments/email_174_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper: APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+To the Order of: TOAN LUC PAPER JOINT STOCK COMPANY
+  LOT B, TAN DONG HIEP B IZ; DI AN, BINH DUONG, VIETNAM
+Notify: TOAN LUC PAPER JOINT STOCK COMPANY
+Port of Loading: RUGAO/NANTONG/SHANGHAI, CHINA (CNSHA)
+POD: CONAKRY, GUINEA (GNCKY)
+No. of Containers: 1 x 20'FCL
+GROSS WEIGHT: 20,532 KG
+Vessel Name: VISION 202 V.002
+Voyage: BS012
+Kinds of Packages; Description of Goods: FUJITO PAPERONE INKJET PAPER
+HS Code: 48025500
+Booking No.: PSGSE4231220
+OC No.: 5RMY-99499
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper/Exporter: APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee (Non-Negotiable): TOAN LUC PAPER JOINT STOCK COMPANY
+  LOT B, TAN DONG HIEP B IZ; DI AN, BINH DUONG, VIETNAM
+Notify Party/Intermediate Consignee: MOORIM SP CO., LTD
+Load Port: RUGAO/NANTONG/SHANGHAI, CHINA (CNSHA)
+POD: HOCHIMINH CITY, VIETNAM (GNCKY)
+Total Containers: 1 x 20'FCL
+Gross Weight毛重(KGS): 20,532 KG
+Vessel Name: VISION 202 V.002
+Voyage: BS012
+Kinds of Packages; Description of Goods: FUJITO PAPERONE INKJET PAPER
+B/L No.: OOLU1252056647
+Booking Reference: PSGSE4231220
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "TOAN LUC PAPER JOINT STOCK COMPANY\n  LOT B, TAN DONG HIEP B IZ; DI AN, BINH DUONG, VIETNAM",
+  "notify_party": "TOAN LUC PAPER JOINT STOCK COMPANY",
+  "port_of_loading": "RUGAO/NANTONG/SHANGHAI, CHINA (CNSHA)",
+  "port_of_discharge": "CONAKRY, GUINEA (GNCKY)",
+  "container_count": 1,
+  "gross_weight_kg": 20532
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "(Non-Negotiable): TOAN LUC PAPER JOINT STOCK COMPANY\n  LOT B, TAN DONG HIEP B IZ; DI AN, BINH DUONG, VIETNAM",
+  "notify_party": "MOORIM SP CO., LTD",
+  "port_of_loading": "RUGAO/NANTONG/SHANGHAI, CHINA (CNSHA)",
+  "port_of_discharge": "HOCHIMINH CITY, VIETNAM (GNCKY)",
+  "container_count": 1,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'gross_weight_kg', 'notify_party', 'port_of_discharge']
+
+======================================================================
+email_178
+======================================================================
+
+--- SUBJECT ---
+RE_ TO CONFIRM DOCS _ 5RMY-40777 _ CALLAO_PERU _ ORIENT LINKS CO (LLC) _ SIJ2206447
+
+--- BODY ---
+Hi Deswita,
+
+Attached are the SI and draft BL for OC 5RMY-40777 (ASIA SYMBOL FOOD SERVICE BOARD). Please check the details and confirm.
+
+Best Regards,
+Willy Situmorang
+Shipping Documentation
+DID : +971 04 4938276
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_178_SI.txt
+BL file: attachments/email_178_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper (Principal or Seller): APRIL FAR EAST (M) SDN BHD
+  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+Consignee: ORIENT LINKS CO (LLC)
+  P.O. BOX 61041; JEBEL ALI, DUBAI, UAE
+Notify Party: 3S PAPER PRODUCTS SDN BHD
+PORT OF LOADING: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+POD: CALLAO, PERU (PECLL)
+No. of Containers or Packages: 6 x 20'GP
+Gross Weight (KG): 132,516 KG
+Export Carrier (vessel, voyage): VISION 202 V.002
+Voyage No.: QI540A
+Description of Goods: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+HS Code: 48109200
+Booking Ref: SIJ4212309
+OC No.: 5RMY-40777
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+SHIPPER: APRIL FAR EAST (M) SDN BHD
+  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+Consignee: ORIENT LINKS CO (LLC)
+  P.O. BOX 61041; JEBEL ALI, DUBAI, UAE
+Notify Party: 3S PAPER PRODUCTS SDN BHD
+Port of Loading (POL): PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+POD: CALLAO, PERU (PECLL)
+No. of Containers: 7 x 20'GP
+Gross Weight毛重(KGS): 132,516 KG
+Vessel: VISION 202 V.002
+Voy. No: QI540A
+Commodity: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+B/L NUMBER: SIJ2206447
+BOOKING NO.: SIJ4212309
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FAR EAST (M) SDN BHD\n  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "ORIENT LINKS CO (LLC)\n  P.O. BOX 61041; JEBEL ALI, DUBAI, UAE",
+  "notify_party": "3S PAPER PRODUCTS SDN BHD",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "CALLAO, PERU (PECLL)",
+  "container_count": 6,
+  "gross_weight_kg": 132516
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD\n  TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "ORIENT LINKS CO (LLC)\n  P.O. BOX 61041; JEBEL ALI, DUBAI, UAE",
+  "notify_party": "3S PAPER PRODUCTS SDN BHD",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "CALLAO, PERU (PECLL)",
+  "container_count": 7,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['container_count', 'gross_weight_kg', 'shipper']
+
+======================================================================
+email_291
+======================================================================
+
+--- SUBJECT ---
+RE_ TO CONFIRM DOCS _ 5RMY-12871 _ SAVANNAH_US _ INTERNATIONAL FOREST PRODUCTS LLC _ OOLU7833321160
+
+--- BODY ---
+Hi Hari,
+
+Attached are the SI and draft BL for OC 5RMY-12871 (PAPERONE DIGITAL COPIER PAPER). Please check the details and confirm.
+
+Best Regards,
+Hari Mardianto
+Shipping Documentation
+DID : +971 04 4938214
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Syed Faraz Ali <faraz_ali@aprilasia.com>
+Sent: Thursday, December 5, 2026 4:10 AM
+Subject: RE: 5RMY-12871
+
+Please follow the previous instruction. Thank you.
+From: Export Team <exports@ifpla.com>
+Sent: Thursday, January 14, 2026 7:57 PM
+Subject: RE: 5RMY-12871
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_291_SI.xlsx
+BL file: attachments/email_291_BL.docx
+
+--- SI TEXT ---
+APRIL FINE PAPER TRADING (MIDDLE EAST) FZE	
+	
+BL INSTRUCTION	3156686334
+SHIPPER	APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+To the Order of	INTERNATIONAL FOREST PRODUCTS LLC | 6 HOLLIS STREET; SUITE 100; FRAMINGHAM, MA 01702, USA
+Notify	INTERNATIONAL FOREST PRODUCTS LLC | 6 HOLLIS STREET; SUITE 100; FRAMINGHAM, MA 01702, USA
+POL	NANTONG, CHINA
+POD	SAVANNAH, US
+Container Count	1 x 20'GP
+GROSS WEIGHT	21745
+Ocean Vessel	MMSS 2507 V.257087E
+Kinds of Packages; Description of Goods	PAPERONE DIGITAL COPIER PAPER
+HS CODE	48025600
+Booking Reference	PSGSE2564347
+FREIGHT	PREPAID
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+B/L NO.(提单号): OOLU7833321160
+ORDER NO.: 3156686334   FREIGHT PREPAID
+SHIPPER (发货人) | APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+#813, 4 EA, DUBAI AIRPORT FREE ZONE
+P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+To the Order of (收货人) | TOPKOPY MIDDLE EAST FZE
+6 HOLLIS STREET
+SUITE 100
+FRAMINGHAM, MA 01702, USA
+Notify Party (通知人) | INTERNATIONAL FOREST PRODUCTS LLC
+6 HOLLIS STREET
+SUITE 100
+FRAMINGHAM, MA 01702, USA
+Load Port (装货港) | NANTONG, CHINA
+PORT OF DISCHARGE (卸货港) | SAVANNAH, US
+Total Containers (箱数) | 3 x 20'GP
+Gross Wt (kgs) (毛重 KGS) | 21,745
+Vessel Name (船名) | MMSS 2507 V.257087E
+Kinds of Packages; Description of Goods (货名) | PAPERONE DIGITAL COPIER PAPER
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": null,
+  "notify_party": "INTERNATIONAL FOREST PRODUCTS LLC | 6 HOLLIS STREET; SUITE 100; FRAMINGHAM, MA 01702, USA",
+  "port_of_loading": "NANTONG, CHINA",
+  "port_of_discharge": "SAVANNAH, US",
+  "container_count": 1,
+  "gross_weight_kg": 21745
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE",
+  "consignee": null,
+  "notify_party": "INTERNATIONAL FOREST PRODUCTS LLC",
+  "port_of_loading": "NANTONG, CHINA",
+  "port_of_discharge": "SAVANNAH, US",
+  "container_count": 3,
+  "gross_weight_kg": 21745
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['container_count']
+
+======================================================================
+email_300
+======================================================================
+
+--- SUBJECT ---
+AFEMY - VALPARAISO_CHILE - HAPAG(HLCUSIN186151554) - 5RFR-11284 - 5250079718 - SAFQA LIMITED - CFR
+
+--- BODY ---
+Dear Elisa,
+
+Please find attached the shipping instruction and the draft bill of lading for 23401636 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Ooi Sok Yong
+Shipping Documentation
+DID : +971 04 4938240
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_300_SI.xlsx
+BL file: attachments/email_300_BL.xlsx
+
+--- SI TEXT ---
+APRIL FAR EAST (M) SDN BHD	
+	
+BL INSTRUCTION	3594849102
+Shipper/Exporter	APRIL FAR EAST (M) SDN BHD | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+Consignee	SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X
+Notify Party/Intermediate Consignee	UAB NOVAKOPA | SAVANORIU PR. 187; LT-02300 VILNIUS, LITHUANIA
+Port of Loading (POL)	NANTONG, CHINA
+Discharge Port	VALPARAISO, CHILE
+Container Count	12 x 40'HC
+Gross Weight (KG)	243168
+Vessel Name	PACIFIC SUN 1 V.251073E
+Commodity	COATED IVORY BOARD
+HS CODE	48105900
+Booking No.	23401636
+FREIGHT	PREPAID
+
+--- BL TEXT ---
+APRIL FINE PAPER TRADING (MIDDLE EAST) FZE	
+	
+BILL OF LADING	3594849102
+SHIPPER	APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+To the Order of	SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X
+Notify Party/Intermediate Consignee	NAGAPPA EXPORTS | SAVANORIU PR. 187; LT-02300 VILNIUS, LITHUANIA
+Load Port	NANTONG, CHINA
+Port of Discharge (POD)	VALPARAISO, CHILE
+Total Containers	12 x 40'HC
+Gross Weight (KG)	243168
+Export Carrier (vessel, voyage)	PACIFIC SUN 1 V.251073E
+Commodity	COATED IVORY BOARD
+HS CODE	48105900
+B/L NUMBER	HLCUSIN186151554
+FREIGHT	PREPAID
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": "SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X",
+  "notify_party": "UAB NOVAKOPA | SAVANORIU PR. 187; LT-02300 VILNIUS, LITHUANIA",
+  "port_of_loading": "NANTONG, CHINA",
+  "port_of_discharge": "VALPARAISO, CHILE",
+  "container_count": 12,
+  "gross_weight_kg": 243168
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": null,
+  "notify_party": "NAGAPPA EXPORTS | SAVANORIU PR. 187; LT-02300 VILNIUS, LITHUANIA",
+  "port_of_loading": "NANTONG, CHINA",
+  "port_of_discharge": "VALPARAISO, CHILE",
+  "container_count": 12,
+  "gross_weight_kg": 243168
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'notify_party', 'shipper']
+
+======================================================================
+email_361
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5RSG-98645 _ BRISBANE_AUSTRALIA _ PACIFIC OFFICE (M) SDN BHD _ EGLV765728941347
+
+--- BODY ---
+Dear Sathiyavani,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. EGLV765728941347.
+
+Best Regards,
+Mitchelle Ting
+Shipping Documentation
+DID : +971 04 4938244
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Sales Desk <sales@roxcel.at>
+Sent: Friday, January 6, 2026 10:37 PM
+Subject: RE: 5RSG-98645
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_361_SI.txt
+BL file: attachments/email_361_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper: APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+To the Order of: PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify Party/Intermediate Consignee: ROXCEL TRADING GMBH
+Port of Loading: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+Port of Discharge: BRISBANE, AUSTRALIA (AUBNE)
+No. of Containers or Packages: 10 x 40'HC
+Gross Wt (kgs): 239,590 KG
+Vessel Name: INDO SUKSES 65 V.51NW1
+Voy. No: BS291
+Description of Goods: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+HS Code: 48109200
+Booking Reference: 070500250988
+OC No.: 5RSG-98645
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper (Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee (Non-Negotiable): PACIFIC OFFICE (M) SDN BHD
+  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA
+Notify: ROXCEL TRADING GMBH
+POL: PORT KLANG (WESTPORT), MALAYSIA (MYPKG)
+PORT OF DISCHARGE: MOMBASA, KENYA (AUBNE)
+No. of Containers: 10 x 40'HC
+Gross Weight毛重(KGS): 238,590 KG
+Ocean Vessel: INDO SUKSES 65 V.51NW1
+Voyage No.: BS291
+Kinds of Packages; Description of Goods: ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+Bill of Lading No.: EGLV765728941347
+Booking No.: 070500250988
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "ROXCEL TRADING GMBH",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "BRISBANE, AUSTRALIA (AUBNE)",
+  "container_count": 10,
+  "gross_weight_kg": 239590
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "(Principal or Seller): APRIL FINE PAPER TRADING (MIDDLE EAST) FZE\n  #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": "(Non-Negotiable): PACIFIC OFFICE (M) SDN BHD\n  LOT 6, JALAN P/7; SECTION 13, 43650 BANDAR BARU BANGI; SELANGOR, MALAYSIA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "PORT KLANG (WESTPORT), MALAYSIA (MYPKG)",
+  "port_of_discharge": "MOMBASA, KENYA (AUBNE)",
+  "container_count": 10,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'gross_weight_kg', 'port_of_discharge', 'shipper']
+
+======================================================================
+email_417
+======================================================================
+
+--- SUBJECT ---
+Re: Invoice payment - kindly confirm your bank details
+
+--- BODY ---
+Hello Dear, I am a bank officer with an urgent business proposal involving USD 4.5 million. Please reply with your bank details to proceed.
+
+SI file: None
+BL file: None
+
+--- SI TEXT ---
+NONE
+
+--- BL TEXT ---
+NONE
+
+--- SI FIELDS ---
+null
+
+--- BL FIELDS ---
+null
+
+--- REVIEW ---
+None
+
+======================================================================
+email_435
+======================================================================
+
+--- SUBJECT ---
+RE_ AFPTME - AQABA_JORDAN - EVER(EGLV353574859532) - 5RMY-33797 - 5250070581 - AL GURG STATIONERY LLC - DP
+
+--- BODY ---
+Dear Najiha,
+
+Please find attached the shipping instruction and the draft bill of lading for 070500259399 for your confirmation. Kindly verify the BL matches the SI before we release to the line.
+
+Best Regards,
+Hari Mardianto
+Shipping Documentation
+DID : +971 04 4938293
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_435_SI.xlsx
+BL file: attachments/email_435_BL.docx
+
+--- SI TEXT ---
+APRIL FINE PAPER TRADING (MIDDLE EAST) FZE	
+	
+BL INSTRUCTION	3629518779
+Shipper	APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+To the Order of	AL GURG STATIONERY LLC | P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES
+Notify Party	AL GURG STATIONERY LLC | P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES
+POL	SINGAPORE
+Port of Discharge (POD)	AQABA, JORDAN
+Container Count	10 x 20'FCL
+Gross Weight (KG)	214270
+Export Carrier (vessel, voyage)	SOLID 16 V.044NW2
+Kinds of Packages; Description of Goods	ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+HS CODE	48109200
+BOOKING NO.	070500259399
+FREIGHT	PREPAID
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+B/L NO.(提单号): EGLV353574859532
+ORDER NO.: 3629518779   FREIGHT PREPAID
+Shipper/Exporter (发货人) | APRIL FINE PAPER TRADING (MIDDLE EAST) FZE
+#813, 4 EA, DUBAI AIRPORT FREE ZONE
+P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES
+Consignee (Non-Negotiable) (收货人) | AL GURG STATIONERY LLC
+P.O. BOX 5069
+DUBAI, UNITED ARAB EMIRATES
+NOTIFY PARTY (通知人) | AL GURG STATIONERY LLC
+P.O. BOX 5069
+DUBAI, UNITED ARAB EMIRATES
+PORT OF LOADING (装货港) | SINGAPORE
+Port of Discharge (卸货港) | AQABA, JORDAN
+No. of Containers (箱数) | 10 x 20'FCL
+Gross Wt (kgs) (毛重 KGS) | 214,770
+Vessel (船名) | SOLID 16 V.044NW2
+Description of Goods (货名) | ASIA SYMBOL FOOD SERVICE BOARD (CUPSTOCK/HI-BULK) - ALLINONE
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE | #813, 4 EA, DUBAI AIRPORT FREE ZONE; P.O. BOX: 293775, DUBAI, UNITED ARAB EMIRATES",
+  "consignee": null,
+  "notify_party": "AL GURG STATIONERY LLC | P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES",
+  "port_of_loading": "SINGAPORE",
+  "port_of_discharge": "AQABA, JORDAN",
+  "container_count": 10,
+  "gross_weight_kg": 214270
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING (MIDDLE EAST) FZE",
+  "consignee": "AL GURG STATIONERY LLC",
+  "notify_party": "AL GURG STATIONERY LLC",
+  "port_of_loading": "SINGAPORE",
+  "port_of_discharge": "AQABA, JORDAN",
+  "container_count": 10,
+  "gross_weight_kg": 214770
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['consignee', 'gross_weight_kg']
+
+======================================================================
+email_455
+======================================================================
+
+--- SUBJECT ---
+Re: Invoice payment - kindly confirm your bank details
+
+--- BODY ---
+Hello Dear, I am a bank officer with an urgent business proposal involving USD 4.5 million. Please reply with your bank details to proceed.
+
+SI file: None
+BL file: None
+
+--- SI TEXT ---
+NONE
+
+--- BL TEXT ---
+NONE
+
+--- SI FIELDS ---
+null
+
+--- BL FIELDS ---
+null
+
+--- REVIEW ---
+None
+
+======================================================================
+email_468
+======================================================================
+
+--- SUBJECT ---
+TO CONFIRM DOCS _ 5ALT-45057 _ ASHDOD_ISRAEL _ ROXCEL TRADING GMBH _ MCLSIN2031954
+
+--- BODY ---
+Dear Sathiyavani,
+
+Pls assist to check the draft BL against the SI for PO and revert with any discrepancy asap. Draft BL No. MCLSIN2031954.
+
+Best Regards,
+Hari Mardianto
+Shipping Documentation
+DID : +971 04 4938229
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+______________________________
+From: Najiha Nur Hanna <hanna_azhari@aprilasia.com>
+Sent: Friday, January 18, 2026 3:19 PM
+Subject: RE: 5ALT-45057
+
+Please follow the previous instruction. Thank you.
+From: Sathiyavani Munusamy <sathiya@april.com.my>
+Sent: Monday, January 17, 2026 9:11 AM
+Subject: RE: 5ALT-45057
+
+Please follow the previous instruction. Thank you.
+
+SI file: attachments/email_468_SI.txt
+BL file: attachments/email_468_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper: ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+Consignee (Non-Negotiable): ROXCEL TRADING GMBH
+  OPERNRING 3-5; 1010 VIENNA, AUSTRIA
+Notify: ROXCEL TRADING GMBH
+Load Port: SINGAPORE (SGSIN)
+Port of Discharge: ASHDOD, ISRAEL (ILASH)
+No. of Containers: 1 x 40'HC
+Gross Wt (kgs): 20,456 KG
+Vessel Name: MARCOPOLO 810 V.BS005
+Voy. No: QI540A
+Description of Goods: FUJITO PAPERONE INKJET PAPER
+HS Code: 48025500
+Booking Ref: MCLSINJEA2519666
+OC No.: 5ALT-45057
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+SHIPPER: ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624
+Consignee (Non-Negotiable): ROXCEL TRADING GMBH
+  OPERNRING 3-5; 1010 VIENNA, AUSTRIA
+Notify Party: ROXCEL TRADING GMBH
+POL: RUGAO/NANTONG/SHANGHAI, CHINA (SGSIN)
+POD: ASHDOD, ISRAEL (ILASH)
+Total Containers: 3 x 40'HC
+Gross Weight毛重(KGS): 20,456 KG
+Vessel: MARCOPOLO 810 V.BS005
+Voy.: QI540A
+Description of Goods: FUJITO PAPERONE INKJET PAPER
+BL No.: MCLSIN2031954
+Booking Ref: MCLSINJEA2519666
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "(Non-Negotiable): ROXCEL TRADING GMBH\n  OPERNRING 3-5; 1010 VIENNA, AUSTRIA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "SINGAPORE (SGSIN)",
+  "port_of_discharge": "ASHDOD, ISRAEL (ILASH)",
+  "container_count": 1,
+  "gross_weight_kg": 20456
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "ASIA PACIFIC PAPERBOARD TRADING PTE LTD\n  80 RAFFLES PLACE, #50-01 UOB PLAZA 1; SINGAPORE 048624",
+  "consignee": "(Non-Negotiable): ROXCEL TRADING GMBH\n  OPERNRING 3-5; 1010 VIENNA, AUSTRIA",
+  "notify_party": "ROXCEL TRADING GMBH",
+  "port_of_loading": "RUGAO/NANTONG/SHANGHAI, CHINA (SGSIN)",
+  "port_of_discharge": "ASHDOD, ISRAEL (ILASH)",
+  "container_count": 3,
+  "gross_weight_kg": null
+}
+
+--- REVIEW ---
+missing_value
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['container_count', 'gross_weight_kg', 'port_of_loading']
+
+======================================================================
+email_481
+======================================================================
+
+--- SUBJECT ---
+RE_ AFRT - VALPARAISO_CHILE - CMA(SIJ6060148) - 5AKR-79388 - 5250074136 - AL GURG STATIONERY LLC - OA_CFR
+
+--- BODY ---
+WARNING: This email originated outside of our organisation. As a security measure, please exercise caution with E-Mail content and any links or attachments.
+
+Hi Teo,
+
+Attached are the SI and draft BL for OC 5AKR-79388 (COATED IVORY BOARD). Please check the details and confirm.
+
+Best Regards,
+Sathiyavani Munusamy
+Shipping Documentation
+DID : +971 04 4938282
+APRIL Fine Paper Trading (Middle East) Fze
+#813, 4 EA, Dubai Airport Free Zone
+P.O. Box : 293775, Dubai, United Arab Emirates
+Website : www.aprilasia.com | www.paperone.com
+
+SI file: attachments/email_481_SI.xlsx
+BL file: attachments/email_481_BL.xlsx
+
+--- SI TEXT ---
+APRIL FAR EAST (M) SDN BHD	
+	
+BL INSTRUCTION	3852830615
+Shipper (Principal or Seller)	APRIL FAR EAST (M) SDN BHD | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+To the Order of	AL GURG STATIONERY LLC | P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES
+NOTIFY PARTY	SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X
+POL	RUGAO/NANTONG/SHANGHAI, CHINA
+Discharge Port	VALPARAISO, CHILE
+Container Count	4 x 20'FCL
+GROSS WEIGHT	91436
+Export Carrier (vessel, voyage)	MMSS 2507 V.257087E
+Kinds of Packages; Description of Goods	COATED IVORY BOARD
+HS CODE	48105900
+Booking No.	SIJ8608490
+FREIGHT	PREPAID
+
+--- BL TEXT ---
+APRIL FAR EAST (M) SDN BHD	
+	
+BILL OF LADING	3852830615
+Shipper/Exporter	APRIL FAR EAST (M) SDN BHD | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA
+To the Order of	3S PAPER PRODUCTS SDN BHD | P.O. BOX 5069; DUBAI, UNITED ARAB EMIRATES
+NOTIFY PARTY	SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X
+Port of Loading	RUGAO/NANTONG/SHANGHAI, CHINA
+Port of Discharge (POD)	VALPARAISO, CHILE
+No. of Containers or Packages	4 x 20'FCL
+GROSS WEIGHT	91436
+Ocean Vessel	MMSS 2507 V.257087E
+Kinds of Packages; Description of Goods	COATED IVORY BOARD
+HS CODE	48105900
+Bill of Lading No.	SIJ6060148
+FREIGHT	PREPAID
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": null,
+  "notify_party": "SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X",
+  "port_of_loading": "RUGAO/NANTONG/SHANGHAI, CHINA",
+  "port_of_discharge": "VALPARAISO, CHILE",
+  "container_count": 4,
+  "gross_weight_kg": 91436
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FAR EAST (M) SDN BHD | TOWER 2, AVENUE 5, LEVEL 6; BANGSAR SOUTH CITY, NO. 8 JALAN KERINCHI; 59200 KUALA LUMPUR, MALAYSIA",
+  "consignee": null,
+  "notify_party": "SAFQA LIMITED | P.O. BOX 99423-80100; TONONOKA ROAD; MOMBASA, KENYA; PIN NO.: P051376597X",
+  "port_of_loading": "RUGAO/NANTONG/SHANGHAI, CHINA",
+  "port_of_discharge": "VALPARAISO, CHILE",
+  "container_count": 4,
+  "gross_weight_kg": 91436
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: False
+Fields: []
+
+======================================================================
+email_520
+======================================================================
+
+--- SUBJECT ---
+RE_ AIE - PYEONGTAEK_SOUTH KOREA - MSC(MEDUUD032119) - 5RSG-63852 - 5250077789 - CLIFFORD PAPER INC - CFR
+
+--- BODY ---
+Dear Team,
+
+Please compare the SI and draft BL for MSDUL0942520613. Some SI fields were left blank by the customer; kindly confirm what we have.
+
+SI file: attachments/email_520_SI.txt
+BL file: attachments/email_520_BL.txt
+
+--- SI TEXT ---
+SHIPPING INSTRUCTION
+========================================
+
+Shipper/Exporter: APRIL FINE PAPER TRADING
+CONSIGNEE: 
+Notify: CLIFFORD PAPER INC
+POL: SINGAPORE
+POD: PYEONGTAEK, SOUTH KOREA
+No. of Containers: 6 x 40'HC
+Gross Wt (kgs): 122,640 KG
+Kinds of Packages; Description of Goods: PAPERBOARD
+NET WEIGHT: _______ MTS
+Booking Ref: MSDUL0942520613
+OC No.: 5RSG-63852
+Freight: PREPAID
+
+
+--- BL TEXT ---
+BILL OF LADING (DRAFT)
+========================================
+
+Shipper: APRIL FINE PAPER TRADING
+  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896
+Consignee: CLIFFORD PAPER INC
+  70 EAST STREET; RIDGEFIELD, NJ 07657, USA
+Notify Party/Intermediate Consignee: CLIFFORD PAPER INC
+Port of Loading (POL): SINGAPORE (SGSIN)
+Port of Discharge: PYEONGTAEK, SOUTH KOREA (KRPTK)
+No. of Containers or Packages: 6 x 40'HC
+Gross Weight (KG): 122,640 KG
+Vessel: SOLID 16 V.044NW2
+Voy. No: 2545E
+Description of Goods: PAPERBOARD
+B/L NUMBER: MEDUUD032119
+BOOKING NO.: MSDUL0942520613
+Freight: PREPAID
+
+[LOCAL] Extraction completed without Gemini
+[LOCAL] Extraction completed without Gemini
+
+--- SI FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING",
+  "consignee": "CLIFFORD PAPER INC",
+  "notify_party": "CLIFFORD PAPER INC",
+  "port_of_loading": "SINGAPORE",
+  "port_of_discharge": "PYEONGTAEK, SOUTH KOREA",
+  "container_count": 6,
+  "gross_weight_kg": 122640
+}
+
+--- BL FIELDS ---
+{
+  "shipper": "APRIL FINE PAPER TRADING\n  ON BEHALF OF VITAL SOLUTIONS PTE LTD; 77 ROBINSON ROAD, #21-01; SINGAPORE 068896",
+  "consignee": "CLIFFORD PAPER INC\n  70 EAST STREET; RIDGEFIELD, NJ 07657, USA",
+  "notify_party": "CLIFFORD PAPER INC",
+  "port_of_loading": "SINGAPORE (SGSIN)",
+  "port_of_discharge": "PYEONGTAEK, SOUTH KOREA (KRPTK)",
+  "container_count": 6,
+  "gross_weight_kg": 122640
+}
+
+--- REVIEW ---
+None
+
+--- COMPARISON ---
+Mismatch: True
+Fields: ['port_of_discharge', 'port_of_loading']
+
+======================================================================
+DEBUG COMPLETE
+Saved to: C:\Users\a3sop\RookieTeam-MonashxAverisHackathon-YTC_Shipping_System\debug_output.txt
+======================================================================

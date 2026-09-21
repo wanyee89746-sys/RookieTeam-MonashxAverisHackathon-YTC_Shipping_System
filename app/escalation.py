@@ -11,6 +11,16 @@ BLANK_TOKENS = {
     "____MT",
 }
 
+# Literal markers this dataset's generator prints for "wrong" documents.
+# Kept as a fast, exact fast-path — but NOT the only signal (see the
+# structural fallback in step 3 below), so a real inbox's differently
+# worded invoices/packing lists still get caught.
+WRONG_DOC_MARKERS = [
+    "COMMERCIAL INVOICE",
+    "PACKING LIST",
+    "CERTIFICATE OF ORIGIN",
+]
+
 
 def check_review(
     email: dict,
@@ -69,18 +79,36 @@ def check_review(
 
     # ---------------------------------------------------------
     # 3. Check whether attachments are obviously wrong documents
+    #
+    #    a) Literal markers first — exact, cheap, catches this
+    #       dataset's generated wrong-doc text immediately.
+    #    b) Structural fallback — if extraction already ran and
+    #       came back with almost nothing usable despite the
+    #       document being readable and non-empty, it's more
+    #       likely the wrong document type than a parsing bug.
+    #       This generalizes beyond the exact strings above, so
+    #       the check doesn't only work on this generator's output.
     # ---------------------------------------------------------
     for label, text in [("SI", si_text), ("BL", bl_text)]:
         upper = text.upper()
 
-        if any(
-            marker in upper
-            for marker in [
-                "COMMERCIAL INVOICE",
-                "PACKING LIST",
-                "CERTIFICATE OF ORIGIN",
-            ]
-        ):
+        if any(marker in upper for marker in WRONG_DOC_MARKERS):
+            return "wrong_doc_type"
+
+    if si_fields is not None and bl_fields is not None:
+        si_hits = sum(
+            1 for f in FIELDS
+            if si_fields.get(f) not in (None, "")
+        )
+        bl_hits = sum(
+            1 for f in FIELDS
+            if bl_fields.get(f) not in (None, "")
+        )
+
+        # A genuine SI/BL should yield multiple recognizable fields.
+        # Almost nothing extracted from a readable, non-empty
+        # document suggests it isn't an SI/BL at all.
+        if si_hits <= 1 or bl_hits <= 1:
             return "wrong_doc_type"
 
     # ---------------------------------------------------------

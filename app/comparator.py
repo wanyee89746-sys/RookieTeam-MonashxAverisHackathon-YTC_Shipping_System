@@ -53,60 +53,112 @@ def compare(
 
 
 def _normalize_party(value):
-    """
-    Normalize formatting differences in shipper,
-    consignee and notify-party values.
-    """
-
     if value is None:
         return None
 
     text = str(value).upper()
 
-    # Remove document/table separators.
-    text = re.sub(r"[|;]+", " ", text)
+    # ---------------------------------------------------------
+    # Remove common field labels
+    # ---------------------------------------------------------
 
-    # Remove common Chinese field descriptions
-    # that sometimes leak into extracted values.
     text = re.sub(
-        r"\(\s*(?:发货人|收货人|通知人)\s*\)",
-        " ",
-        text,
-    )
-
-    # Remove common English field labels if they
-    # accidentally appear inside the extracted value.
-    text = re.sub(
-        r"\b(?:SHIPPER|EXPORTER)\s*[:：-]?\s*",
+        r"\b(?:SHIPPER|EXPORTER|CONSIGNEE)\s*[:：-]?\s*",
         " ",
         text,
     )
 
     text = re.sub(
-        r"\b(?:CONSIGNEE)\s*[:：-]?\s*",
+        r"\b(?:NOTIFY\s+PARTY|NOTIFY)\s*[:：-]?\s*",
         " ",
         text,
     )
 
     text = re.sub(
-        r"\b(?:NOTIFY PARTY|NOTIFY)\s*[:：-]?\s*",
+        r"/?\s*INTERMEDIATE\s+CONSIGNEE\s*[:：-]?\s*",
         " ",
         text,
     )
 
-    # Normalize whitespace.
-    text = re.sub(r"\s+", " ", text).strip()
-
-    # Formatting-only difference:
-    # VITAL SOLUTIONS
-    # VITALSOLUTIONS
+    # ---------------------------------------------------------
+    # Keep the main company identity.
     #
-    # UNITED ARAB
-    # UNITEDARAB
-    text = re.sub(r"\s+", "", text)
+    # Example:
+    #
+    # APRIL FINE PAPER TRADING
+    # ON BEHALF OF VITAL SOLUTIONS PTE LTD
+    #
+    # becomes:
+    #
+    # APRIL FINE PAPER TRADING
+    # ---------------------------------------------------------
 
-    return text
+    text = re.sub(
+        r"\bON\s+BEHALF\s+OF\b.*$",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
 
+    # ---------------------------------------------------------
+    # Normalize separators
+    # ---------------------------------------------------------
+
+    text = re.sub(
+        r"[|;]+",
+        "\n",
+        text,
+    )
+
+    text = re.sub(
+        r"\r\n?",
+        "\n",
+        text,
+    )
+
+    # ---------------------------------------------------------
+    # Remove address/details after the company name.
+    #
+    # Shipping documents commonly put the company name first,
+    # followed by:
+    #
+    # - P.O. BOX
+    # - street address
+    # - postal code
+    # - GST number
+    # ---------------------------------------------------------
+
+    lines = [
+        line.strip()
+        for line in text.split("\n")
+        if line.strip()
+    ]
+
+    # Ignore descriptor-only lines such as "(Non-Negotiable)"
+    while lines and re.fullmatch(r"\([^)]*\)", lines[0]):
+        lines.pop(0)
+
+    if lines:
+        text = lines[0]
+
+    # ---------------------------------------------------------
+    # Remove remaining common punctuation / whitespace.
+    # ---------------------------------------------------------
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        text,
+    ).strip()
+
+    # Company identity comparison should not depend on spaces.
+    text = re.sub(
+        r"\s+",
+        "",
+        text,
+    )
+
+    return text or None
 
 def _normalize_port(value):
     """
