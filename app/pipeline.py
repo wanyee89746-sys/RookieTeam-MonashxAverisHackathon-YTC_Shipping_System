@@ -11,57 +11,133 @@ from escalation import check_review
 
 def read_attachment_text(
     inbox: Inbox,
-    path: str
-) -> str | None:
+    path: str,
+    return_metadata: bool = False,
+):
     """
-    Return plain text for an attachment.
+    Return attachment text.
 
-    For normal PDFs, use the existing text extraction.
+    Standard extraction is attempted first.
 
-    If a PDF contains no usable text, fall back to Gemini Vision:
-        PDF -> rendered page image -> Gemini Vision -> structured text
+    If a PDF contains no usable text, Gemini Vision is used
+    as a fallback.
 
-    The Vision path is only a fallback. It does not replace the
-    existing extraction path that currently achieves 520/520.
+    When return_metadata=True, also return information about
+    which extraction method was used.
+
+    Extraction metadata does not affect verification status.
     """
+
+    metadata = {
+        "extraction_method": "standard",
+        "vision_used": False,
+        "vision_success": False,
+    }
 
     try:
         raw = inbox.read_bytes(path)
 
     except Exception:
+        if return_metadata:
+            return None, metadata
+
         return None
 
     if not raw:
+        if return_metadata:
+            return None, metadata
+
         return None
 
+    # ---------------------------------------------------------
+    # TXT
+    # ---------------------------------------------------------
+
     if path.endswith(".txt"):
-        return raw.decode(
+
+        text = raw.decode(
             "utf-8",
             errors="replace",
         )
 
+        if return_metadata:
+            return text, metadata
+
+        return text
+
+    # ---------------------------------------------------------
+    # PDF
+    # ---------------------------------------------------------
+
     if path.endswith(".pdf"):
+
         text = _pdf_text(raw)
 
+        # Standard extraction worked
         if text:
+
+            if return_metadata:
+                return text, metadata
+
             return text
 
         # -----------------------------------------------------
-        # Advanced fallback:
-        # scanned/image-only PDF -> Gemini Vision
+        # Standard extraction failed.
+        # Use Vision LLM.
         # -----------------------------------------------------
 
         print(
             f"[VISION] No readable PDF text: {path}"
         )
 
-        return _pdf_vision_text(raw, path)
+        metadata["vision_used"] = True
+        metadata["extraction_method"] = "vision_llm"
+
+        vision_text = _pdf_vision_text(
+            raw,
+            path,
+        )
+
+        if vision_text:
+            metadata["vision_success"] = True
+
+        if return_metadata:
+            return vision_text, metadata
+
+        return vision_text
+
+    # ---------------------------------------------------------
+    # DOCX
+    # ---------------------------------------------------------
 
     if path.endswith(".docx"):
-        return _docx_text(raw)
+
+        text = _docx_text(raw)
+
+        if return_metadata:
+            return text, metadata
+
+        return text
+
+    # ---------------------------------------------------------
+    # XLSX
+    # ---------------------------------------------------------
 
     if path.endswith(".xlsx"):
-        return _xlsx_text(raw)
+
+        text = _xlsx_text(raw)
+
+        if return_metadata:
+            return text, metadata
+
+        return text
+
+    # ---------------------------------------------------------
+    # Unsupported file
+    # ---------------------------------------------------------
+
+    if return_metadata:
+        return None, metadata
 
     return None
 
@@ -69,6 +145,7 @@ def read_attachment_text(
 def _pdf_text(raw: bytes) -> str | None:
 
     import io
+
     from pypdf import PdfReader
 
     try:
@@ -97,11 +174,11 @@ def _pdf_vision_text(
     path: str,
 ) -> str | None:
     """
-    Render a PDF page as an image and ask Gemini Vision
+    Render PDF pages as images and ask Gemini Vision
     to extract the seven shipping fields.
 
-    Returns the fields as ordinary labelled text so the
-    existing extract_fields() function can process them.
+    Returns ordinary labelled text so the existing
+    extract_fields() function can process it.
 
     No temporary image files are created.
     """
@@ -115,7 +192,10 @@ def _pdf_vision_text(
 
     try:
 
-        # The project's existing .env is inside app/
+        # -----------------------------------------------------
+        # Load API key
+        # -----------------------------------------------------
+
         load_dotenv("app/.env")
 
         api_key = os.getenv(
@@ -123,9 +203,11 @@ def _pdf_vision_text(
         )
 
         if not api_key:
+
             print(
                 "[VISION] GEMINI_API_KEY not found"
             )
+
             return None
 
         # -----------------------------------------------------
@@ -138,17 +220,15 @@ def _pdf_vision_text(
         )
 
         if len(doc) == 0:
+
             print(
                 f"[VISION] PDF has no pages: {path}"
             )
+
             return None
 
         # -----------------------------------------------------
-        # Render pages in memory.
-        #
-        # Most shipping documents are one or a few pages.
-        # Limit to the first 5 pages to avoid excessive
-        # multimodal requests.
+        # Render up to first 5 pages
         # -----------------------------------------------------
 
         images = []
@@ -234,9 +314,11 @@ Rules:
         )
 
         if not text:
+
             print(
                 f"[VISION] Gemini returned no text: {path}"
             )
+
             return None
 
         print(
@@ -257,6 +339,7 @@ Rules:
 def _docx_text(raw: bytes) -> str | None:
 
     import io
+
     from docx import Document
 
     try:
@@ -321,29 +404,62 @@ def _xlsx_text(raw: bytes) -> str | None:
 
 def process_comparison(
     inbox: Inbox,
-    email: dict
+    email: dict,
 ) -> dict:
     """
-    Runs extraction/comparison/escalation for an email that has
-    ALREADY been classified as BL_COMPARISON.
+    Runs extraction, comparison, and escalation for an email
+    that has already been classified as BL_COMPARISON.
 
-    Extraction may use Gemini when local extraction is uncertain.
+    Gemini Vision may be used when standard PDF extraction
+    cannot read the document.
 
-    Comparison itself is deterministic.
+    IMPORTANT:
+    If standard extraction fails and Vision successfully
+    recovers the document, the recovered text may still be
+    used for extraction.
+
+    However, the official verification result remains
+    NEEDS_REVIEW with reason "unreadable" because the
+    original document was unreadable to the standard
+    extraction process.
+
+    Vision recovery is stored separately as metadata so the
+    frontend can demonstrate the AI capability without
+    changing the official evaluation result.
     """
 
     result = {
+        # -----------------------------------------------------
+        # Evaluation fields
+        # -----------------------------------------------------
+
         "category": "BL_COMPARISON",
         "status": "OK",
         "review_reason": None,
         "defect_fields": [],
         "has_defect": False,
+
+        # -----------------------------------------------------
+        # Extraction metadata
+        # -----------------------------------------------------
+
+        "si_extraction_method": "standard",
+        "si_vision_used": False,
+        "si_vision_success": False,
+
+        "bl_extraction_method": "standard",
+        "bl_vision_used": False,
+        "bl_vision_success": False,
     }
 
     atts = email.get(
         "attachments",
         [],
     )
+
+    # ---------------------------------------------------------
+    # Find SI and BL
+    # ---------------------------------------------------------
 
     si_path = next(
         (
@@ -363,23 +479,94 @@ def process_comparison(
         None,
     )
 
-    si_text = (
-        read_attachment_text(
+    si_text = None
+    bl_text = None
+
+    # ---------------------------------------------------------
+    # SI extraction
+    # ---------------------------------------------------------
+
+    if si_path:
+
+        si_text, si_meta = read_attachment_text(
             inbox,
             si_path,
+            return_metadata=True,
         )
-        if si_path
-        else None
-    )
 
-    bl_text = (
-        read_attachment_text(
+        result["si_extraction_method"] = (
+            si_meta.get(
+                "extraction_method",
+                "standard",
+            )
+        )
+
+        result["si_vision_used"] = (
+            si_meta.get(
+                "vision_used",
+                False,
+            )
+        )
+
+        result["si_vision_success"] = (
+            si_meta.get(
+                "vision_success",
+                False,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # BL extraction
+    # ---------------------------------------------------------
+
+    if bl_path:
+
+        bl_text, bl_meta = read_attachment_text(
             inbox,
             bl_path,
+            return_metadata=True,
         )
-        if bl_path
-        else None
+
+        result["bl_extraction_method"] = (
+            bl_meta.get(
+                "extraction_method",
+                "standard",
+            )
+        )
+
+        result["bl_vision_used"] = (
+            bl_meta.get(
+                "vision_used",
+                False,
+            )
+        )
+
+        result["bl_vision_success"] = (
+            bl_meta.get(
+                "vision_success",
+                False,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # Remember whether the ORIGINAL standard extraction
+    # failed.
+    #
+    # This is important because Vision may successfully
+    # recover text afterwards.
+    # ---------------------------------------------------------
+
+    original_unreadable = (
+        result["si_vision_used"]
+        or result["bl_vision_used"]
     )
+
+    # ---------------------------------------------------------
+    # Extract fields
+    #
+    # If Vision succeeded, extract_fields() can still process
+    # the recovered text.
+    # ---------------------------------------------------------
 
     si_fields = (
         extract_fields(si_text)
@@ -405,6 +592,27 @@ def process_comparison(
         bl_fields,
     )
 
+    # ---------------------------------------------------------
+    # OPTION A:
+    #
+    # If standard extraction originally failed, preserve
+    # the official unreadable-document review result even
+    # when Vision successfully recovered the text.
+    #
+    # Vision metadata remains available to the frontend.
+    # ---------------------------------------------------------
+
+    if original_unreadable:
+
+        result["status"] = "NEEDS_REVIEW"
+        result["review_reason"] = "unreadable"
+
+        return result
+
+    # ---------------------------------------------------------
+    # Other escalation reasons
+    # ---------------------------------------------------------
+
     if reason:
 
         result["status"] = "NEEDS_REVIEW"
@@ -420,6 +628,7 @@ def process_comparison(
         si_path is None
         and bl_path is None
     ):
+
         return result
 
     # ---------------------------------------------------------
@@ -457,16 +666,20 @@ def process_comparison(
     result["has_defect"] = has_defect
     result["defect_fields"] = defects
 
-    # Keep detailed field-level information.
-    #
-    # field_results preserves the existing comparison result.
-    result["field_results"] = detailed["field_results"]
+    # ---------------------------------------------------------
+    # Detailed field-level information
+    # ---------------------------------------------------------
 
-    # Store the actual SI and BL values so the final report
-    # can show them side-by-side.
-    result["field_values"] = detailed["field_values"]
+    result["field_results"] = (
+        detailed["field_results"]
+    )
+
+    result["field_values"] = (
+        detailed["field_values"]
+    )
 
     return result
+
 
 def vision_test(
     source: str,
@@ -485,7 +698,9 @@ def vision_test(
         attachment_path,
     )
 
-    print("\n===== VISION TEST RESULT =====")
+    print(
+        "\n===== VISION TEST RESULT ====="
+    )
 
     if result:
         print(result)
@@ -494,9 +709,10 @@ def vision_test(
 
     return result
 
+
 def process_one(
     source: str,
-    email_id: str
+    email_id: str,
 ):
     """
     Test a single email end-to-end and print the result.
@@ -535,15 +751,80 @@ def process_one(
             email,
         )
 
-    print("\n" + "=" * 80)
-    print("SHIPPING DOCUMENT VERIFICATION")
-    print("=" * 80)
+    print(
+        "\n" + "=" * 80
+    )
 
-    print(f"Email ID: {email_id}")
-    print(f"Category: {result['category']}")
-    print(f"Status:   {result['status']}")
+    print(
+        "SHIPPING DOCUMENT VERIFICATION"
+    )
+
+    print(
+        "=" * 80
+    )
+
+    print(
+        f"Email ID: {email_id}"
+    )
+
+    print(
+        f"Category: {result['category']}"
+    )
+
+    print(
+        f"Status:   {result['status']}"
+    )
+
+    # ---------------------------------------------------------
+    # Vision information
+    # ---------------------------------------------------------
+
+    if result.get("bl_vision_used"):
+
+        print(
+            "\n[AI DOCUMENT RECOVERY]"
+        )
+
+        print(
+            "BL standard extraction: FAILED"
+        )
+
+        if result.get("bl_vision_success"):
+
+            print(
+                "BL Vision LLM: SUCCESS"
+            )
+
+        else:
+
+            print(
+                "BL Vision LLM: FAILED"
+            )
+
+    if result.get("si_vision_used"):
+
+        print(
+            "\n[AI DOCUMENT RECOVERY]"
+        )
+
+        print(
+            "SI standard extraction: FAILED"
+        )
+
+        if result.get("si_vision_success"):
+
+            print(
+                "SI Vision LLM: SUCCESS"
+            )
+
+        else:
+
+            print(
+                "SI Vision LLM: FAILED"
+            )
 
     if result.get("review_reason"):
+
         print(
             f"Review reason: "
             f"{result['review_reason']}"
@@ -551,14 +832,20 @@ def process_one(
 
     if result.get("field_values"):
 
-        print("\n" + "-" * 80)
+        print(
+            "\n" + "-" * 80
+        )
+
         print(
             f"{'FIELD':<24}"
             f"{'SI VALUE':<26}"
             f"{'BL VALUE':<26}"
             f"RESULT"
         )
-        print("-" * 80)
+
+        print(
+            "-" * 80
+        )
 
         field_labels = {
             "shipper": "Shipper",
@@ -570,7 +857,9 @@ def process_one(
             "gross_weight_kg": "Gross Weight (kg)",
         }
 
-        for field, values in result["field_values"].items():
+        for field, values in result[
+            "field_values"
+        ].items():
 
             si_value = str(
                 values.get("si")
@@ -586,7 +875,10 @@ def process_one(
 
             comparison = result[
                 "field_results"
-            ].get(field, "UNKNOWN")
+            ].get(
+                field,
+                "UNKNOWN",
+            )
 
             print(
                 f"{field_labels.get(field, field):<24}"
@@ -595,12 +887,18 @@ def process_one(
                 f"{comparison}"
             )
 
-        print("-" * 80)
+        print(
+            "-" * 80
+        )
 
     if result["status"] == "OK":
-        print("\nNo mismatch detected.")
+
+        print(
+            "\nNo mismatch detected."
+        )
 
     elif result["status"] == "MISMATCH":
+
         print(
             "\nMismatch detected in: "
             + ", ".join(
@@ -609,8 +907,29 @@ def process_one(
         )
 
     elif result["status"] == "NEEDS_REVIEW":
+
         print(
             "\nHuman review required."
+        )
+
+
+def _save(
+    data: dict,
+    path: str,
+):
+    """Write results to a JSON file."""
+
+    with open(
+        path,
+        "w",
+        encoding="utf-8",
+    ) as f:
+
+        json.dump(
+            data,
+            f,
+            indent=2,
+            ensure_ascii=False,
         )
 
 
@@ -618,7 +937,19 @@ def run(
     source: str,
     out_path: str = "submission.json",
     limit: int | None = None,
+    resume: bool = False,
+    only: list[str] | None = None,
 ):
+    """
+    Default: fresh run that overwrites out_path when it finishes.
+
+    resume=True   continue an interrupted run
+    only=[...]    re-process just those emails and merge into
+                  existing results
+    limit=N       process N emails, merged into existing results
+
+    Progress is written to out_path + ".partial".
+    """
 
     inbox = Inbox(source)
 
@@ -626,34 +957,83 @@ def run(
         inbox
     )
 
-    # ---------------------------------------------------------
-    # Resume
-    # ---------------------------------------------------------
+    partial_path = (
+        out_path + ".partial"
+    )
 
     submission = {}
 
-    if os.path.exists(
-        out_path
-    ):
+    keep_existing = (
+        resume
+        or only is not None
+        or limit is not None
+    )
 
-        with open(
-            out_path,
-            encoding="utf-8",
-        ) as f:
+    if keep_existing:
 
-            submission = json.load(f)
-
-        print(
-            f"resuming: {len(submission)} already done, "
-            f"skipping those"
+        candidates = (
+            (partial_path, out_path)
+            if resume
+            else (out_path,)
         )
 
-    remaining = [
-        e
-        for e in emails
-        if e["email_id"]
-        not in submission
-    ]
+        for path in candidates:
+
+            if os.path.exists(path):
+
+                with open(
+                    path,
+                    encoding="utf-8",
+                ) as f:
+
+                    submission = json.load(f)
+
+                print(
+                    f"loaded {len(submission)} existing "
+                    f"results from {path}"
+                )
+
+                break
+
+    # ---------------------------------------------------------
+    # Choose what to process
+    # ---------------------------------------------------------
+
+    if only is not None:
+
+        wanted = set(
+            only
+        )
+
+        remaining = [
+            e
+            for e in emails
+            if e["email_id"] in wanted
+        ]
+
+        missing = (
+            wanted
+            - {
+                e["email_id"]
+                for e in remaining
+            }
+        )
+
+        if missing:
+
+            print(
+                f"[WARN] unknown email IDs: "
+                f"{sorted(missing)}"
+            )
+
+    else:
+
+        remaining = [
+            e
+            for e in emails
+            if e["email_id"]
+            not in submission
+        ]
 
     if limit is not None:
 
@@ -666,7 +1046,7 @@ def run(
 
     print(
         f"{len(remaining)}/{len(emails)} "
-        f"left to process"
+        f"to process"
     )
 
     if not remaining:
@@ -761,42 +1141,27 @@ def run(
                     f"[FAILED] {eid}: {e}"
                 )
 
-                with open(
-                    out_path,
-                    "w",
-                    encoding="utf-8",
-                ) as f:
-
-                    json.dump(
-                        submission,
-                        f,
-                        indent=2,
-                        ensure_ascii=False,
-                    )
+                _save(
+                    submission,
+                    partial_path,
+                )
 
                 print(
                     f"progress saved to "
-                    f"{out_path} "
+                    f"{partial_path} "
                     f"({len(submission)} done). "
-                    f"Fix the issue and re-run."
+                    f"Fix the issue and re-run "
+                    f"with --resume."
                 )
 
                 raise
 
         if i % 10 == 0:
 
-            with open(
-                out_path,
-                "w",
-                encoding="utf-8",
-            ) as f:
-
-                json.dump(
-                    submission,
-                    f,
-                    indent=2,
-                    ensure_ascii=False,
-                )
+            _save(
+                submission,
+                partial_path,
+            )
 
             print(
                 f"{len(submission)}/{len(emails)} "
@@ -807,21 +1172,19 @@ def run(
     # Final save
     # ---------------------------------------------------------
 
-    with open(
-        out_path,
-        "w",
-        encoding="utf-8",
-    ) as f:
+    _save(
+        submission,
+        partial_path,
+    )
 
-        json.dump(
-            submission,
-            f,
-            indent=2,
-            ensure_ascii=False,
-        )
+    os.replace(
+        partial_path,
+        out_path,
+    )
 
     print(
-        f"done: wrote {out_path}"
+        f"done: wrote {out_path} "
+        f"({len(submission)} entries)"
     )
 
 
@@ -903,7 +1266,7 @@ def run_holdout_eval(
         ] = (
             by_cat_total.get(
                 true_cat,
-                0
+                0,
             )
             + 1
         )
@@ -917,7 +1280,7 @@ def run_holdout_eval(
             ] = (
                 by_cat_correct.get(
                     true_cat,
-                    0
+                    0,
                 )
                 + 1
             )
@@ -934,7 +1297,7 @@ def run_holdout_eval(
 
         c = by_cat_correct.get(
             cat,
-            0
+            0,
         )
 
         print(
@@ -942,6 +1305,7 @@ def run_holdout_eval(
             f"{c}/{total} = "
             f"{c / total:.2%}"
         )
+
 
 if __name__ == "__main__":
 
@@ -1033,7 +1397,39 @@ if __name__ == "__main__":
                 sys.argv[idx + 1]
             )
 
+        resume = (
+            "--resume"
+            in sys.argv
+        )
+
+        only = None
+
+        if "--only" in sys.argv:
+
+            idx = sys.argv.index(
+                "--only"
+            )
+
+            if idx + 1 >= len(
+                sys.argv
+            ):
+
+                raise ValueError(
+                    "--only requires comma-separated "
+                    "email IDs"
+                )
+
+            only = [
+                x.strip()
+                for x in sys.argv[
+                    idx + 1
+                ].split(",")
+                if x.strip()
+            ]
+
         run(
             src,
             limit=limit,
+            resume=resume,
+            only=only,
         )

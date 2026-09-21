@@ -1,0 +1,6 @@
+.git
+**/__pycache__
+**/.env
+tests
+evaluation_failures.txt
+classification_debug.json

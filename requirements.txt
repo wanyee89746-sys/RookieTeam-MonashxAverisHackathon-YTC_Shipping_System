@@ -1,7 +1,4 @@
-#Backend/API dependencies
-#Used for the main FastAPI backend and API server
-#Keep backend framework and server dependencies here.
-
+# Backend / API
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.15.1
@@ -15,3 +12,17 @@ starlette==1.6.0
 typing-inspection==0.4.4
 typing_extensions==4.16.0
 uvicorn==0.53.0
+
+# Frontend
+streamlit
+requests
+pandas
+
+# Pipeline (extraction, vision fallback)
+python-dotenv
+google-genai
+pymupdf
+pillow
+pypdf
+python-docx
+openpyxl

@@ -104,6 +104,43 @@ def _is_missing(value) -> bool:
     return is_missing_value(value)
 
 
+def _to_number(value) -> float:
+    """
+    Parse a number that may contain formatting.
+
+    Examples:
+
+        128,544        -> 128544.0
+        128544.00      -> 128544.0
+        128,544 KGS    -> 128544.0
+        22,000.50      -> 22000.5
+
+    Only a comma followed by exactly three digits is treated as a
+    thousands separator, so a decimal comma such as "128,5" is left
+    alone and fails to parse instead of becoming a wrong number.
+
+    Raises ValueError if the value cannot be parsed.
+    """
+    text = str(value).strip()
+
+    # Drop a trailing kg unit.
+    text = re.sub(
+        r"\s*(?:KGS?|KGM|KILOS?)\b\.?",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Remove thousands separators.
+    text = re.sub(
+        r"(?<=\d),(?=\d{3}(?:\D|$))",
+        "",
+        text,
+    )
+
+    return float(text.replace(" ", ""))
+
+
 def _compare_numeric(field: str, a, b) -> str:
     a_missing = _is_missing(a)
     b_missing = _is_missing(b)
@@ -113,13 +150,13 @@ def _compare_numeric(field: str, a, b) -> str:
 
     try:
         if field == "gross_weight_kg":
-            a_num = float(a)
-            b_num = float(b)
+            a_num = _to_number(a)
+            b_num = _to_number(b)
 
             return "MATCH" if a_num == b_num else "MISMATCH"
 
-        a_num = int(float(a))
-        b_num = int(float(b))
+        a_num = int(_to_number(a))
+        b_num = int(_to_number(b))
 
         return "MATCH" if a_num == b_num else "MISMATCH"
 
