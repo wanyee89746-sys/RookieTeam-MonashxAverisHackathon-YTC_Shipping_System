@@ -122,15 +122,12 @@ def _pdf_vision_text(
                 ".env",
             )
         )
-        api_key = os.getenv(
-            "GEMINI_API_KEY"
-        )
-
+        
         if not api_key:
-            print(
-                "[VISION] GEMINI_API_KEY not found"
-            )
+            print("[VISION] GEMINI_API_KEY not found", flush=True)
             return None
+
+        print("[VISION] GEMINI_API_KEY found", flush=True)
 
         # -----------------------------------------------------
         # Open PDF directly from memory
