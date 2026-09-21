@@ -116,8 +116,12 @@ def _pdf_vision_text(
     try:
 
         # The project's existing .env is inside app/
-        load_dotenv("app/.env")
-
+        load_dotenv(
+            os.path.join(
+                os.path.dirname(__file__),
+                ".env",
+            )
+        )
         api_key = os.getenv(
             "GEMINI_API_KEY"
         )
