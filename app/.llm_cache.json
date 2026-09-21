@@ -590,5 +590,47 @@
       "reasoning": "The sender provides the SI and other documents with a direct request to confirm the BL is in order.",
       "method": "GEMINI"
     }
+  },
+  "c74e807a29169d0813b2b80fc0f5ce95a982e9f7c50f8617bed4f43121f36247": {
+    "email_328": {
+      "category": "GENERAL",
+      "confidence": 0.99,
+      "reasoning": "The email is an automated internal update summary regarding vessel loading status sent by a bot.",
+      "method": "GEMINI"
+    },
+    "email_329": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The message is a phishing attempt requesting small payment verification via an external suspicious link.",
+      "method": "GEMINI"
+    },
+    "email_333": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email is an internal greeting and operational notice regarding office resumption for the New Year.",
+      "method": "GEMINI"
+    },
+    "email_346": {
+      "category": "GENERAL",
+      "confidence": 0.99,
+      "reasoning": "The email provides an internal update summary regarding vessel operations and document status.",
+      "method": "GEMINI"
+    }
+  },
+  "85b76e0047411d8732cc57062b4995e776bec8b3f858945e183d3a88bf3eedc5": {
+    "email_366": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email is an automated notification about a completed billing process and outstanding items for internal action.",
+      "method": "GEMINI"
+    }
+  },
+  "dae8b42849d4d5bff8c14f87ef4293edf35800ebd88cae105205d0f6671b1896": {
+    "email_387": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited phishing attempt regarding unpaid customs fees from a suspicious sender.",
+      "method": "GEMINI"
+    }
   }
 }

@@ -69,8 +69,17 @@ def _has_explicit_missing_field(
         return False
 
     for field in FIELDS:
-        if _get_explicit_missing(fields, field):
-            return True
+        if not _get_explicit_missing(fields, field):
+            continue
+
+        # If extraction successfully produced a real value,
+        # the field is NOT actually missing.
+        value = fields.get(field)
+
+        if not _is_missing(value):
+            continue
+
+        return True
 
     return False
 

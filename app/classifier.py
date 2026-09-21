@@ -42,6 +42,10 @@ Examples (illustrating INTENT, not exact wording — real emails vary a lot):
 
 5) "You've won a prize! Click here to claim."
    -> SPAM
+
+6) "I have an urgent business proposal involving millions of dollars.
+   Please reply with your bank details."
+   -> SPAM
 """
 
 
@@ -53,13 +57,18 @@ Categories:
 - BL_COMPARISON: explicitly asks to compare/check/verify SI against a draft BL.
 - INVOICE_QUERY: billing, GR, invoice, D&D/detention, local charges, freight/payment questions.
 - GENERAL: internal updates, reports, reminders, HR, automated/bot notices.
-- SPAM: prizes, phishing, unrelated marketing/scams.
+- SPAM: prizes, phishing, unrelated marketing/scams, unsolicited fraudulent business
+  proposals, requests for sensitive financial information from suspicious/unrelated senders.
 
 {fewshot}
 
 Important:
 - Classify the CURRENT email only.
 - Ignore quoted/forwarded thread content when judging intent unless the current message has no content of its own.
+- A subject containing "invoice" or "payment" does NOT automatically make an email an INVOICE_QUERY.
+- If the actual current message is an unsolicited business proposal asking for
+  bank details or other sensitive financial information, classify it as SPAM
+  even if the subject contains invoice/payment wording.
 - Do not invent facts.
 - Return exactly one category per email.
 
@@ -85,9 +94,18 @@ def _rule_classify(email: dict) -> dict | None:
     text = subject + " " + body
 
     # ---------------------------------------------------------
-    # SPAM
+    # SPAM / SCAM
     # ---------------------------------------------------------
-    spam_patterns = [
+    #
+    # These rules are intentionally based on combinations of
+    # suspicious intent signals rather than email IDs.
+    #
+    # This check must happen BEFORE invoice classification because
+    # scam emails can deliberately use words such as "invoice" or
+    # "payment" in their subject.
+    # ---------------------------------------------------------
+
+    strong_spam_patterns = [
         "YOU HAVE WON",
         "CLAIM YOUR PRIZE",
         "CLAIM YOUR REWARD",
@@ -99,11 +117,73 @@ def _rule_classify(email: dict) -> dict | None:
         "GUARANTEED RETURNS",
     ]
 
-    if any(p in text for p in spam_patterns):
+    if any(pattern in text for pattern in strong_spam_patterns):
         return {
             "category": "SPAM",
             "confidence": 0.97,
-            "reasoning": "rule: spam markers",
+            "reasoning": "rule: strong spam/scam markers",
+            "method": "RULE",
+        }
+
+    # Unsolicited financial/business proposal asking for bank
+    # information is a strong scam/phishing pattern.
+    #
+    # Require multiple signals so normal payment/invoice emails
+    # containing only one of these words are not incorrectly marked
+    # as spam.
+    has_business_proposal = any(
+        phrase in text
+        for phrase in [
+            "BUSINESS PROPOSAL",
+            "BUSINESS OPPORTUNITY",
+            "INVESTMENT PROPOSAL",
+            "URGENT BUSINESS",
+            "BUSINESS DEAL",
+            "BUSINESS TRANSACTION",
+        ]
+    )
+
+    has_large_money_signal = bool(
+        re.search(
+            r"(?:USD|US\$|\$|EUR|GBP|RM|MYR)\s*"
+            r"(?:\d[\d,]*(?:\.\d+)?)\s*"
+            r"(?:MILLION|BILLION|MN|BN)?",
+            text,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    asks_for_bank_details = any(
+        phrase in text
+        for phrase in [
+            "BANK DETAILS",
+            "BANKING DETAILS",
+            "BANK ACCOUNT DETAILS",
+            "BANK INFORMATION",
+            "ACCOUNT DETAILS",
+            "BANK ACCOUNT",
+        ]
+    )
+
+    urgent_language = any(
+        phrase in text
+        for phrase in [
+            "URGENT",
+            "URGENTLY",
+            "IMMEDIATELY",
+            "AS SOON AS POSSIBLE",
+        ]
+    )
+
+    if (
+        has_business_proposal
+        and asks_for_bank_details
+        and (has_large_money_signal or urgent_language)
+    ):
+        return {
+            "category": "SPAM",
+            "confidence": 0.98,
+            "reasoning": "rule: unsolicited financial proposal requesting bank details",
             "method": "RULE",
         }
 
@@ -184,6 +264,7 @@ def _rule_classify(email: dict) -> dict | None:
             "reasoning": "rule: SI provided/submitted",
             "method": "RULE",
         }
+
     # ---------------------------------------------------------
     # INVOICE
     # ---------------------------------------------------------

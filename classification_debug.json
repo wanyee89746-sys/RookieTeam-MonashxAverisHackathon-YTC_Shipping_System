@@ -80,7 +80,7 @@
   "email_015": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_016": {
@@ -422,7 +422,7 @@
   "email_072": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_073": {
@@ -728,7 +728,7 @@
   "email_123": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_124": {
@@ -830,7 +830,7 @@
   "email_140": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_141": {
@@ -932,7 +932,7 @@
   "email_156": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_157": {
@@ -1220,7 +1220,7 @@
   "email_204": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_205": {
@@ -1232,7 +1232,7 @@
   "email_206": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_207": {
@@ -1286,7 +1286,7 @@
   "email_215": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_216": {
@@ -1349,6 +1349,12 @@
     "reasoning": "The email is an unsolicited promotional advertisement for logistics software and guaranteed returns.",
     "method": "GEMINI"
   },
+  "email_226": {
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
+    "method": "RULE"
+  },
   "email_227": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
@@ -1376,7 +1382,7 @@
   "email_231": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_232": {
@@ -1478,7 +1484,7 @@
   "email_248": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_249": {
@@ -1492,12 +1498,6 @@
     "confidence": 0.95,
     "reasoning": "rule: draft BL/checking intent",
     "method": "RULE"
-  },
-  "email_226": {
-    "category": "SPAM",
-    "confidence": 1.0,
-    "reasoning": "The email is an unsolicited phishing and financial scam attempt.",
-    "method": "GEMINI"
   },
   "email_251": {
     "category": "SI_REQUEST",
@@ -1514,13 +1514,13 @@
   "email_253": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_254": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_256": {
@@ -1586,7 +1586,7 @@
   "email_267": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_268": {
@@ -1884,7 +1884,7 @@
   "email_315": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_316": {
@@ -2043,6 +2043,12 @@
     "reasoning": "rule: SI provided/submitted",
     "method": "RULE"
   },
+  "email_345": {
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
+    "method": "RULE"
+  },
   "email_347": {
     "category": "GENERAL",
     "confidence": 0.9,
@@ -2070,31 +2076,25 @@
   "email_328": {
     "category": "GENERAL",
     "confidence": 0.99,
-    "reasoning": "The email provides an automated update summary and operational status, falling under internal updates.",
+    "reasoning": "The email is an automated internal update summary regarding vessel loading status sent by a bot.",
     "method": "GEMINI"
   },
   "email_329": {
     "category": "SPAM",
-    "confidence": 1.0,
-    "reasoning": "The email is an obvious phishing scam requesting payment for a suspicious parcel delivery.",
+    "confidence": 0.99,
+    "reasoning": "The message is a phishing attempt requesting small payment verification via an external suspicious link.",
     "method": "GEMINI"
   },
   "email_333": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "The email contains New Year greetings and office operation updates from management.",
-    "method": "GEMINI"
-  },
-  "email_345": {
-    "category": "SPAM",
-    "confidence": 1.0,
-    "reasoning": "The email is a classic advance-fee financial scam disguised as an exclusive software offer.",
+    "reasoning": "The email is an internal greeting and operational notice regarding office resumption for the New Year.",
     "method": "GEMINI"
   },
   "email_346": {
     "category": "GENERAL",
     "confidence": 0.99,
-    "reasoning": "The email shares a routine update summary and operational status of a vessel.",
+    "reasoning": "The email provides an internal update summary regarding vessel operations and document status.",
     "method": "GEMINI"
   },
   "email_351": {
@@ -2169,6 +2169,12 @@
     "reasoning": "rule: SI provided/submitted",
     "method": "RULE"
   },
+  "email_363": {
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
+    "method": "RULE"
+  },
   "email_364": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
@@ -2178,7 +2184,7 @@
   "email_365": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_367": {
@@ -2235,16 +2241,10 @@
     "reasoning": "rule: billing vocabulary",
     "method": "RULE"
   },
-  "email_363": {
-    "category": "SPAM",
-    "confidence": 1.0,
-    "reasoning": "The email is an unsolicited financial scam promising unrealistic returns and asking for bank details.",
-    "method": "GEMINI"
-  },
   "email_366": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "This is an automated system notification regarding completed billing processes and pending items.",
+    "reasoning": "The email is an automated notification about a completed billing process and outstanding items for internal action.",
     "method": "GEMINI"
   },
   "email_376": {
@@ -2283,6 +2283,12 @@
     "reasoning": "rule: draft BL/checking intent",
     "method": "RULE"
   },
+  "email_382": {
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
+    "method": "RULE"
+  },
   "email_383": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
@@ -2319,6 +2325,12 @@
     "reasoning": "rule: billing vocabulary",
     "method": "RULE"
   },
+  "email_390": {
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
+    "method": "RULE"
+  },
   "email_391": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
@@ -2328,7 +2340,7 @@
   "email_392": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_393": {
@@ -2346,7 +2358,7 @@
   "email_395": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_396": {
@@ -2379,22 +2391,10 @@
     "reasoning": "rule: SI provided/submitted",
     "method": "RULE"
   },
-  "email_382": {
-    "category": "SPAM",
-    "confidence": 1.0,
-    "reasoning": "The email is an unsolicited financial scam about a bank proposal.",
-    "method": "GEMINI"
-  },
   "email_387": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is a phishing attempt regarding unpaid customs fees with a suspicious link.",
-    "method": "GEMINI"
-  },
-  "email_390": {
-    "category": "SPAM",
-    "confidence": 1.0,
-    "reasoning": "The email contains classic financial scam language and requests bank details.",
+    "reasoning": "The email is an unsolicited phishing attempt regarding unpaid customs fees from a suspicious sender.",
     "method": "GEMINI"
   },
   "email_401": {
@@ -2482,9 +2482,9 @@
     "method": "RULE"
   },
   "email_417": {
-    "category": "INVOICE_QUERY",
-    "confidence": 0.85,
-    "reasoning": "rule: billing vocabulary",
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
     "method": "RULE"
   },
   "email_418": {
@@ -2688,7 +2688,7 @@
   "email_450": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_449": {
@@ -2722,9 +2722,9 @@
     "method": "RULE"
   },
   "email_455": {
-    "category": "INVOICE_QUERY",
-    "confidence": 0.85,
-    "reasoning": "rule: billing vocabulary",
+    "category": "SPAM",
+    "confidence": 0.98,
+    "reasoning": "rule: unsolicited financial proposal requesting bank details",
     "method": "RULE"
   },
   "email_456": {
@@ -2736,7 +2736,7 @@
   "email_457": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_458": {
@@ -2814,7 +2814,7 @@
   "email_470": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_471": {
@@ -2922,7 +2922,7 @@
   "email_489": {
     "category": "SPAM",
     "confidence": 0.97,
-    "reasoning": "rule: spam markers",
+    "reasoning": "rule: strong spam/scam markers",
     "method": "RULE"
   },
   "email_490": {

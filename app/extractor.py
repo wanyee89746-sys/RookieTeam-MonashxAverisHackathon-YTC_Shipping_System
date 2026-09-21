@@ -470,45 +470,143 @@ def _extract_to_the_order_of(line: str):
 
 def _extract_line_based(text: str) -> tuple[dict, dict]:
     """
-    Extract fields from individual logical lines.
+    Extract fields from individual logical lines and standalone labels.
 
-    Returns:
-        fields
-        explicit_missing
+    Supports both:
 
-    explicit_missing[field] is True when the document explicitly
-    contains that field but leaves it blank/placeholder.
+        Shipper: ABC COMPANY
+
+    and:
+
+        Shipper
+        ABC COMPANY
+        ADDRESS...
+
+    A field is marked explicitly missing only when:
+      1. the document contains the field label, and
+      2. no valid value is found for that field.
     """
     result = {field: None for field in FIELDS}
     explicit_missing = {field: False for field in FIELDS}
 
     lines = _split_lines(text)
 
-    for line in lines:
+    # Map each line to a field when the line is a standalone label.
+    standalone_labels = []
+
+    for index, line in enumerate(lines):
         parsed = _extract_to_the_order_of(line)
 
-        if parsed is None:
-            parsed = _parse_label_value_line(line)
-
-        if parsed is None:
+        if parsed is not None:
+            standalone_labels.append((index, parsed[0], parsed[1], parsed[2]))
             continue
 
-        field, value, missing = parsed
+        parsed = _parse_label_value_line(line)
 
+        if parsed is not None:
+            standalone_labels.append((index, parsed[0], parsed[1], parsed[2]))
+
+    # First pass: normal inline label/value extraction.
+    for index, field, value, missing in standalone_labels:
         if missing:
             explicit_missing[field] = True
-
-            # Do not overwrite a valid value already found.
             continue
 
         if field == "container_count":
             value = _extract_container_count(value)
-
         elif field == "gross_weight_kg":
             value = _extract_gross_weight(value)
 
         if value is not None:
             result[field] = value
+            explicit_missing[field] = False
+
+    # Second pass: standalone labels followed by value lines.
+    for index, field, value, missing in standalone_labels:
+
+        # Already got a valid value from inline extraction.
+        if result[field] is not None:
+            continue
+
+        # Only process labels with no inline value.
+        if not missing:
+            continue
+
+        # Look at the following lines until another recognized field
+        # label is reached.
+        following = []
+
+        for next_index in range(index + 1, len(lines)):
+            next_line = lines[next_index]
+
+            next_parsed = _extract_to_the_order_of(next_line)
+
+            if next_parsed is None:
+                next_parsed = _parse_label_value_line(next_line)
+
+            if next_parsed is not None:
+                break
+
+            # Stop at obvious document/table headers.
+            upper = next_line.upper().strip()
+
+            if upper in {
+                "CONTAINER NO.",
+                "CONTAINER NUMBER",
+                "DESCRIPTION",
+                "GROSS WEIGHT (KG)",
+                "GROSS WEIGHT (KGS)",
+                "TOTAL GROSS WT",
+                "TOTAL GROSS WEIGHT",
+                "OCEAN VESSEL",
+                "VESSEL",
+                "EXPORT CARRIER",
+            }:
+                break
+
+            following.append(next_line)
+
+            # For non-party fields, normally only the immediate next
+            # logical line should be considered.
+            if field not in {"shipper", "consignee", "notify_party"}:
+                break
+
+        if not following:
+            continue
+
+        if field in {"shipper", "consignee", "notify_party"}:
+            # Party values can span multiple address lines.
+            value = following[0]
+        else:
+            value = following[0]
+
+        value = _clean_value(value)
+
+        if field == "container_count":
+            value = _extract_container_count(value)
+        elif field == "gross_weight_kg":
+            value = _extract_gross_weight(value)
+
+        if value is not None:
+            result[field] = value
+            explicit_missing[field] = False
+
+    # Third pass: existing multiline-party fallback.
+    #
+    # This is kept as a safety net for documents whose party structure
+    # is slightly different from the standard standalone-label format.
+    for field in ("shipper", "consignee", "notify_party"):
+        if result[field] is None:
+            fallback = _extract_multiline_party(text, field)
+
+            if fallback is not None:
+                result[field] = fallback
+                explicit_missing[field] = False
+
+    # Any field with a valid value is never considered explicitly missing.
+    for field in FIELDS:
+        if result[field] is not None:
+            explicit_missing[field] = False
 
     return result, explicit_missing
 
@@ -677,7 +775,12 @@ def _python_extract(text: str) -> tuple[dict, dict]:
             elif line_result.get(field) is not None:
                 result[field] = line_result[field]
 
-            explicit_missing[field] = line_missing[field]
+            # Only keep explicit_missing=True when there is no valid
+            # extracted value.
+            if result[field] is not None:
+                explicit_missing[field] = False
+            else:
+                explicit_missing[field] = line_missing[field]
 
         return result, explicit_missing
 
