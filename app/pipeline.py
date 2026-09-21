@@ -13,7 +13,17 @@ def read_attachment_text(
     inbox: Inbox,
     path: str
 ) -> str | None:
-    """Return plain text for an attachment, or None if unreadable/empty."""
+    """
+    Return plain text for an attachment.
+
+    For normal PDFs, use the existing text extraction.
+
+    If a PDF contains no usable text, fall back to Gemini Vision:
+        PDF -> rendered page image -> Gemini Vision -> structured text
+
+    The Vision path is only a fallback. It does not replace the
+    existing extraction path that currently achieves 520/520.
+    """
 
     try:
         raw = inbox.read_bytes(path)
@@ -31,7 +41,21 @@ def read_attachment_text(
         )
 
     if path.endswith(".pdf"):
-        return _pdf_text(raw)
+        text = _pdf_text(raw)
+
+        if text:
+            return text
+
+        # -----------------------------------------------------
+        # Advanced fallback:
+        # scanned/image-only PDF -> Gemini Vision
+        # -----------------------------------------------------
+
+        print(
+            f"[VISION] No readable PDF text: {path}"
+        )
+
+        return _pdf_vision_text(raw, path)
 
     if path.endswith(".docx"):
         return _docx_text(raw)
@@ -65,6 +89,168 @@ def _pdf_text(raw: bytes) -> str | None:
         )
 
     except Exception:
+        return None
+
+
+def _pdf_vision_text(
+    raw: bytes,
+    path: str,
+) -> str | None:
+    """
+    Render a PDF page as an image and ask Gemini Vision
+    to extract the seven shipping fields.
+
+    Returns the fields as ordinary labelled text so the
+    existing extract_fields() function can process them.
+
+    No temporary image files are created.
+    """
+
+    import io
+
+    from dotenv import load_dotenv
+    from PIL import Image
+    import pymupdf
+    from google import genai
+
+    try:
+
+        # The project's existing .env is inside app/
+        load_dotenv("app/.env")
+
+        api_key = os.getenv(
+            "GEMINI_API_KEY"
+        )
+
+        if not api_key:
+            print(
+                "[VISION] GEMINI_API_KEY not found"
+            )
+            return None
+
+        # -----------------------------------------------------
+        # Open PDF directly from memory
+        # -----------------------------------------------------
+
+        doc = pymupdf.open(
+            stream=raw,
+            filetype="pdf",
+        )
+
+        if len(doc) == 0:
+            print(
+                f"[VISION] PDF has no pages: {path}"
+            )
+            return None
+
+        # -----------------------------------------------------
+        # Render pages in memory.
+        #
+        # Most shipping documents are one or a few pages.
+        # Limit to the first 5 pages to avoid excessive
+        # multimodal requests.
+        # -----------------------------------------------------
+
+        images = []
+
+        for page_number, page in enumerate(doc):
+
+            if page_number >= 5:
+                break
+
+            pix = page.get_pixmap(
+                matrix=pymupdf.Matrix(2, 2),
+                alpha=False,
+            )
+
+            image = Image.open(
+                io.BytesIO(
+                    pix.tobytes("png")
+                )
+            )
+
+            images.append(image)
+
+        if not images:
+            return None
+
+        # -----------------------------------------------------
+        # Gemini Vision
+        # -----------------------------------------------------
+
+        client = genai.Client(
+            api_key=api_key
+        )
+
+        prompt = """
+You are extracting data from a shipping document.
+
+Read the document image carefully, including tables,
+headers, labels, and values.
+
+Extract ONLY these seven fields:
+
+shipper
+consignee
+notify_party
+port_of_loading
+port_of_discharge
+container_count
+gross_weight_kg
+
+Return exactly this format:
+
+SHIPPER: value
+CONSIGNEE: value
+NOTIFY PARTY: value
+PORT OF LOADING: value
+PORT OF DISCHARGE: value
+CONTAINER COUNT: value
+GROSS WEIGHT: value
+
+Rules:
+- Preserve company names accurately.
+- Preserve port names accurately.
+- For container count, return only the number when clearly shown.
+- For gross weight, return the numeric weight in kg when clearly shown.
+- If a field is not visible or cannot be determined, write:
+  NOT FOUND
+- Do not guess.
+- Do not add explanations.
+"""
+
+        contents = [prompt]
+        contents.extend(images)
+
+        response = client.models.generate_content(
+            model="gemini-3.5-flash-lite",
+            contents=contents,
+        )
+
+        text = getattr(
+            response,
+            "text",
+            None,
+        )
+
+        if not text:
+            print(
+                f"[VISION] Gemini returned no text: {path}"
+            )
+            return None
+
+        print(
+            f"[VISION] Successfully extracted: {path}"
+        )
+
+        return text
+
+    except Exception as e:
+
+        print(
+            f"[VISION] Failed for {path}: {e}"
+        )
+
         return None
 
 
@@ -278,6 +464,31 @@ def process_comparison(
 
     return result
 
+def vision_test(
+    source: str,
+    attachment_path: str,
+):
+    """Test Gemini Vision directly on one PDF attachment."""
+
+    inbox = Inbox(source)
+
+    raw = inbox.read_bytes(
+        attachment_path
+    )
+
+    result = _pdf_vision_text(
+        raw,
+        attachment_path,
+    )
+
+    print("\n===== VISION TEST RESULT =====")
+
+    if result:
+        print(result)
+    else:
+        print("Vision extraction failed.")
+
+    return result
 
 def process_one(
     source: str,
@@ -666,6 +877,42 @@ def run_holdout_eval(
 if __name__ == "__main__":
 
     import sys
+
+    if (
+        len(sys.argv) >= 2
+        and sys.argv[1] == "vision_test"
+    ):
+
+        attachment = sys.argv[2]
+
+        src = (
+            sys.argv[3]
+            if len(sys.argv) > 3
+            else "."
+        )
+
+        vision_test(
+            src,
+            attachment,
+        )
+
+    elif (
+        len(sys.argv) >= 2
+        and sys.argv[1] == "test"
+    ):
+
+        eid = sys.argv[2]
+
+        src = (
+            sys.argv[3]
+            if len(sys.argv) > 3
+            else "."
+        )
+
+        process_one(
+            src,
+            eid,
+        )
 
     if (
         len(sys.argv) >= 2
