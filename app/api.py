@@ -224,8 +224,14 @@ def get_evidence(email_id: str):
     si = next((a for a in atts if "_SI" in a), None)
     bl = next((a for a in atts if "_BL" in a), None)
 
+    print(f"[EVIDENCE] SI path: {si}", flush=True)
+    print(f"[EVIDENCE] BL path: {bl}", flush=True)
+
     si_text = _attachment_text(si) if si else ""
     bl_text = _attachment_text(bl) if bl else ""
+
+    print(f"[EVIDENCE] SI text length: {len(si_text)}", flush=True)
+    print(f"[EVIDENCE] BL text length: {len(bl_text)}", flush=True)
 
     return {
         "si_path": si,
