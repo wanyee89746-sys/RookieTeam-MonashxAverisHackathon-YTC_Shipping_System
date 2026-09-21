@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 .env
+data/ground_truth.json
+logs.json
+submission.json
