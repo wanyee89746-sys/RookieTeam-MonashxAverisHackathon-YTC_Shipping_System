@@ -457,10 +457,14 @@ def process_comparison(
     result["has_defect"] = has_defect
     result["defect_fields"] = defects
 
-    # Keep detailed field-level information for debugging.
+    # Keep detailed field-level information.
     #
-    # This does not change the main submission fields above.
+    # field_results preserves the existing comparison result.
     result["field_results"] = detailed["field_results"]
+
+    # Store the actual SI and BL values so the final report
+    # can show them side-by-side.
+    result["field_values"] = detailed["field_values"]
 
     return result
 
@@ -531,17 +535,83 @@ def process_one(
             email,
         )
 
-    print(
-        json.dumps(
-            {
-                email_id: result
-            },
-            indent=2,
-            ensure_ascii=False,
-        )
-    )
+    print("\n" + "=" * 80)
+    print("SHIPPING DOCUMENT VERIFICATION")
+    print("=" * 80)
 
-    return result
+    print(f"Email ID: {email_id}")
+    print(f"Category: {result['category']}")
+    print(f"Status:   {result['status']}")
+
+    if result.get("review_reason"):
+        print(
+            f"Review reason: "
+            f"{result['review_reason']}"
+        )
+
+    if result.get("field_values"):
+
+        print("\n" + "-" * 80)
+        print(
+            f"{'FIELD':<24}"
+            f"{'SI VALUE':<26}"
+            f"{'BL VALUE':<26}"
+            f"RESULT"
+        )
+        print("-" * 80)
+
+        field_labels = {
+            "shipper": "Shipper",
+            "consignee": "Consignee",
+            "notify_party": "Notify Party",
+            "port_of_loading": "Port of Loading",
+            "port_of_discharge": "Port of Discharge",
+            "container_count": "Container Count",
+            "gross_weight_kg": "Gross Weight (kg)",
+        }
+
+        for field, values in result["field_values"].items():
+
+            si_value = str(
+                values.get("si")
+                if values.get("si") is not None
+                else "NOT FOUND"
+            )
+
+            bl_value = str(
+                values.get("bl")
+                if values.get("bl") is not None
+                else "NOT FOUND"
+            )
+
+            comparison = result[
+                "field_results"
+            ].get(field, "UNKNOWN")
+
+            print(
+                f"{field_labels.get(field, field):<24}"
+                f"{si_value[:25]:<26}"
+                f"{bl_value[:25]:<26}"
+                f"{comparison}"
+            )
+
+        print("-" * 80)
+
+    if result["status"] == "OK":
+        print("\nNo mismatch detected.")
+
+    elif result["status"] == "MISMATCH":
+        print(
+            "\nMismatch detected in: "
+            + ", ".join(
+                result["defect_fields"]
+            )
+        )
+
+    elif result["status"] == "NEEDS_REVIEW":
+        print(
+            "\nHuman review required."
+        )
 
 
 def run(
@@ -873,7 +943,6 @@ def run_holdout_eval(
             f"{c / total:.2%}"
         )
 
-
 if __name__ == "__main__":
 
     import sys
@@ -897,24 +966,6 @@ if __name__ == "__main__":
         )
 
     elif (
-        len(sys.argv) >= 2
-        and sys.argv[1] == "test"
-    ):
-
-        eid = sys.argv[2]
-
-        src = (
-            sys.argv[3]
-            if len(sys.argv) > 3
-            else "."
-        )
-
-        process_one(
-            src,
-            eid,
-        )
-
-    if (
         len(sys.argv) >= 2
         and sys.argv[1] == "test"
     ):

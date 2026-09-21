@@ -50,18 +50,31 @@ def compare_detailed(si: dict, bl: dict) -> dict:
         MATCH
         MISMATCH
         UNKNOWN
+
+    field_values[field] contains the original extracted values
+    from the SI and BL so the final report can show them
+    side-by-side.
     """
     mismatches = []
     field_results = {}
+    field_values = {}
 
     for field in FIELDS:
+        si_value = si.get(field)
+        bl_value = bl.get(field)
+
         result = _compare_field(
             field,
-            si.get(field),
-            bl.get(field),
+            si_value,
+            bl_value,
         )
 
         field_results[field] = result
+
+        field_values[field] = {
+            "si": si_value,
+            "bl": bl_value,
+        }
 
         if result == "MISMATCH":
             mismatches.append(field)
@@ -70,6 +83,7 @@ def compare_detailed(si: dict, bl: dict) -> dict:
         "has_defect": len(mismatches) > 0,
         "defect_fields": sorted(mismatches),
         "field_results": field_results,
+        "field_values": field_values,
     }
 
 
