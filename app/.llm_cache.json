@@ -372,5 +372,223 @@
     "port_of_discharge": null,
     "container_count": null,
     "gross_weight_kg": null
+  },
+  "f2508e273bae04f888ca7b18f15e49c9e28f82c36a77717bf3ac9f04af8eafbc": {
+    "email_134": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The email is an unrelated phishing scam demanding a customs fee via an external link.",
+      "method": "GEMINI"
+    },
+    "email_142": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The message is an automated New Year greeting and operational status update from management.",
+      "method": "GEMINI"
+    },
+    "email_147": {
+      "category": "GENERAL",
+      "confidence": 0.9,
+      "reasoning": "This is an internal update and reminder regarding outstanding documentation tasks.",
+      "method": "GEMINI"
+    },
+    "email_150": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The email contains unsolicited marketing for logistics software and discounts.",
+      "method": "GEMINI"
+    }
+  },
+  "e352accbd9bfd402f4aa9f64eca4b897ba3fd3d8545ee49d910c81a701461062": {
+    "email_159": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "This is an automated bot notification regarding a billing process update and report.",
+      "method": "GEMINI"
+    }
+  },
+  "64a8954c3c14adf2cc00ec42e2faa18c5e3f074a2827750b76c082dcd48cf96d": {
+    "email_180": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited promotional marketing offer for software.",
+      "method": "GEMINI"
+    },
+    "email_184": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email uses a suspicious subject line unrelated to its body offering a logistics discount.",
+      "method": "GEMINI"
+    },
+    "email_185": {
+      "category": "GENERAL",
+      "confidence": 1.0,
+      "reasoning": "The sender provides an internal update summary and loading status for informational purposes.",
+      "method": "GEMINI"
+    },
+    "email_188": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email uses a phishing-style subject line masking a promotional marketing offer.",
+      "method": "GEMINI"
+    }
+  },
+  "f5683688ff9dca81d65347bd7737cb893fa9bea3e95abe0822c23fbc6d0d23b3": {
+    "email_218": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email is an internal operational status update about vessel loading and document schedules.",
+      "method": "GEMINI"
+    },
+    "email_222": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited promotional advertisement for logistics software and guaranteed returns.",
+      "method": "GEMINI"
+    }
+  },
+  "1c31ddfe81bbd96402fd1647b8c11af6df7d9fd4bee1d28dc1fe2f61d5f70f9a": {
+    "email_226": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited phishing and financial scam attempt.",
+      "method": "GEMINI"
+    }
+  },
+  "8e01c00bcaf6c62a6973649b95d5079961ec9007d6484e8beb977d41f105c9eb": {
+    "email_325": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email provides an internal operational update and summary for a vessel without requesting action or documents.",
+      "method": "GEMINI"
+    }
+  },
+  "ce5901c27b48d3a3ec12b6b405c23552280dbe9bc80b4df3c3ce14fdb5d75f63": {
+    "email_328": {
+      "category": "GENERAL",
+      "confidence": 0.99,
+      "reasoning": "The email provides an automated update summary and operational status, falling under internal updates.",
+      "method": "GEMINI"
+    },
+    "email_329": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an obvious phishing scam requesting payment for a suspicious parcel delivery.",
+      "method": "GEMINI"
+    },
+    "email_333": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email contains New Year greetings and office operation updates from management.",
+      "method": "GEMINI"
+    },
+    "email_345": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is a classic advance-fee financial scam disguised as an exclusive software offer.",
+      "method": "GEMINI"
+    },
+    "email_346": {
+      "category": "GENERAL",
+      "confidence": 0.99,
+      "reasoning": "The email shares a routine update summary and operational status of a vessel.",
+      "method": "GEMINI"
+    }
+  },
+  "9a0f52df92173e0c716aef39074ee4a946609e0f5db13a64793f7be0d6b0ce80": {
+    "email_363": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited financial scam promising unrealistic returns and asking for bank details.",
+      "method": "GEMINI"
+    },
+    "email_366": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "This is an automated system notification regarding completed billing processes and pending items.",
+      "method": "GEMINI"
+    }
+  },
+  "fa20516d88e2716795c1f15cc1618b68bc5bcf4adfbc3dbc203e853588276b16": {
+    "email_382": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited financial scam about a bank proposal.",
+      "method": "GEMINI"
+    },
+    "email_387": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is a phishing attempt regarding unpaid customs fees with a suspicious link.",
+      "method": "GEMINI"
+    },
+    "email_390": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email contains classic financial scam language and requests bank details.",
+      "method": "GEMINI"
+    }
+  },
+  "7ceda5cdb789075afa7c47b487d3608e6cc85b670a20f6445b937fe967cd4bfa": {
+    "email_404": {
+      "category": "SPAM",
+      "confidence": 0.99,
+      "reasoning": "The email is an unrelated phishing scam demanding a customs fee for a prize or package.",
+      "method": "GEMINI"
+    },
+    "email_415": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email is an internal greeting and announcement regarding office operations from management.",
+      "method": "GEMINI"
+    }
+  },
+  "6c8937045cea47b8fb8e118cd087916782cc814db21d0d0a434f01cf45c573f1": {
+    "email_449": {
+      "category": "SPAM",
+      "confidence": 1.0,
+      "reasoning": "The email is an unsolicited phishing attempt regarding a fake parcel delivery and payment.",
+      "method": "GEMINI"
+    }
+  },
+  "2b15c00f0b58731e38c91eddb917bcf3c3348d790e4dbfc5fdb2f11b9f0b5cd8": {
+    "email_488": {
+      "category": "GENERAL",
+      "confidence": 0.95,
+      "reasoning": "The email provides a routine update and status summary of outstanding items for internal action.",
+      "method": "GEMINI"
+    }
+  },
+  "9d336f2ac5e4d6577b6597e42a8d8dda248791b99df67508ec534f31cc9b5056": {
+    "email_501": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender explicitly provides documents and asks to confirm if the Bill of Lading is in order.",
+      "method": "GEMINI"
+    },
+    "email_502": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender attaches the SI and asks the team to confirm if the BL is in order.",
+      "method": "GEMINI"
+    },
+    "email_503": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender submits documents including the SI and explicitly requests confirmation that the BL is in order.",
+      "method": "GEMINI"
+    },
+    "email_504": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender submits the shipping instruction and asks for confirmation regarding the BL.",
+      "method": "GEMINI"
+    },
+    "email_505": {
+      "category": "BL_COMPARISON",
+      "confidence": 0.95,
+      "reasoning": "The sender provides the SI and other documents with a direct request to confirm the BL is in order.",
+      "method": "GEMINI"
+    }
   }
 }

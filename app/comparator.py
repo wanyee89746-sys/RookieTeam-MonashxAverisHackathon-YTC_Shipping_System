@@ -16,10 +16,13 @@ def compare(
         b = bl.get(field)
 
         # Numeric fields
-        if field in (
-            "container_count",
-            "gross_weight_kg",
-        ):
+        if field in ("container_count", "gross_weight_kg"):
+            # Missing gross weight is not treated as a BL defect.
+            if field == "gross_weight_kg":
+                if a is None or b is None:
+                    continue
+
+            # Container count must exist on both sides.
             if a is None or b is None:
                 mismatches.append(field)
                 continue
@@ -58,10 +61,7 @@ def _normalize_party(value):
 
     text = str(value).upper()
 
-    # ---------------------------------------------------------
     # Remove common field labels
-    # ---------------------------------------------------------
-
     text = re.sub(
         r"\b(?:SHIPPER|EXPORTER|CONSIGNEE)\s*[:：-]?\s*",
         " ",
@@ -80,19 +80,21 @@ def _normalize_party(value):
         text,
     )
 
-    # ---------------------------------------------------------
-    # Keep the main company identity.
-    #
+    # Remove descriptors such as:
+    # (Non-Negotiable):
+    # (Principal or Seller):
+    text = re.sub(
+        r"^\s*\([^)]*\)\s*[:：-]?\s*",
+        "",
+        text,
+    )
+
+    # Keep the actual company identity.
     # Example:
-    #
     # APRIL FINE PAPER TRADING
     # ON BEHALF OF VITAL SOLUTIONS PTE LTD
-    #
-    # becomes:
-    #
-    # APRIL FINE PAPER TRADING
-    # ---------------------------------------------------------
-
+    # ...
+    # -> APRIL FINE PAPER TRADING
     text = re.sub(
         r"\bON\s+BEHALF\s+OF\b.*$",
         "",
@@ -100,33 +102,9 @@ def _normalize_party(value):
         flags=re.IGNORECASE,
     )
 
-    # ---------------------------------------------------------
     # Normalize separators
-    # ---------------------------------------------------------
-
-    text = re.sub(
-        r"[|;]+",
-        "\n",
-        text,
-    )
-
-    text = re.sub(
-        r"\r\n?",
-        "\n",
-        text,
-    )
-
-    # ---------------------------------------------------------
-    # Remove address/details after the company name.
-    #
-    # Shipping documents commonly put the company name first,
-    # followed by:
-    #
-    # - P.O. BOX
-    # - street address
-    # - postal code
-    # - GST number
-    # ---------------------------------------------------------
+    text = re.sub(r"[|;]+", "\n", text)
+    text = re.sub(r"\r\n?", "\n", text)
 
     lines = [
         line.strip()
@@ -134,43 +112,38 @@ def _normalize_party(value):
         if line.strip()
     ]
 
-    # Ignore descriptor-only lines such as "(Non-Negotiable)"
+    # Ignore descriptor-only lines
     while lines and re.fullmatch(r"\([^)]*\)", lines[0]):
         lines.pop(0)
 
     if lines:
         text = lines[0]
 
-    # ---------------------------------------------------------
-    # Remove remaining common punctuation / whitespace.
-    # ---------------------------------------------------------
+    text = re.sub(r"\s+", " ", text).strip()
 
-    text = re.sub(
-        r"\s+",
-        " ",
-        text,
-    ).strip()
-
-    # Company identity comparison should not depend on spaces.
-    text = re.sub(
-        r"\s+",
-        "",
-        text,
-    )
+    # Ignore whitespace when comparing company names
+    text = re.sub(r"\s+", "", text)
 
     return text or None
 
 def _normalize_port(value):
-    """
-    Normalize formatting differences in port names.
-    """
-
     if value is None:
         return None
 
     text = str(value).upper()
 
     text = re.sub(r"[|;]+", " ", text)
-    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # Remove trailing UN/LOCODE such as:
+    # (SGSIN)
+    # (KRPTK)
+    # (AUBNE)
+    # (TRMER)
+    text = re.sub(
+        r"\s*\([A-Z]{5}\)\s*$",
+        "",
+        text,
+    )
 
     return text.strip()

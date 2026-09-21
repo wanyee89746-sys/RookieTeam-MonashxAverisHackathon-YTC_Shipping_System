@@ -44,12 +44,6 @@ IDS = {
 
 
 class Tee:
-    """
-    Send print() output to both:
-    1. Terminal
-    2. Output file
-    """
-
     def __init__(self, *streams):
         self.streams = streams
 
@@ -63,16 +57,24 @@ class Tee:
             stream.flush()
 
 
+def compact_fields(fields):
+    if fields is None:
+        return None
+
+    return {
+        key: value
+        for key, value in fields.items()
+        if value is not None
+    }
+
+
 with open(OUTPUT_FILE, "w", encoding="utf-8") as output:
     original_stdout = sys.stdout
     sys.stdout = Tee(original_stdout, output)
 
     try:
         print("=" * 70)
-        print("DEBUG COMPARISON OUTPUT")
-        print("=" * 70)
-        print(f"Output file: {OUTPUT_FILE}")
-        print(f"Emails selected: {len(IDS)}")
+        print("COMPACT DEBUG OUTPUT")
         print("=" * 70)
 
         inbox = Inbox(SOURCE)
@@ -87,11 +89,8 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as output:
             print(eid)
             print("=" * 70)
 
-            print("\n--- SUBJECT ---")
-            print(email.get("subject", ""))
-
-            print("\n--- BODY ---")
-            print(email.get("body", ""))
+            print("SUBJECT:")
+            print(email.get("subject", "").strip())
 
             attachments = email.get("attachments", [])
 
@@ -105,9 +104,11 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as output:
                 None
             )
 
-            print("\nSI file:", si_path)
-            print("BL file:", bl_path)
+            print("\nFILES:")
+            print("SI:", si_path)
+            print("BL:", bl_path)
 
+            # Read documents
             si_text = (
                 read_attachment_text(inbox, si_path)
                 if si_path
@@ -120,12 +121,7 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as output:
                 else None
             )
 
-            print("\n--- SI TEXT ---")
-            print((si_text or "NONE")[:3000])
-
-            print("\n--- BL TEXT ---")
-            print((bl_text or "NONE")[:3000])
-
+            # Extract fields
             si_fields = (
                 extract_fields(si_text)
                 if si_text
@@ -138,20 +134,19 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as output:
                 else None
             )
 
-            print("\n--- SI FIELDS ---")
+            print("\nSI FIELDS:")
             print(json.dumps(
-                si_fields,
-                indent=2,
+                compact_fields(si_fields),
                 ensure_ascii=False
             ))
 
-            print("\n--- BL FIELDS ---")
+            print("\nBL FIELDS:")
             print(json.dumps(
-                bl_fields,
-                indent=2,
+                compact_fields(bl_fields),
                 ensure_ascii=False
             ))
 
+            # Review
             reason = check_review(
                 email,
                 si_text,
@@ -160,25 +155,40 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as output:
                 bl_fields,
             )
 
-            print("\n--- REVIEW ---")
+            print("\nREVIEW:")
             print(reason)
 
+            # Comparison
             if si_fields and bl_fields:
                 mismatch, fields = compare(
                     si_fields,
                     bl_fields
                 )
 
-                print("\n--- COMPARISON ---")
+                print("\nCOMPARISON:")
                 print("Mismatch:", mismatch)
                 print("Fields:", fields)
 
+                # Show only values for mismatched fields
+                if fields:
+                    print("\nMISMATCH DETAILS:")
+
+                    for field in fields:
+                        print(
+                            f"{field}: "
+                            f"SI={si_fields.get(field)!r} | "
+                            f"BL={bl_fields.get(field)!r}"
+                        )
+
+            else:
+                print("\nCOMPARISON:")
+                print("Skipped - missing extracted fields")
+
         print("\n" + "=" * 70)
         print("DEBUG COMPLETE")
-        print(f"Saved to: {os.path.abspath(OUTPUT_FILE)}")
         print("=" * 70)
 
     finally:
         sys.stdout = original_stdout
 
-print(f"\nDebug output saved to: {os.path.abspath(OUTPUT_FILE)}")
+print(f"Debug output saved to: {os.path.abspath(OUTPUT_FILE)}")

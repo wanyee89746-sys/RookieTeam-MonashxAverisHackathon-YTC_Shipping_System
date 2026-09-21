@@ -878,25 +878,25 @@
   "email_134": {
     "category": "SPAM",
     "confidence": 0.99,
-    "reasoning": "The email is an unrelated phishing and scam attempt about unpaid customs fees.",
+    "reasoning": "The email is an unrelated phishing scam demanding a customs fee via an external link.",
     "method": "GEMINI"
   },
   "email_142": {
     "category": "GENERAL",
-    "confidence": 0.98,
-    "reasoning": "This is an automated New Year greeting and office operation notice from management.",
+    "confidence": 0.95,
+    "reasoning": "The message is an automated New Year greeting and operational status update from management.",
     "method": "GEMINI"
   },
   "email_147": {
     "category": "GENERAL",
-    "confidence": 0.95,
-    "reasoning": "This is an internal update and reminder about outstanding documentation tasks.",
+    "confidence": 0.9,
+    "reasoning": "This is an internal update and reminder regarding outstanding documentation tasks.",
     "method": "GEMINI"
   },
   "email_150": {
     "category": "SPAM",
     "confidence": 0.99,
-    "reasoning": "The email is promotional marketing content offering a software discount.",
+    "reasoning": "The email contains unsolicited marketing for logistics software and discounts.",
     "method": "GEMINI"
   },
   "email_151": {
@@ -1046,7 +1046,7 @@
   "email_159": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "This is an automated bot notice regarding a completed billing process and outstanding items.",
+    "reasoning": "This is an automated bot notification regarding a billing process update and report.",
     "method": "GEMINI"
   },
   "email_176": {
@@ -1177,26 +1177,26 @@
   },
   "email_180": {
     "category": "SPAM",
-    "confidence": 0.99,
-    "reasoning": "The email is an unsolicited promotional offer attempting to sell software.",
+    "confidence": 1.0,
+    "reasoning": "The email is an unsolicited promotional marketing offer for software.",
     "method": "GEMINI"
   },
   "email_184": {
     "category": "SPAM",
-    "confidence": 0.99,
-    "reasoning": "The email uses a misleading subject line to deliver an unrelated promotional marketing message.",
+    "confidence": 1.0,
+    "reasoning": "The email uses a suspicious subject line unrelated to its body offering a logistics discount.",
     "method": "GEMINI"
   },
   "email_185": {
     "category": "GENERAL",
-    "confidence": 0.95,
-    "reasoning": "The email provides an internal operational status update and summary report.",
+    "confidence": 1.0,
+    "reasoning": "The sender provides an internal update summary and loading status for informational purposes.",
     "method": "GEMINI"
   },
   "email_188": {
     "category": "SPAM",
-    "confidence": 0.99,
-    "reasoning": "The email is a phishing attempt disguised as an administrative notice.",
+    "confidence": 1.0,
+    "reasoning": "The email uses a phishing-style subject line masking a promotional marketing offer.",
     "method": "GEMINI"
   },
   "email_201": {
@@ -1340,13 +1340,13 @@
   "email_218": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "The email provides an internal operational update and loading summary for a specific vessel.",
+    "reasoning": "The email is an internal operational status update about vessel loading and document schedules.",
     "method": "GEMINI"
   },
   "email_222": {
     "category": "SPAM",
-    "confidence": 0.99,
-    "reasoning": "The email is an unsolicited promotional advertisement for logistics software and investment.",
+    "confidence": 1.0,
+    "reasoning": "The email is an unsolicited promotional advertisement for logistics software and guaranteed returns.",
     "method": "GEMINI"
   },
   "email_227": {
@@ -1496,7 +1496,7 @@
   "email_226": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is an obvious financial scam/phishing attempt unrelated to legitimate shipping operations.",
+    "reasoning": "The email is an unsolicited phishing and financial scam attempt.",
     "method": "GEMINI"
   },
   "email_251": {
@@ -1944,7 +1944,7 @@
   "email_325": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "The email provides an internal operational update and summary for a vessel, which falls under general notifications.",
+    "reasoning": "The email provides an internal operational update and summary for a vessel without requesting action or documents.",
     "method": "GEMINI"
   },
   "email_326": {
@@ -2070,31 +2070,31 @@
   "email_328": {
     "category": "GENERAL",
     "confidence": 0.99,
-    "reasoning": "The email is an automated or routine operational update regarding vessel loading status.",
+    "reasoning": "The email provides an automated update summary and operational status, falling under internal updates.",
     "method": "GEMINI"
   },
   "email_329": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is a phishing attempt regarding an unpaid customs fee for package delivery.",
+    "reasoning": "The email is an obvious phishing scam requesting payment for a suspicious parcel delivery.",
     "method": "GEMINI"
   },
   "email_333": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "The email contains internal management notices and new year greetings.",
+    "reasoning": "The email contains New Year greetings and office operation updates from management.",
     "method": "GEMINI"
   },
   "email_345": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is an obvious financial scam offering a business proposal for millions.",
+    "reasoning": "The email is a classic advance-fee financial scam disguised as an exclusive software offer.",
     "method": "GEMINI"
   },
   "email_346": {
     "category": "GENERAL",
     "confidence": 0.99,
-    "reasoning": "The email provides a routine operational update on vessel loading and documents.",
+    "reasoning": "The email shares a routine update summary and operational status of a vessel.",
     "method": "GEMINI"
   },
   "email_351": {
@@ -2238,13 +2238,13 @@
   "email_363": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is an unsolicited financial scam promising guaranteed returns and asking for bank details.",
+    "reasoning": "The email is an unsolicited financial scam promising unrealistic returns and asking for bank details.",
     "method": "GEMINI"
   },
   "email_366": {
     "category": "GENERAL",
-    "confidence": 0.9,
-    "reasoning": "The email is an automated or routine operational update about billing processes and pending items.",
+    "confidence": 0.95,
+    "reasoning": "This is an automated system notification regarding completed billing processes and pending items.",
     "method": "GEMINI"
   },
   "email_376": {
@@ -2382,19 +2382,19 @@
   "email_382": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is an obvious financial scam offering a business proposal from an unknown sender.",
+    "reasoning": "The email is an unsolicited financial scam about a bank proposal.",
     "method": "GEMINI"
   },
   "email_387": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The message is a phishing attempt requesting small fee confirmation via a suspicious external link.",
+    "reasoning": "The email is a phishing attempt regarding unpaid customs fees with a suspicious link.",
     "method": "GEMINI"
   },
   "email_390": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The content contains classic advance-fee fraud and phishing language unrelated to shipping operations.",
+    "reasoning": "The email contains classic financial scam language and requests bank details.",
     "method": "GEMINI"
   },
   "email_401": {
@@ -2538,13 +2538,13 @@
   "email_404": {
     "category": "SPAM",
     "confidence": 0.99,
-    "reasoning": "The email is an unrelated phishing scam asking for unpaid customs fees.",
+    "reasoning": "The email is an unrelated phishing scam demanding a customs fee for a prize or package.",
     "method": "GEMINI"
   },
   "email_415": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "The email is an internal greeting and holiday notice from management.",
+    "reasoning": "The email is an internal greeting and announcement regarding office operations from management.",
     "method": "GEMINI"
   },
   "email_426": {
@@ -2694,7 +2694,7 @@
   "email_449": {
     "category": "SPAM",
     "confidence": 1.0,
-    "reasoning": "The email is an unsolicited phishing message regarding a package delivery fee with a suspicious link.",
+    "reasoning": "The email is an unsolicited phishing attempt regarding a fake parcel delivery and payment.",
     "method": "GEMINI"
   },
   "email_451": {
@@ -2994,7 +2994,7 @@
   "email_488": {
     "category": "GENERAL",
     "confidence": 0.95,
-    "reasoning": "The email provides an internal update and summary of outstanding documents requiring routine operational action.",
+    "reasoning": "The email provides a routine update and status summary of outstanding items for internal action.",
     "method": "GEMINI"
   },
   "email_506": {
@@ -3090,31 +3090,31 @@
   "email_501": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
-    "reasoning": "The sender provides an SI and explicitly asks to confirm if the BL is in order.",
+    "reasoning": "The sender explicitly provides documents and asks to confirm if the Bill of Lading is in order.",
     "method": "GEMINI"
   },
   "email_502": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
-    "reasoning": "The sender attaches an SI and asks the team to confirm that the BL is in order.",
+    "reasoning": "The sender attaches the SI and asks the team to confirm if the BL is in order.",
     "method": "GEMINI"
   },
   "email_503": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
-    "reasoning": "The sender submits an SI and requests confirmation that the BL is in order.",
+    "reasoning": "The sender submits documents including the SI and explicitly requests confirmation that the BL is in order.",
     "method": "GEMINI"
   },
   "email_504": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
-    "reasoning": "The sender provides an SI along with other documents and explicitly requests BL confirmation.",
+    "reasoning": "The sender submits the shipping instruction and asks for confirmation regarding the BL.",
     "method": "GEMINI"
   },
   "email_505": {
     "category": "BL_COMPARISON",
     "confidence": 0.95,
-    "reasoning": "The sender attaches an SI and asks the team to verify that the BL is in order.",
+    "reasoning": "The sender provides the SI and other documents with a direct request to confirm the BL is in order.",
     "method": "GEMINI"
   }
 }
