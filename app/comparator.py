@@ -1,6 +1,6 @@
 import re
 
-from extractor import FIELDS
+from extractor import FIELDS, is_missing_value
 
 
 NUMERIC_FIELDS = {
@@ -20,95 +20,51 @@ PARTY_FIELDS = {
 }
 
 
-# ---------------------------------------------------------------------------
-# Public comparison
-# ---------------------------------------------------------------------------
-
-def compare(
-    si: dict,
-    bl: dict
-) -> tuple[bool, list[str]]:
-
+def compare(si: dict, bl: dict) -> tuple[bool, list[str]]:
     """
     Compare SI and BL fields.
 
-    Comparison states internally are:
+    Returns:
+        (has_defect, sorted_defect_fields)
+    """
+    detailed = compare_detailed(si, bl)
+
+    return (
+        detailed["has_defect"],
+        detailed["defect_fields"],
+    )
+
+
+def compare_detailed(si: dict, bl: dict) -> dict:
+    """
+    Detailed comparison.
+
+    Returns a dictionary because pipeline.py expects:
+
+        detailed["has_defect"]
+        detailed["defect_fields"]
+        detailed["field_results"]
+
+    field_results[field] is one of:
 
         MATCH
         MISMATCH
         UNKNOWN
-
-    UNKNOWN means that one or both documents do not provide enough
-    information to make a reliable comparison.
-
-    Only MISMATCH fields are returned as defects.
-
-    Examples:
-
-        100 vs 100       -> MATCH
-        100 vs 101       -> MISMATCH
-        None vs 100      -> UNKNOWN
-        None vs None     -> UNKNOWN
-
-    Therefore missing information is not automatically reported as
-    a document mismatch.
     """
-
     mismatches = []
+    field_results = {}
 
     for field in FIELDS:
-
         result = _compare_field(
             field,
             si.get(field),
             bl.get(field),
         )
 
+        field_results[field] = result
+
         if result == "MISMATCH":
             mismatches.append(field)
-
-    return (
-        len(mismatches) > 0,
-        sorted(mismatches)
-    )
-
-
-# ---------------------------------------------------------------------------
-# Detailed comparison
-# ---------------------------------------------------------------------------
-
-def compare_detailed(
-    si: dict,
-    bl: dict
-) -> dict:
-    """
-    Return the comparison result for every field.
-
-    This is useful for debugging because it distinguishes:
-
-        MATCH
-        MISMATCH
-        UNKNOWN
-    """
-
-    field_results = {}
-
-    for field in FIELDS:
-
-        a = si.get(field)
-        b = bl.get(field)
-
-        field_results[field] = {
-            "status": _compare_field(field, a, b),
-            "si": a,
-            "bl": b,
-        }
-
-    mismatches = [
-        field
-        for field, result in field_results.items()
-        if result["status"] == "MISMATCH"
-    ]
 
     return {
         "has_defect": len(mismatches) > 0,
@@ -117,111 +73,164 @@ def compare_detailed(
     }
 
 
-# ---------------------------------------------------------------------------
-# Field comparison
-# ---------------------------------------------------------------------------
-
-def _compare_field(
-    field: str,
-    a,
-    b,
-) -> str:
-
-    # ---------------------------------------------------------
-    # Missing values
-    # ---------------------------------------------------------
-
-    if _is_missing(a) or _is_missing(b):
-        return "UNKNOWN"
-
-    # ---------------------------------------------------------
-    # Numeric fields
-    # ---------------------------------------------------------
-
+def _compare_field(field: str, a, b) -> str:
     if field in NUMERIC_FIELDS:
-        return _compare_numeric(a, b)
-
-    # ---------------------------------------------------------
-    # Port fields
-    # ---------------------------------------------------------
+        return _compare_numeric(field, a, b)
 
     if field in PORT_FIELDS:
         return _compare_port(a, b)
 
-    # ---------------------------------------------------------
-    # Party fields
-    # ---------------------------------------------------------
-
     if field in PARTY_FIELDS:
         return _compare_party(a, b)
 
-    # ---------------------------------------------------------
-    # Generic fallback
-    # ---------------------------------------------------------
-
-    return (
-        "MATCH"
-        if _normalize_text(a) == _normalize_text(b)
-        else "MISMATCH"
-    )
-
-
-# ---------------------------------------------------------------------------
-# Missing detection
-# ---------------------------------------------------------------------------
-
-BLANK_TOKENS = {
-    "",
-    "???",
-    "___",
-    "_______",
-    "TBA",
-    "TBC",
-    "N/A",
-    "NA",
-    "NULL",
-    "NONE",
-    "____MT",
-}
+    return _compare_text(a, b)
 
 
 def _is_missing(value) -> bool:
-
-    if value is None:
-        return True
-
-    text = str(value).strip().upper()
-
-    return text in BLANK_TOKENS
+    return is_missing_value(value)
 
 
-# ---------------------------------------------------------------------------
-# Numeric comparison
-# ---------------------------------------------------------------------------
+def _compare_numeric(field: str, a, b) -> str:
+    a_missing = _is_missing(a)
+    b_missing = _is_missing(b)
 
-def _compare_numeric(a, b) -> str:
+    if a_missing or b_missing:
+        return "UNKNOWN"
 
     try:
+        if field == "gross_weight_kg":
+            a_num = float(a)
+            b_num = float(b)
 
-        a_num = float(str(a).replace(",", "").strip())
-        b_num = float(str(b).replace(",", "").strip())
+            return "MATCH" if a_num == b_num else "MISMATCH"
+
+        a_num = int(float(a))
+        b_num = int(float(b))
+
+        return "MATCH" if a_num == b_num else "MISMATCH"
 
     except (ValueError, TypeError):
-
         return "MISMATCH"
 
-    if a_num == b_num:
-        return "MATCH"
 
-    return "MISMATCH"
+def _normalize_party(value):
+    """
+    Normalize a party/company value for comparison.
 
+    Example:
 
-# ---------------------------------------------------------------------------
-# Party comparison
-# ---------------------------------------------------------------------------
+        ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+        |
+        80 RAFFLES PLACE, #50-01 UOB PLAZA 1
+        |
+        SINGAPORE
+
+    becomes:
+
+        ASIA PACIFIC PAPERBOARD TRADING PTE LTD
+
+    This allows the SI and BL to match when the SI contains the
+    address but the BL only contains the company name.
+
+    We do NOT use substring matching between different company names.
+    """
+
+    if _is_missing(value):
+        return None
+
+    text = str(value).upper().strip()
+
+    # Remove known field prefixes.
+    text = re.sub(
+        r"^\s*(?:SHIPPER|EXPORTER)\s*[:：-]?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    text = re.sub(
+        r"^\s*CONSIGNEE\s*[:：-]?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    text = re.sub(
+        r"^\s*(?:NOTIFY\s+PARTY|NOTIFY)\s*[:：-]?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    text = re.sub(
+        r"^\s*INTERMEDIATE\s+CONSIGNEE\s*[:：-]?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Remove labels such as:
+    #
+    # (Principal or Seller):
+    # (Non-Negotiable):
+    #
+    text = re.sub(
+        r"^\s*\([^)]*\)\s*[:：-]?\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Normalize separators.
+    text = text.replace("\r\n", "\n")
+    text = text.replace("\r", "\n")
+
+    # A pipe or semicolon usually separates the company name from
+    # the address in the extracted spreadsheet text.
+    text = re.sub(r"[|;]+", "\n", text)
+
+    lines = [
+        line.strip()
+        for line in text.split("\n")
+        if line.strip()
+    ]
+
+    if not lines:
+        return None
+
+    company = lines[0]
+
+    # Remove any field prefix that survived previous cleanup.
+    company = re.sub(
+        r"^\s*(?:"
+        r"SHIPPER"
+        r"|EXPORTER"
+        r"|CONSIGNEE"
+        r"|NOTIFY\s+PARTY"
+        r"|NOTIFY"
+        r")\s*[:：-]?\s*",
+        "",
+        company,
+        flags=re.IGNORECASE,
+    )
+
+    # Remove parenthetical label prefix.
+    company = re.sub(
+        r"^\s*\([^)]*\)\s*[:：-]?\s*",
+        "",
+        company,
+    )
+
+    # Normalize whitespace.
+    company = re.sub(r"\s+", " ", company).strip()
+
+    # Remove trailing punctuation.
+    company = company.rstrip(" ,;:|-.")
+
+    return company or None
+
 
 def _compare_party(a, b) -> str:
-
     a_norm = _normalize_party(a)
     b_norm = _normalize_party(b)
 
@@ -234,162 +243,59 @@ def _compare_party(a, b) -> str:
     return "MISMATCH"
 
 
-def _normalize_party(value):
-
-    if _is_missing(value):
-        return None
-
-    text = str(value).upper()
-
-    # Remove common field labels.
-    text = re.sub(
-        r"\b(?:SHIPPER|EXPORTER|CONSIGNEE)\s*[:：-]?\s*",
-        " ",
-        text,
-    )
-
-    text = re.sub(
-        r"\b(?:NOTIFY\s+PARTY|NOTIFY)\s*[:：-]?\s*",
-        " ",
-        text,
-    )
-
-    text = re.sub(
-        r"/?\s*INTERMEDIATE\s+CONSIGNEE\s*[:：-]?\s*",
-        " ",
-        text,
-    )
-
-    # Remove document descriptors at the beginning.
-    text = re.sub(
-        r"^\s*\([^)]*\)\s*[:：-]?\s*",
-        "",
-        text,
-    )
-
-    # Normalize line/separator structure.
-    text = re.sub(r"[|;]+", "\n", text)
-    text = re.sub(r"\r\n?", "\n", text)
-
-    lines = [
-        line.strip()
-        for line in text.split("\n")
-        if line.strip()
-    ]
-
-    # Ignore descriptor-only lines.
-    while lines and re.fullmatch(r"\([^)]*\)", lines[0]):
-        lines.pop(0)
-
-    if not lines:
-        return None
-
-    # ---------------------------------------------------------
-    # IMPORTANT:
-    #
-    # Do NOT remove "ON BEHALF OF ..." automatically.
-    #
-    # It can represent meaningful business information.
-    #
-    # Therefore:
-    #
-    # APRIL FINE PAPER TRADING
-    #
-    # and
-    #
-    # APRIL FINE PAPER TRADING
-    # ON BEHALF OF VITAL SOLUTIONS PTE LTD
-    #
-    # are not automatically treated as identical.
-    # ---------------------------------------------------------
-
-    text = " ".join(lines)
-
-    text = re.sub(r"\s+", " ", text).strip()
-
-    # Whitespace should not affect company-name comparison.
-    text = re.sub(r"\s+", "", text)
-
-    return text or None
-
-
-# ---------------------------------------------------------------------------
-# Port comparison
-# ---------------------------------------------------------------------------
-
-def _compare_port(a, b) -> str:
-
-    a_port = _parse_port(a)
-    b_port = _parse_port(b)
-
-    if a_port is None or b_port is None:
-        return "UNKNOWN"
-
-    # ---------------------------------------------------------
-    # If both sides contain a LOCODE and the codes differ,
-    # they are definitely different ports.
-    # ---------------------------------------------------------
-
-    if (
-        a_port["code"] is not None
-        and b_port["code"] is not None
-        and a_port["code"] != b_port["code"]
-    ):
-        return "MISMATCH"
-
-    # ---------------------------------------------------------
-    # Compare the actual place text.
-    #
-    # This is important because the same five-character code
-    # must NOT automatically mean the same port.
-    #
-    # Example:
-    #
-    # MOMBASA, KENYA (KEMBA)
-    # TUTICORIN, INDIA (KEMBA)
-    #
-    # Same code, different place -> MISMATCH.
-    # ---------------------------------------------------------
-
-    a_name = a_port["name"]
-    b_name = b_port["name"]
-
-    if a_name == b_name:
-        return "MATCH"
-
-    # If one side is simply a more detailed version of the same
-    # place, allow it to match.
-    if _port_names_compatible(a_name, b_name):
-        return "MATCH"
-
-    return "MISMATCH"
-
-
-def _parse_port(value):
-
+def _normalize_text(value):
     if _is_missing(value):
         return None
 
     text = str(value).upper().strip()
+    text = re.sub(r"\s+", " ", text)
 
-    text = re.sub(
-        r"[|;]+",
-        " ",
-        text,
+    return text
+
+
+def _compare_text(a, b) -> str:
+    a_norm = _normalize_text(a)
+    b_norm = _normalize_text(b)
+
+    if a_norm is None or b_norm is None:
+        return "UNKNOWN"
+
+    return (
+        "MATCH"
+        if a_norm == b_norm
+        else "MISMATCH"
     )
 
-    text = re.sub(
-        r"\s+",
-        " ",
-        text,
-    ).strip()
 
-    if not text:
-        return None
+def _parse_port(value):
+    """
+    Parse a port into:
 
-    # Find a trailing or embedded UN/LOCODE.
+        name
+        country
+        code
+
+    Examples:
+
+        VALPARAISO, CHILE (CLVAP)
+
+        HOUSTON, US (USHOU)
+
+        NANTONG, CHINA (CNNTG)
+    """
+
+    if _is_missing(value):
+        return {
+            "name": None,
+            "country": None,
+            "code": None,
+        }
+
+    text = str(value).upper().strip()
+
+    # Extract final five-letter UN/LOCODE.
     code_match = re.search(
-        r"\(([A-Z]{5})\)",
+        r"\(([A-Z]{5})\)\s*$",
         text,
     )
 
@@ -399,127 +305,168 @@ def _parse_port(value):
         else None
     )
 
-    # Remove only the LOCODE from the name.
-    name = re.sub(
-        r"\s*\([A-Z]{5}\)\s*$",
-        "",
-        text,
-    ).strip()
+    if code_match:
+        text = text[:code_match.start()].strip()
 
-    # Remove a leading POL/POD marker if it survived extraction.
-    name = re.sub(
-        r"^\s*\((?:POL|POD)\)\s*[:：-]?\s*",
-        "",
-        name,
-        flags=re.IGNORECASE,
-    )
+    text = re.sub(r"\s+", " ", text)
+    text = text.strip(" ,;")
 
-    name = re.sub(
-        r"\s+",
-        " ",
-        name,
-    ).strip()
+    name = text
+    country = None
 
-    if not name:
-        return None
+    # Most documents use:
+    #
+    # CITY, COUNTRY
+    #
+    if "," in text:
+        parts = [
+            part.strip()
+            for part in text.split(",")
+            if part.strip()
+        ]
+
+        if len(parts) >= 2:
+            country = parts[-1]
+            name = ", ".join(parts[:-1])
 
     return {
-        "name": _normalize_port_name(name),
+        "name": name or None,
+        "country": country or None,
         "code": code,
     }
 
 
 def _normalize_port_name(value):
-
-    text = str(value).upper().strip()
-
-    # Normalize punctuation/separators.
-    text = re.sub(
-        r"\s*,\s*",
-        ", ",
-        text,
-    )
-
-    text = re.sub(
-        r"\s+",
-        " ",
-        text,
-    )
-
-    # Normalize common slash/spacing variation.
-    text = re.sub(
-        r"\s*/\s*",
-        "/",
-        text,
-    )
-
-    return text.strip(" ,")
-
-
-def _port_names_compatible(a, b) -> bool:
-
-    if a == b:
-        return True
-
-    # Exact normalized containment is allowed only when the
-    # shorter value represents the same complete place name.
-    #
-    # Example:
-    # SINGAPORE
-    # SINGAPORE, SINGAPORE
-    #
-    # This does NOT make:
-    # MOMBASA, KENYA
-    # TUTICORIN, INDIA
-    # compatible.
-    a_parts = {
-        part.strip()
-        for part in a.split(",")
-        if part.strip()
-    }
-
-    b_parts = {
-        part.strip()
-        for part in b.split(",")
-        if part.strip()
-    }
-
-    if not a_parts or not b_parts:
-        return False
-
-    # One side may contain additional location detail, but every
-    # component from the shorter side must be present on the
-    # longer side.
-    if a_parts.issubset(b_parts):
-        return True
-
-    if b_parts.issubset(a_parts):
-        return True
-
-    # Handle simple "CITY COUNTRY" versus "CITY, COUNTRY".
-    a_space = re.sub(r"[,\s]+", " ", a).strip()
-    b_space = re.sub(r"[,\s]+", " ", b).strip()
-
-    return (
-        a_space == b_space
-    )
-
-
-# ---------------------------------------------------------------------------
-# Generic text normalization
-# ---------------------------------------------------------------------------
-
-def _normalize_text(value):
-
-    if _is_missing(value):
+    if value is None:
         return None
 
     text = str(value).upper().strip()
 
     text = re.sub(
+        r"/+",
+        "/",
+        text,
+    )
+
+    text = re.sub(
         r"\s+",
         " ",
         text,
     )
 
-    return text.replace(" ", "")
+    return text.strip(" ,;")
+
+
+def _port_names_compatible(a, b) -> bool:
+    """
+    Compare visible port names/countries.
+
+    A matching LOCODE alone must NOT override a conflicting
+    visible port name or country.
+    """
+
+    a_name = _normalize_port_name(
+        a.get("name")
+    )
+
+    b_name = _normalize_port_name(
+        b.get("name")
+    )
+
+    a_country = _normalize_port_name(
+        a.get("country")
+    )
+
+    b_country = _normalize_port_name(
+        b.get("country")
+    )
+
+    # Both have visible port names.
+    if a_name and b_name:
+
+        if a_name == b_name:
+
+            if a_country and b_country:
+                return a_country == b_country
+
+            return True
+
+        # Some documents contain:
+        #
+        # RUGAO/NANTONG/SHANGHAI
+        #
+        # while another may contain one or more of those names.
+        a_parts = {
+            part.strip()
+            for part in a_name.split("/")
+            if part.strip()
+        }
+
+        b_parts = {
+            part.strip()
+            for part in b_name.split("/")
+            if part.strip()
+        }
+
+        if (
+            a_parts
+            and b_parts
+            and (
+                a_parts.issubset(b_parts)
+                or b_parts.issubset(a_parts)
+            )
+        ):
+            if a_country and b_country:
+                return a_country == b_country
+
+            return True
+
+        return False
+
+    # Neither has a visible name.
+    if not a_name and not b_name:
+        if (
+            a.get("code")
+            and b.get("code")
+            and a["code"] == b["code"]
+        ):
+            return True
+
+    return False
+
+
+def _compare_port(a, b) -> str:
+    a_port = _parse_port(a)
+    b_port = _parse_port(b)
+
+    a_empty = (
+        a_port["name"] is None
+        and a_port["country"] is None
+        and a_port["code"] is None
+    )
+
+    b_empty = (
+        b_port["name"] is None
+        and b_port["country"] is None
+        and b_port["code"] is None
+    )
+
+    if a_empty or b_empty:
+        return "UNKNOWN"
+
+    # If both explicitly provide LOCODEs and they differ,
+    # treat that as a mismatch.
+    #
+    # This is checked before name compatibility.
+    if (
+        a_port["code"]
+        and b_port["code"]
+        and a_port["code"] != b_port["code"]
+    ):
+        return "MISMATCH"
+
+    # Visible name/country remains authoritative.
+    if _port_names_compatible(a_port, b_port):
+        return "MATCH"
+
+    return "MISMATCH"

@@ -1,129 +1,70 @@
 ============================================================
-EMAIL: email_032
+EMAIL: email_059
 ============================================================
 status:
   expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee']
+  actual:   NEEDS_REVIEW
 
 ============================================================
-EMAIL: email_055
+EMAIL: email_160
 ============================================================
 status:
   expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'notify_party', 'shipper']
+  actual:   NEEDS_REVIEW
 
 ============================================================
-EMAIL: email_097
+EMAIL: email_208
 ============================================================
+status:
+  expected: OK
+  actual:   NEEDS_REVIEW
+
+============================================================
+EMAIL: email_273
+============================================================
+status:
+  expected: OK
+  actual:   NEEDS_REVIEW
+
+============================================================
+EMAIL: email_313
+============================================================
+status:
+  expected: MISMATCH
+  actual:   NEEDS_REVIEW
+has_defect:
+  expected: True
+  actual:   False
 defect_fields:
   expected: ['container_count', 'gross_weight_kg']
-  actual:   ['consignee', 'container_count', 'gross_weight_kg', 'notify_party', 'shipper']
+  actual:   []
 
 ============================================================
-EMAIL: email_107
-============================================================
-defect_fields:
-  expected: ['consignee', 'container_count']
-  actual:   ['container_count', 'notify_party', 'shipper']
-
-============================================================
-EMAIL: email_121
+EMAIL: email_351
 ============================================================
 status:
   expected: MISMATCH
-  actual:   OK
+  actual:   NEEDS_REVIEW
 has_defect:
   expected: True
   actual:   False
 defect_fields:
-  expected: ['gross_weight_kg']
+  expected: ['container_count', 'gross_weight_kg']
   actual:   []
 
 ============================================================
-EMAIL: email_133
-============================================================
-status:
-  expected: MISMATCH
-  actual:   OK
-has_defect:
-  expected: True
-  actual:   False
-defect_fields:
-  expected: ['gross_weight_kg']
-  actual:   []
-
-============================================================
-EMAIL: email_198
+EMAIL: email_407
 ============================================================
 status:
   expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee']
+  actual:   NEEDS_REVIEW
 
 ============================================================
-EMAIL: email_256
-============================================================
-defect_fields:
-  expected: ['port_of_discharge', 'shipper']
-  actual:   ['consignee', 'port_of_discharge', 'shipper']
-
-============================================================
-EMAIL: email_291
-============================================================
-defect_fields:
-  expected: ['consignee', 'container_count']
-  actual:   ['container_count', 'notify_party', 'shipper']
-
-============================================================
-EMAIL: email_302
-============================================================
-defect_fields:
-  expected: ['container_count']
-  actual:   ['consignee', 'container_count', 'notify_party', 'shipper']
-
-============================================================
-EMAIL: email_354
-============================================================
-defect_fields:
-  expected: ['gross_weight_kg', 'notify_party']
-  actual:   ['consignee', 'gross_weight_kg', 'notify_party', 'shipper']
-
-============================================================
-EMAIL: email_361
-============================================================
-defect_fields:
-  expected: ['gross_weight_kg', 'port_of_discharge']
-  actual:   ['consignee', 'port_of_discharge']
-
-============================================================
-EMAIL: email_383
+EMAIL: email_411
 ============================================================
 status:
   expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee']
+  actual:   NEEDS_REVIEW
 
 ============================================================
 EMAIL: email_417
@@ -133,11 +74,17 @@ category:
   actual:   INVOICE_QUERY
 
 ============================================================
-EMAIL: email_435
+EMAIL: email_434
 ============================================================
+status:
+  expected: MISMATCH
+  actual:   NEEDS_REVIEW
+has_defect:
+  expected: True
+  actual:   False
 defect_fields:
-  expected: ['gross_weight_kg']
-  actual:   ['gross_weight_kg', 'notify_party', 'shipper']
+  expected: ['port_of_discharge']
+  actual:   []
 
 ============================================================
 EMAIL: email_455
@@ -147,118 +94,14 @@ category:
   actual:   INVOICE_QUERY
 
 ============================================================
-EMAIL: email_462
-============================================================
-status:
-  expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'notify_party', 'shipper']
-
-============================================================
-EMAIL: email_481
+EMAIL: email_499
 ============================================================
 status:
   expected: MISMATCH
-  actual:   OK
+  actual:   NEEDS_REVIEW
 has_defect:
   expected: True
   actual:   False
 defect_fields:
-  expected: ['consignee']
+  expected: ['gross_weight_kg']
   actual:   []
-
-============================================================
-EMAIL: email_483
-============================================================
-status:
-  expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee']
-
-============================================================
-EMAIL: email_498
-============================================================
-status:
-  expected: OK
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee']
-
-============================================================
-EMAIL: email_516
-============================================================
-status:
-  expected: NEEDS_REVIEW
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'shipper']
-
-============================================================
-EMAIL: email_517
-============================================================
-status:
-  expected: NEEDS_REVIEW
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'shipper']
-
-============================================================
-EMAIL: email_518
-============================================================
-status:
-  expected: NEEDS_REVIEW
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'shipper']
-
-============================================================
-EMAIL: email_519
-============================================================
-status:
-  expected: NEEDS_REVIEW
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'shipper']
-
-============================================================
-EMAIL: email_520
-============================================================
-status:
-  expected: NEEDS_REVIEW
-  actual:   MISMATCH
-has_defect:
-  expected: False
-  actual:   True
-defect_fields:
-  expected: []
-  actual:   ['consignee', 'shipper']
