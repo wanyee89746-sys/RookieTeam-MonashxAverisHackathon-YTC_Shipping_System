@@ -9,3 +9,4 @@ python-docx
 openpyxl
 pdfplumber
 uvicorn
+fastapi
