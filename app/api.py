@@ -216,6 +216,9 @@ def _attachment_text(path):
 @app.get("/emails/{email_id}/evidence")
 def get_evidence(email_id: str):
     """Extracted SI/BL text, shown to the reviewer as source evidence."""
+
+    print("=== EVIDENCE ENDPOINT HIT ===", flush=True)
+
     try:
         atts = inbox.get(email_id).get("attachments", [])
     except Exception:
