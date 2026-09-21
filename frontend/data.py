@@ -10,7 +10,53 @@ import requests
 import streamlit as st
 
 
-API_BASE_URL = "http://127.0.0.1:8000"
+import os
+
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+
+
+@st.cache_data(ttl=30)
+def fetch_raw(email_id):
+    try:
+        r = requests.get(f"{API_BASE_URL}/emails/{email_id}/raw", timeout=10)
+        r.raise_for_status()
+        return r.json()
+    except requests.RequestException:
+        return {}
+
+
+@st.cache_data(ttl=300)
+def fetch_evidence(email_id):
+    try:
+        r = requests.get(f"{API_BASE_URL}/emails/{email_id}/evidence", timeout=30)
+        r.raise_for_status()
+        return r.json()
+    except requests.RequestException:
+        return {}
+
+
+def post_review(email_id, corrections, note=""):
+    try:
+        requests.post(
+            f"{API_BASE_URL}/emails/{email_id}/review",
+            json={"corrections": corrections, "note": note},
+            timeout=10,
+        ).raise_for_status()
+    except requests.RequestException as e:
+        st.error(f"Could not save review: {e}")
+    st.cache_data.clear()
+
+
+def post_resolve(email_id, resolved, note=""):
+    try:
+        requests.post(
+            f"{API_BASE_URL}/emails/{email_id}/resolve",
+            json={"resolved": resolved, "note": note},
+            timeout=10,
+        ).raise_for_status()
+    except requests.RequestException as e:
+        st.error(f"Could not update status: {e}")
+    st.cache_data.clear()
 
 
 FIELD_LABELS = {

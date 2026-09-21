@@ -1,8 +1,10 @@
 import streamlit as st
 
 from data import fetch_emails
-from ui import CUSTOM_CSS, render_inbox, render_report, render_summary
-
+from ui import (
+    CUSTOM_CSS, render_filters, render_inbox_list,
+    render_report, render_summary,
+)
 
 st.set_page_config(
     page_title="Shipping Document Verification",
@@ -30,14 +32,14 @@ emails = fetch_emails()
 render_summary(emails)
 st.divider()
 
-inbox_col, report_col = st.columns(
-    [1.15, 2],
-    gap="large"
-)
+filtered, raw = render_filters(emails)
 
+st.divider()
+
+inbox_col, report_col = st.columns([1, 2], gap="large")
 
 with inbox_col:
-    render_inbox(emails)
+    render_inbox_list(filtered, len(emails), raw)
 
 
 selected_email = next(

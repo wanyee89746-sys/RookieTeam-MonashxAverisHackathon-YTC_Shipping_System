@@ -1,11 +1,19 @@
+import time
+
 import pandas as pd
 import streamlit as st
 
-from data import fetch_report, get_comparison
+from data import (
+    fetch_evidence, fetch_raw, fetch_report, get_comparison,
+    post_resolve, post_review,
+)
 
 
 CUSTOM_CSS = """
 """
+
+BEFORE = "Raw inbox (before)"
+AFTER = "Pipeline results (after)"
 
 CATEGORY_NAMES = {
     "BL_COMPARISON": "BL Comparison",
@@ -70,6 +78,20 @@ def status_badge(status):
     return STATUS_BADGES.get(status, f"⚪ {status}")
 
 
+def is_done(item):
+    if display_status(item) in ("OK", "CLASSIFIED_ONLY"):
+        return True
+    return bool(item.get("resolved"))
+
+
+def workflow_label(item):
+    if display_status(item) in ("OK", "CLASSIFIED_ONLY"):
+        return "✔ No action needed"
+    if item.get("resolved"):
+        return "✔ Done"
+    return "🔔 Action required"
+
+
 def _fmt(value):
     """Readable single-line value for display."""
     if value is None:
@@ -82,6 +104,10 @@ def _fmt(value):
     )
 
     return text or "NOT FOUND"
+
+
+def _s(value):
+    return "" if value is None else str(value)
 
 
 def _unverified_fields(report):
@@ -114,51 +140,88 @@ def render_summary(emails):
     cols[1].metric("No mismatch", counts.get("OK", 0))
     cols[2].metric("Mismatch", counts.get("MISMATCH", 0))
     cols[3].metric("Needs review", counts.get("NEEDS_REVIEW", 0))
-    cols[4].metric("Classified only", counts.get("CLASSIFIED_ONLY", 0))
+    cols[4].metric(
+        "Action required",
+        sum(1 for e in emails if not is_done(e)),
+    )
 
 
 # ---------------------------------------------------------------
 # Inbox
 # ---------------------------------------------------------------
 
-def render_inbox(emails):
-    """Display the processed email inbox with search/filter/sort."""
+SORT_OPTIONS = ["Email ID", "Subject", "Status"]
 
-    st.subheader("📥 Email Inbox")
 
-    if not emails:
-        st.info("No emails available.")
-        return
+def render_filters(emails):
+    """Full-width filter bar. Returns (filtered_emails, raw_mode)."""
 
-    search = st.text_input(
-        "Search",
-        placeholder="Search email ID, subject, or sender...",
-    )
+    if "view_mode" not in st.session_state:
+        st.session_state.view_mode = AFTER
 
-    categories = sorted(
-        {e.get("category") for e in emails if e.get("category")}
-    )
+    # Apply the switch BEFORE the radio is created.
+    if st.session_state.pop("switch_to_after", False):
+        st.session_state.view_mode = AFTER
 
-    col_a, col_b = st.columns(2)
+    top_a, top_b = st.columns([2, 1])
 
-    with col_a:
-        selected_status = st.selectbox(
+    with top_a:
+        mode = st.radio("View", [BEFORE, AFTER], horizontal=True, key="view_mode")
+
+    raw = mode == BEFORE
+
+    with top_b:
+        if raw:
+            if st.button("▶ Run pipeline", type="primary", use_container_width=True):
+                bar = st.progress(0, text="Starting...")
+                for pct, msg in [
+                    (25, "Classifying emails..."),
+                    (55, "Extracting SI and BL fields..."),
+                    (80, "Comparing 7 fields..."),
+                    (100, "Building reports..."),
+                ]:
+                    time.sleep(0.5)
+                    bar.progress(pct, text=msg)
+                st.session_state.switch_to_after = True
+                st.rerun()
+
+            st.caption("Replays saved pipeline output (precomputed).")
+
+    status = category = flow = "All"
+
+    if raw:
+        c_search, c_sort = st.columns([3, 1])
+        search = c_search.text_input(
+            "Search",
+            placeholder="Search email ID, subject, or sender...",
+        )
+        sort_by = c_sort.selectbox("Sort by", SORT_OPTIONS)
+
+    else:
+        categories = sorted(
+            {e.get("category") for e in emails if e.get("category")}
+        )
+
+        c_search, c_status, c_cat, c_flow, c_sort = st.columns([2.2, 1, 1, 1, 1])
+
+        search = c_search.text_input(
+            "Search",
+            placeholder="Search email ID, subject, or sender...",
+        )
+        status = c_status.selectbox(
             "Status",
             STATUS_OPTIONS,
             format_func=lambda s: "All" if s == "All" else status_badge(s),
         )
-
-    with col_b:
-        selected_category = st.selectbox(
+        category = c_cat.selectbox(
             "Category",
             ["All"] + categories,
             format_func=lambda c: "All" if c == "All" else format_category(c),
         )
-
-    sort_by = st.selectbox(
-        "Sort by",
-        ["Email ID", "Subject", "Status"],
-    )
+        flow = c_flow.selectbox(
+            "Workflow", ["All", "Action required", "Done"]
+        )
+        sort_by = c_sort.selectbox("Sort by", SORT_OPTIONS)
 
     filtered = emails
 
@@ -171,28 +234,32 @@ def render_inbox(emails):
             or q in str(e.get("from", "")).lower()
         ]
 
-    if selected_status != "All":
-        filtered = [
-            e for e in filtered
-            if display_status(e) == selected_status
-        ]
+    if status != "All":
+        filtered = [e for e in filtered if display_status(e) == status]
 
-    if selected_category != "All":
-        filtered = [
-            e for e in filtered
-            if e.get("category") == selected_category
-        ]
+    if category != "All":
+        filtered = [e for e in filtered if e.get("category") == category]
+
+    if flow == "Action required":
+        filtered = [e for e in filtered if not is_done(e)]
+    elif flow == "Done":
+        filtered = [e for e in filtered if is_done(e)]
 
     if sort_by == "Email ID":
         filtered = sorted(filtered, key=lambda e: e.get("email_id", ""))
     elif sort_by == "Subject":
-        filtered = sorted(
-            filtered, key=lambda e: str(e.get("subject", "")).lower()
-        )
+        filtered = sorted(filtered, key=lambda e: str(e.get("subject", "")).lower())
     elif sort_by == "Status":
         filtered = sorted(filtered, key=display_status)
 
-    st.caption(f"Showing {len(filtered)} of {len(emails)} emails")
+    return filtered, raw
+
+
+def render_inbox_list(filtered, total, raw):
+    """Scrollable email list."""
+
+    st.subheader("📥 Email Inbox")
+    st.caption(f"Showing {len(filtered)} of {total} emails")
 
     if not filtered:
         st.info("No emails match your search/filter.")
@@ -200,27 +267,155 @@ def render_inbox(emails):
 
     selected_id = st.session_state.get("selected_email_id")
 
-    for email in filtered:
-        email_id = email.get("email_id", "")
-        subject = email.get("subject", "(No subject)")
-        sender = email.get("from", "(Unknown sender)")
-        category = email.get("category")
+    with st.container(height=700):
+        for email in filtered:
+            email_id = email.get("email_id", "")
+            sender = email.get("from", "(Unknown sender)")
 
-        if st.button(
-            f"{email_id} — {subject}",
-            key=f"email_{email_id}",
-            use_container_width=True,
-            type="primary" if email_id == selected_id else "secondary",
-        ):
-            st.session_state.selected_email_id = email_id
-            st.rerun()
+            if st.button(
+                f"{email_id} — {email.get('subject', '(No subject)')}",
+                key=f"email_{email_id}",
+                use_container_width=True,
+                type="primary" if email_id == selected_id else "secondary",
+            ):
+                st.session_state.selected_email_id = email_id
+                st.rerun()
 
-        cat_text = f"{format_category(category)}  |  " if category else ""
+            if raw:
+                n = len(email.get("attachments") or [])
+                st.caption(f"From: {sender}  |  📎 {n} attachment(s)  |  ⏳ Not processed")
+            else:
+                cat = email.get("category")
+                cat_text = f"{format_category(cat)}  |  " if cat else ""
+                st.caption(
+                    f"From: {sender}  |  {cat_text}"
+                    f"{status_badge(display_status(email))}  |  "
+                    f"{workflow_label(email)}"
+                )
 
+
+# ---------------------------------------------------------------
+# Raw email (before pipeline)
+# ---------------------------------------------------------------
+
+def _render_raw(email_id):
+    st.markdown("### Email as received")
+    st.info("Not processed yet. Click **▶ Run pipeline** in the inbox to see the result.")
+
+    record = fetch_raw(email_id)
+    if not record:
+        st.warning("Could not load the raw email.")
+        return
+
+    atts = record.get("attachments") or []
+
+    if not atts:
+        st.warning("No attachments. A comparison request without SI/BL can't be checked.")
+    else:
+        st.markdown("**Attachments:**")
+        for a in atts:
+            st.write(f"📎 {a}")
+
+        ev = fetch_evidence(email_id)
+
+        if ev and (ev.get("si_text") or ev.get("bl_text")):
+            c1, c2 = st.columns(2)
+
+            for col, label, path, text in [
+                (c1, "SI", ev.get("si_path"), ev.get("si_text")),
+                (c2, "BL", ev.get("bl_path"), ev.get("bl_text")),
+            ]:
+                with col:
+                    st.markdown(f"**{label} preview**")
+                    st.caption(path or f"no {label} attachment")
+                    st.text_area(
+                        f"{label} text",
+                        text or "No text available",
+                        height=300,
+                        disabled=True,
+                        key=f"{label}_prev_{email_id}",
+                        label_visibility="collapsed",
+                    )
+
+    with st.expander("Raw email record"):
+        st.json(record)
+
+
+# ---------------------------------------------------------------
+# Human review
+# ---------------------------------------------------------------
+
+def _render_review(email_id, report, comparison):
+    st.markdown("### 🧑‍⚖️ Human review")
+
+    if report.get("reviewed") and report.get("original_status"):
         st.caption(
-            f"From: {sender}  |  {cat_text}"
-            f"{status_badge(display_status(email))}"
+            "Reviewer corrected values. Original pipeline result: "
+            f"{status_badge(report['original_status'])}"
         )
+
+    with st.expander("Source evidence (extracted text)"):
+        ev = fetch_evidence(email_id)
+        c1, c2 = st.columns(2)
+        c1.caption(f"SI: {ev.get('si_path') or 'no attachment'}")
+        c1.text(ev.get("si_text") or "No text available")
+        c2.caption(f"BL: {ev.get('bl_path') or 'no attachment'}")
+        c2.text(ev.get("bl_text") or "No text available")
+
+    keys = list(FIELD_LABELS)
+
+    base = pd.DataFrame(
+        {
+            "Field": [_label(f) for f in keys],
+            "SI": [_s(comparison.get(f, (None, None))[0]) for f in keys],
+            "BL": [_s(comparison.get(f, (None, None))[1]) for f in keys],
+        }
+    )
+
+    st.caption("Edit any SI or BL value, then save to recompute the result.")
+
+    edited = st.data_editor(
+        base,
+        hide_index=True,
+        disabled=["Field"],
+        use_container_width=True,
+        key=f"edit_{email_id}",
+    )
+
+    note = st.text_input(
+        "Reviewer note",
+        value=report.get("note") or "",
+        key=f"note_{email_id}",
+    )
+
+    c1, c2 = st.columns(2)
+
+    if c1.button("Save corrections & recompute", key=f"save_{email_id}"):
+        corrections = {}
+        for i, f in enumerate(keys):
+            change = {}
+            if edited.at[i, "SI"] != base.at[i, "SI"]:
+                change["si"] = edited.at[i, "SI"]
+            if edited.at[i, "BL"] != base.at[i, "BL"]:
+                change["bl"] = edited.at[i, "BL"]
+            if change:
+                corrections[f] = change
+
+        if corrections:
+            post_review(email_id, corrections, note)
+            st.rerun()
+        else:
+            st.info("No changes to save.")
+
+    done = bool(report.get("resolved"))
+
+    if c2.button(
+        "↩ Reopen" if done else "✔ Mark as done",
+        key=f"done_{email_id}",
+        type="secondary" if done else "primary",
+    ):
+        post_resolve(email_id, not done, note)
+        st.rerun()
 
 
 # ---------------------------------------------------------------
@@ -228,13 +423,23 @@ def render_inbox(emails):
 # ---------------------------------------------------------------
 
 def render_report(email):
-    """Display the already-processed verification report."""
+    """Display the verification report (or the raw email in 'before' view)."""
 
     if not email:
         st.info("Select an email from the inbox.")
         return
 
     email_id = email.get("email_id", "")
+
+    # Before-pipeline view: show the email as received.
+    if st.session_state.get("view_mode") == BEFORE:
+        st.subheader("📄 Email")
+        st.markdown(f"**Email ID:** `{email_id}`")
+        st.markdown(f"**Subject:** {email.get('subject', '—')}")
+        st.markdown(f"**From:** {email.get('from', '—')}")
+        st.divider()
+        _render_raw(email_id)
+        return
 
     st.subheader("📄 Verification Report")
     st.markdown(f"**Email ID:** `{email_id}`")
@@ -257,6 +462,7 @@ def render_report(email):
     comparison = get_comparison(report)
 
     st.markdown(f"### Status: {status_badge(status)}")
+    st.caption(workflow_label(report))
 
     # Non-comparison emails stop here.
     if status == "CLASSIFIED_ONLY":
@@ -289,6 +495,10 @@ def render_report(email):
 
     _render_issues(defect_fields, comparison)
     _render_comparison_table(report, comparison)
+
+    if status in ("MISMATCH", "NEEDS_REVIEW") or report.get("reviewed"):
+        st.divider()
+        _render_review(email_id, report, comparison)
 
 
 def _render_issues(defect_fields, comparison):
