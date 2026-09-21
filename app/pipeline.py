@@ -251,9 +251,7 @@ Rules:
 
     except Exception as e:
 
-        print(
-            f"[VISION] Failed for {path}: {e}"
-        )
+        print(f"[VISION] Failed for {path}: {type(e).__name__}: {e}", flush=True)
 
         return None
 
