@@ -8,6 +8,7 @@ with open("data/ground_truth.json", "r", encoding="utf-8") as f:
 
 total = 0
 correct = 0
+failures = []
 
 print("=" * 60)
 print("EVALUATION")
@@ -32,30 +33,67 @@ for email_id, expected in ground_truth.items():
 
     if is_correct:
         correct += 1
-        print(f"✅ {email_id}")
+
     else:
-        print(f"❌ {email_id}")
+        # Keep detailed failure information for the file
+        failure_lines = []
+
+        failure_lines.append("=" * 60)
+        failure_lines.append(f"EMAIL: {email_id}")
+        failure_lines.append("=" * 60)
 
         if actual.get("category") != expected.get("category"):
-            print(f"   category:")
-            print(f"      expected: {expected.get('category')}")
-            print(f"      actual:   {actual.get('category')}")
+            failure_lines.append("category:")
+            failure_lines.append(
+                f"  expected: {expected.get('category')}"
+            )
+            failure_lines.append(
+                f"  actual:   {actual.get('category')}"
+            )
 
         if actual.get("status") != expected.get("status"):
-            print(f"   status:")
-            print(f"      expected: {expected.get('status')}")
-            print(f"      actual:   {actual.get('status')}")
+            failure_lines.append("status:")
+            failure_lines.append(
+                f"  expected: {expected.get('status')}"
+            )
+            failure_lines.append(
+                f"  actual:   {actual.get('status')}"
+            )
 
         if actual.get("has_defect") != expected.get("has_defect"):
-            print(f"   has_defect:")
-            print(f"      expected: {expected.get('has_defect')}")
-            print(f"      actual:   {actual.get('has_defect')}")
+            failure_lines.append("has_defect:")
+            failure_lines.append(
+                f"  expected: {expected.get('has_defect')}"
+            )
+            failure_lines.append(
+                f"  actual:   {actual.get('has_defect')}"
+            )
 
-        if sorted(actual.get("defect_fields", [])) != sorted(expected.get("defect_fields", [])):
-            print(f"   defect_fields:")
-            print(f"      expected: {expected.get('defect_fields', [])}")
-            print(f"      actual:   {actual.get('defect_fields', [])}")
+        if (
+            sorted(actual.get("defect_fields", []))
+            != sorted(expected.get("defect_fields", []))
+        ):
+            failure_lines.append("defect_fields:")
+            failure_lines.append(
+                f"  expected: {expected.get('defect_fields', [])}"
+            )
+            failure_lines.append(
+                f"  actual:   {actual.get('defect_fields', [])}"
+            )
 
+        failures.append("\n".join(failure_lines))
+
+
+# Write detailed failures to file
+with open("evaluation_failures.txt", "w", encoding="utf-8") as f:
+    if failures:
+        f.write("\n\n".join(failures))
+        f.write("\n")
+    else:
+        f.write("No failures.\n")
+
+
+# Final summary
 print()
 print("=" * 60)
 print(f"PROCESSED: {total}")
@@ -66,3 +104,6 @@ if total > 0:
     print(f"ACCURACY:  {correct / total * 100:.2f}%")
 
 print("=" * 60)
+
+print()
+print(f"Detailed failures saved to: evaluation_failures.txt")

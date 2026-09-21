@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import time
 
 from dotenv import load_dotenv
 from google import genai
@@ -89,10 +88,6 @@ FIELD_LABELS = {
 }
 
 
-# ---------------------------------------------------------------------------
-# Labels that indicate the beginning of another field / section.
-# ---------------------------------------------------------------------------
-
 ALL_LABELS = sorted(
     {
         label.upper()
@@ -129,17 +124,6 @@ ALL_LABELS = sorted(
 )
 
 
-# IMPORTANT:
-# The label itself must have word boundaries.
-#
-# Without this, "POL" can match the POL inside:
-#
-#     METROPOLITAN
-#
-# which caused email_059 to extract:
-#
-#     ITAN ROAD...
-#
 NEXT_FIELD_PATTERN = re.compile(
     r"\b(?:"
     + "|".join(re.escape(label) for label in ALL_LABELS)
@@ -147,10 +131,6 @@ NEXT_FIELD_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
-
-# ---------------------------------------------------------------------------
-# Rate limiter + disk cache shared across Gemini calls.
-# ---------------------------------------------------------------------------
 
 _limiter = RateLimiter(calls_per_minute=12)
 _cache = LLMCache()
@@ -164,9 +144,8 @@ def _clean_value(value: str | None) -> str | None:
     if value is None:
         return None
 
-    value = value.strip()
+    value = str(value).strip()
 
-    # Remove POL/POD markers accidentally captured as part of the value.
     value = re.sub(
         r"^\s*\((?:POL|POD)\)\s*[:：-]?\s*",
         "",
@@ -174,7 +153,6 @@ def _clean_value(value: str | None) -> str | None:
         flags=re.IGNORECASE,
     )
 
-    # Remove "Intermediate Consignee:" if accidentally captured.
     value = re.sub(
         r"^\s*/?\s*INTERMEDIATE\s+CONSIGNEE\s*[:：-]?\s*",
         "",
@@ -182,7 +160,6 @@ def _clean_value(value: str | None) -> str | None:
         flags=re.IGNORECASE,
     )
 
-    # Remove notify-party label if accidentally captured.
     value = re.sub(
         r"^\s*(?:NOTIFY\s+PARTY|NOTIFY)\s*[:：-]?\s*",
         "",
@@ -198,14 +175,6 @@ def _clean_value(value: str | None) -> str | None:
 # ---------------------------------------------------------------------------
 
 def _extract_table_rows(text: str) -> list[tuple[str, str]]:
-    """
-    Convert flattened table text into (label, value) pairs.
-
-    Supports:
-        Label<TAB>Value
-        Label | Value
-    """
-
     rows = []
 
     for raw_line in text.splitlines():
@@ -241,35 +210,19 @@ def _extract_table_rows(text: str) -> list[tuple[str, str]]:
 # ---------------------------------------------------------------------------
 
 def _label_matches(label: str):
-    """
-    Match document table labels to the required fields.
-
-    Handles:
-    - English labels
-    - abbreviations
-    - Chinese descriptions
-    - labels with extra text in parentheses
-    """
-
     if not label:
         return None
 
     clean_label = str(label).upper().strip()
 
-    # Normalize spaces and punctuation.
     clean_label = re.sub(r"\s+", " ", clean_label)
     clean_label = clean_label.rstrip(":：=|- ").strip()
 
-    # Remove common parenthetical descriptions.
     base_label = re.sub(
         r"\s*\([^)]*\)",
         "",
         clean_label,
     ).strip()
-
-    # ---------------------------------------------------------
-    # Exact known labels
-    # ---------------------------------------------------------
 
     for field, labels in FIELD_LABELS.items():
 
@@ -283,10 +236,6 @@ def _label_matches(label: str):
             if base_label == candidate_upper:
                 return field
 
-    # ---------------------------------------------------------
-    # Shipping party fields
-    # ---------------------------------------------------------
-
     if base_label.startswith("SHIPPER"):
         return "shipper"
 
@@ -298,10 +247,6 @@ def _label_matches(label: str):
 
     if base_label.startswith("NOTIFY"):
         return "notify_party"
-
-    # ---------------------------------------------------------
-    # Ports
-    # ---------------------------------------------------------
 
     if (
         base_label == "LOAD PORT"
@@ -318,10 +263,6 @@ def _label_matches(label: str):
     ):
         return "port_of_discharge"
 
-    # ---------------------------------------------------------
-    # Container count
-    # ---------------------------------------------------------
-
     if (
         base_label.startswith("CONTAINER COUNT")
         or base_label.startswith("TOTAL CONTAINERS")
@@ -332,10 +273,6 @@ def _label_matches(label: str):
         }
     ):
         return "container_count"
-
-    # ---------------------------------------------------------
-    # Gross weight
-    # ---------------------------------------------------------
 
     if (
         base_label.startswith("GROSS WEIGHT")
@@ -349,14 +286,10 @@ def _label_matches(label: str):
 
 
 # ---------------------------------------------------------------------------
-# Detect table-like documents
+# Table detection
 # ---------------------------------------------------------------------------
 
 def _looks_like_table(text: str) -> bool:
-    """
-    Detect whether the document looks like a flattened table.
-    """
-
     if not text:
         return False
 
@@ -365,16 +298,11 @@ def _looks_like_table(text: str) -> bool:
     matched = 0
 
     for label, _ in rows:
-
         if _label_matches(label) is not None:
             matched += 1
 
     return matched >= 2
 
-
-# ---------------------------------------------------------------------------
-# Table extraction
-# ---------------------------------------------------------------------------
 
 def _extract_from_table(text: str) -> dict:
 
@@ -409,7 +337,7 @@ def _extract_from_table(text: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Build safe field-boundary regex
+# Field boundary
 # ---------------------------------------------------------------------------
 
 def _build_next_field_pattern():
@@ -449,18 +377,6 @@ def _extract_labeled_value(
 
     for label in sorted(labels, key=len, reverse=True):
 
-        # IMPORTANT:
-        #
-        # Add word boundaries around the label.
-        #
-        # This prevents:
-        #
-        #     POL
-        #
-        # from matching:
-        #
-        #     METROPOLITAN
-        #
         pattern = re.compile(
             r"(?i)"
             r"\b"
@@ -483,12 +399,6 @@ def _extract_labeled_value(
 
         if value:
             return value
-
-    # ---------------------------------------------------------
-    # Special case:
-    #
-    # "To the Order of" can be a valid consignee.
-    # ---------------------------------------------------------
 
     if field == "consignee":
 
@@ -516,30 +426,17 @@ def _extract_labeled_value(
 
 
 # ---------------------------------------------------------------------------
-# Numeric extraction helpers
+# Numeric extraction
 # ---------------------------------------------------------------------------
 
 def _extract_container_count(value):
-    """
-    Extract only the container count.
-
-    Examples:
-
-        12 x 20'FCL       -> 12
-        6 x 40'HC         -> 6
-        12X20 FCL         -> 12
-        12 containers     -> 12
-        6                 -> 6
-    """
 
     if value is None:
         return None
 
     text = str(value).upper()
-
     text = text.replace(",", "")
 
-    # Prefer explicit container patterns.
     patterns = [
         r"\b(\d+)\s*[X×]\s*\d+",
         r"\b(\d+)\s+CONTAINERS?\b",
@@ -567,30 +464,13 @@ def _extract_container_count(value):
 
 
 def _extract_gross_weight(value):
-    """
-    Extract gross weight.
-
-    Examples:
-
-        243588       -> 243588
-        243,588 KGS  -> 243588
-        131,322 KG   -> 131322
-        216950       -> 216950
-
-    IMPORTANT:
-    This function should not interpret the "40" from
-    "6 x 40'HC" as gross weight.
-    """
 
     if value is None:
         return None
 
     text = str(value).upper().strip()
-
-    # Remove commas.
     text = text.replace(",", "")
 
-    # Prefer values explicitly followed by KG/KGS/KILOGRAMS.
     match = re.search(
         r"\b(\d+(?:\.\d+)?)\s*(?:KG|KGS|KILOGRAMS?)\b",
         text,
@@ -613,15 +493,6 @@ def _extract_gross_weight(value):
         except ValueError:
             pass
 
-    # If there is no unit, extract a standalone number.
-    #
-    # But do NOT blindly take the first number if the value
-    # contains container dimensions such as:
-    #
-    #     6 x 40'HC
-    #
-    # That belongs to container_count, not gross_weight.
-    #
     standalone_numbers = re.findall(
         r"\b\d+(?:\.\d+)?\b",
         text,
@@ -646,7 +517,6 @@ def _extract_gross_weight(value):
     return None
 
 
-# Keep the old helper name for compatibility.
 def _extract_number_value(value):
 
     if value is None:
@@ -654,8 +524,6 @@ def _extract_number_value(value):
 
     text = str(value).upper()
 
-    # If the value clearly looks like a container description,
-    # extract container count.
     if re.search(
         r"\b\d+\s*[X×]\s*\d+",
         text,
@@ -670,7 +538,7 @@ def _extract_number_value(value):
 
 
 # ---------------------------------------------------------------------------
-# Python-first extraction
+# Python extraction
 # ---------------------------------------------------------------------------
 
 def _python_extract(text: str) -> dict:
@@ -683,10 +551,6 @@ def _python_extract(text: str) -> dict:
     if not text:
         return result
 
-    # ---------------------------------------------------------
-    # Table extraction MUST happen first.
-    # ---------------------------------------------------------
-
     if _looks_like_table(text):
 
         table_result = _extract_from_table(text)
@@ -698,20 +562,12 @@ def _python_extract(text: str) -> dict:
 
             return table_result
 
-    # ---------------------------------------------------------
-    # Normal text extraction
-    # ---------------------------------------------------------
-
     for field in FIELDS:
 
         result[field] = _extract_labeled_value(
             text,
             field,
         )
-
-    # ---------------------------------------------------------
-    # Numeric normalization
-    # ---------------------------------------------------------
 
     result["container_count"] = _extract_container_count(
         result.get("container_count")
@@ -725,7 +581,98 @@ def _python_extract(text: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Gemini extraction fallback
+# Extraction validation
+# ---------------------------------------------------------------------------
+
+def _normalize_port_for_validation(value):
+    """
+    Extract the basic port components without deciding whether
+    two ports are equal.
+
+    This is only used to detect suspicious locally-extracted
+    port values that should be sent to Gemini for verification.
+    """
+
+    if value is None:
+        return None
+
+    text = str(value).upper().strip()
+    text = re.sub(r"\s+", " ", text)
+
+    code_match = re.search(
+        r"\(([A-Z]{5})\)",
+        text,
+    )
+
+    code = code_match.group(1) if code_match else None
+
+    name = re.sub(
+        r"\s*\([A-Z]{5}\)\s*$",
+        "",
+        text,
+    ).strip()
+
+    return {
+        "name": name,
+        "code": code,
+    }
+
+
+def _has_suspicious_port_extraction(result: dict) -> bool:
+    """
+    Detect cases where local extraction found a port value containing
+    a LOCODE but the surrounding text is structurally suspicious.
+
+    The important point is that the LOCODE itself is NOT treated as
+    proof that two ports are equal.
+
+    This function only decides whether local extraction should be
+    considered uncertain enough to ask Gemini for another extraction.
+    """
+
+    for field in (
+        "port_of_loading",
+        "port_of_discharge",
+    ):
+
+        value = result.get(field)
+
+        if value is None:
+            continue
+
+        parsed = _normalize_port_for_validation(value)
+
+        if not parsed:
+            continue
+
+        code = parsed["code"]
+        name = parsed["name"]
+
+        if code is None:
+            continue
+
+        # A port value containing a code but no meaningful name
+        # is suspicious.
+        if not name or len(name) < 2:
+            return True
+
+        # A code should not appear multiple times.
+        if str(value).upper().count(code) > 1:
+            return True
+
+    return False
+
+
+def _extraction_quality(result: dict) -> int:
+    return sum(
+        1
+        for field in FIELDS
+        if result.get(field) is not None
+    )
+
+
+# ---------------------------------------------------------------------------
+# Gemini extraction
 # ---------------------------------------------------------------------------
 
 _PROMPT = """
@@ -754,7 +701,11 @@ Rules:
 6. Preserve company names and addresses accurately.
 7. "To the Order of" may be a valid consignee.
 8. Do not include unrelated following fields inside a field value.
-9. Return exactly one JSON object.
+9. For ports, preserve the actual place name and country shown in
+   the document. If a UN/LOCODE is present, include it in the
+   extracted port value, but do not use the code to replace the
+   actual place name.
+10. Return exactly one JSON object.
 
 Example:
 
@@ -762,8 +713,8 @@ Example:
   "shipper": "ABC COMPANY",
   "consignee": "XYZ COMPANY",
   "notify_party": "XYZ COMPANY",
-  "port_of_loading": "SINGAPORE",
-  "port_of_discharge": "KARACHI, PAKISTAN",
+  "port_of_loading": "SINGAPORE (SGSIN)",
+  "port_of_discharge": "KARACHI, PAKISTAN (PKKHI)",
   "container_count": 12,
   "gross_weight_kg": 243588
 }
@@ -830,7 +781,6 @@ def _gemini_extract(text: str):
 
         raw = response.text.strip()
 
-        # Remove markdown JSON fences.
         raw = re.sub(
             r"^```json\s*",
             "",
@@ -851,7 +801,6 @@ def _gemini_extract(text: str):
             for field in FIELDS
         }
 
-        # Normalize numeric fields.
         result["container_count"] = _extract_container_count(
             result.get("container_count")
         )
@@ -877,40 +826,33 @@ def _gemini_extract(text: str):
 
 
 # ---------------------------------------------------------------------------
-# Main extraction function
+# Main extraction
 # ---------------------------------------------------------------------------
 
 def extract_fields(text: str):
 
     """
-    Main extraction function.
+    Extraction strategy:
 
-    Strategy:
-
-    1. Python table extraction
-    2. Python normal-text extraction
-    3. Gemini fallback only if Python did not obtain
-       enough information
+    1. Python extraction first.
+    2. If enough fields are confidently extracted, return Python result.
+    3. If extraction is incomplete or structurally suspicious, try Gemini.
+    4. If Gemini fails, retain the Python result when it contains
+       usable information instead of returning None unnecessarily.
     """
 
     if not text or not text.strip():
-
         return None
-
-    # ---------------------------------------------------------
-    # Python first
-    # ---------------------------------------------------------
 
     result = _python_extract(text)
 
-    found = sum(
-        1
-        for field in FIELDS
-        if result.get(field) is not None
-    )
+    found = _extraction_quality(result)
 
-    # Avoid Gemini unnecessarily.
-    if found >= 2:
+    # A suspicious port structure means local extraction may have
+    # captured the wrong text even if several fields were found.
+    suspicious_port = _has_suspicious_port_extraction(result)
+
+    if found >= 2 and not suspicious_port:
 
         print(
             "[LOCAL] Extraction completed without Gemini"
@@ -918,17 +860,16 @@ def extract_fields(text: str):
 
         return result
 
-    # ---------------------------------------------------------
-    # Gemini fallback
-    # ---------------------------------------------------------
+    if suspicious_port:
+        print(
+            "[LOCAL] Extraction structurally uncertain; trying Gemini"
+        )
+    else:
+        print(
+            "[LOCAL] Extraction incomplete; trying Gemini"
+        )
 
-    print(
-        "[LOCAL] Extraction incomplete; trying Gemini"
-    )
-
-    gemini_result = _gemini_extract(
-        text
-    )
+    gemini_result = _gemini_extract(text)
 
     if gemini_result is not None:
 
@@ -938,9 +879,15 @@ def extract_fields(text: str):
 
         return gemini_result
 
-    # ---------------------------------------------------------
-    # Nothing reliable could be extracted.
-    # ---------------------------------------------------------
+    # If Gemini is unavailable or fails, do not throw away useful
+    # local extraction results.
+    if found > 0:
+
+        print(
+            "[LOCAL] Gemini unavailable; using local extraction"
+        )
+
+        return result
 
     print(
         "[EXTRACTION] Unable to extract fields"

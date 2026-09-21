@@ -1,5 +1,6 @@
 from extractor import FIELDS
 
+
 BLANK_TOKENS = {
     "???",
     "___",
@@ -7,14 +8,14 @@ BLANK_TOKENS = {
     "TBA",
     "TBC",
     "N/A",
+    "NA",
+    "NULL",
+    "NONE",
     "",
     "____MT",
 }
 
-# Literal markers this dataset's generator prints for "wrong" documents.
-# Kept as a fast, exact fast-path — but NOT the only signal (see the
-# structural fallback in step 3 below), so a real inbox's differently
-# worded invoices/packing lists still get caught.
+
 WRONG_DOC_MARKERS = [
     "COMMERCIAL INVOICE",
     "PACKING LIST",
@@ -33,14 +34,25 @@ def check_review(
 
     attachments = email.get("attachments", [])
 
-    si_path = next((a for a in attachments if "_SI" in a), None)
-    bl_path = next((a for a in attachments if "_BL" in a), None)
+    si_path = next(
+        (a for a in attachments if "_SI" in a),
+        None,
+    )
+
+    bl_path = next(
+        (a for a in attachments if "_BL" in a),
+        None,
+    )
 
     # ---------------------------------------------------------
     # 1. Missing attachment
     # ---------------------------------------------------------
+
     if si_path is None or bl_path is None:
-        body = (email.get("body") or "").upper()
+
+        body = (
+            email.get("body") or ""
+        ).upper()
 
         missing_attachment_phrases = [
             "ATTACHMENTS APPEAR TO HAVE BEEN DROPPED",
@@ -53,18 +65,20 @@ def check_review(
             "ATTACHMENTS ARE MISSING",
         ]
 
-        if any(phrase in body for phrase in missing_attachment_phrases):
+        if any(
+            phrase in body
+            for phrase in missing_attachment_phrases
+        ):
             return "missing_attachment"
 
-        # Some emails are valid BL comparison requests even though
-        # the attachments are not actually present in the dataset.
-        # Do not automatically escalate unless the email explicitly
-        # indicates that an attachment is missing.
+        # No explicit statement that the attachment is missing.
+        # Keep the original behaviour for these cases.
         return None
 
     # ---------------------------------------------------------
-    # 2. Both attachments exist → check readability
+    # 2. Readability
     # ---------------------------------------------------------
+
     if si_text is None or not si_text.strip():
         return "unreadable"
 
@@ -78,70 +92,84 @@ def check_review(
         return "unreadable"
 
     # ---------------------------------------------------------
-    # 3. Check whether attachments are obviously wrong documents
-    #
-    #    a) Literal markers first — exact, cheap, catches this
-    #       dataset's generated wrong-doc text immediately.
-    #    b) Structural fallback — if extraction already ran and
-    #       came back with almost nothing usable despite the
-    #       document being readable and non-empty, it's more
-    #       likely the wrong document type than a parsing bug.
-    #       This generalizes beyond the exact strings above, so
-    #       the check doesn't only work on this generator's output.
+    # 3. Wrong document type
     # ---------------------------------------------------------
-    for label, text in [("SI", si_text), ("BL", bl_text)]:
+
+    for label, text in [
+        ("SI", si_text),
+        ("BL", bl_text),
+    ]:
+
         upper = text.upper()
 
-        if any(marker in upper for marker in WRONG_DOC_MARKERS):
-            return "wrong_doc_type"
-
-    if si_fields is not None and bl_fields is not None:
-        si_hits = sum(
-            1 for f in FIELDS
-            if si_fields.get(f) not in (None, "")
-        )
-        bl_hits = sum(
-            1 for f in FIELDS
-            if bl_fields.get(f) not in (None, "")
-        )
-
-        # A genuine SI/BL should yield multiple recognizable fields.
-        # Almost nothing extracted from a readable, non-empty
-        # document suggests it isn't an SI/BL at all.
-        if si_hits <= 1 or bl_hits <= 1:
+        if any(
+            marker in upper
+            for marker in WRONG_DOC_MARKERS
+        ):
             return "wrong_doc_type"
 
     # ---------------------------------------------------------
     # 4. Extraction completely failed
     # ---------------------------------------------------------
+
     if si_fields is None or bl_fields is None:
         return "extraction_failed"
 
     # ---------------------------------------------------------
-    # 5. Missing required values
+    # 5. Check whether the extraction is almost completely empty.
     #
-    # Only escalate when a field is missing on ONE side but
-    # present on the other side.
+    # We only use this as a wrong-document signal when BOTH sides
+    # have almost no recognized fields.
     #
-    # If both SI and BL are missing the same field, there is
-    # no discrepancy to report, so comparison can continue.
+    # We do NOT escalate because one or two fields are missing.
+    # Missing fields are handled as UNKNOWN by comparator.py.
     # ---------------------------------------------------------
-    for f in FIELDS:
 
-        si_missing = (
-            si_fields.get(f) is None
-            or str(si_fields.get(f)).strip().upper() in BLANK_TOKENS
-        )
+    si_hits = sum(
+        1
+        for f in FIELDS
+        if not _is_blank(si_fields.get(f))
+    )
 
-        bl_missing = (
-            bl_fields.get(f) is None
-            or str(bl_fields.get(f)).strip().upper() in BLANK_TOKENS
-        )
+    bl_hits = sum(
+        1
+        for f in FIELDS
+        if not _is_blank(bl_fields.get(f))
+    )
 
-        if si_missing != bl_missing:
-            return "missing_value"
+    if si_hits <= 1 and bl_hits <= 1:
+        return "wrong_doc_type"
 
     # ---------------------------------------------------------
-    # 6. Everything is usable → continue to comparison
+    # 6. Missing individual fields
+    #
+    # IMPORTANT:
+    #
+    # Do NOT return "missing_value" here.
+    #
+    # Examples:
+    #
+    # SI weight = 214270
+    # BL weight = None
+    #
+    # This is not automatically a mismatch.
+    #
+    # Comparator will represent it as:
+    #
+    # gross_weight_kg -> UNKNOWN
+    #
+    # This prevents extraction/document incompleteness from being
+    # confused with an actual SI/BL value disagreement.
     # ---------------------------------------------------------
+
     return None
+
+
+def _is_blank(value) -> bool:
+
+    if value is None:
+        return True
+
+    text = str(value).strip().upper()
+
+    return text in BLANK_TOKENS
