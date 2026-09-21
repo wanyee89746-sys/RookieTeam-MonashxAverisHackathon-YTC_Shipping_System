@@ -134,7 +134,18 @@ def health_check():
         "status": "ok"
     }
 
+@app.get("/debug-data")
+def debug_data():
+    inbox_dir = DATA_DIR / "inbox"
 
+    return {
+        "data_dir": str(DATA_DIR),
+        "data_exists": DATA_DIR.exists(),
+        "inbox_exists": inbox_dir.exists(),
+        "inbox_file_count": len(list(inbox_dir.glob("email_*.json")))
+            if inbox_dir.exists()
+            else 0,
+    }
 # ============================================================
 # EMAIL LIST
 # ============================================================
