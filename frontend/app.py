@@ -1,7 +1,7 @@
 import streamlit as st
 
 from data import fetch_emails
-from ui import CUSTOM_CSS, render_inbox, render_report
+from ui import CUSTOM_CSS, render_inbox, render_report, render_summary
 
 
 st.set_page_config(
@@ -27,6 +27,8 @@ st.divider()
 
 emails = fetch_emails()
 
+render_summary(emails)
+st.divider()
 
 inbox_col, report_col = st.columns(
     [1.15, 2],

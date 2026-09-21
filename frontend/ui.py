@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 
 from data import fetch_report, get_comparison
@@ -6,19 +7,16 @@ from data import fetch_report, get_comparison
 CUSTOM_CSS = """
 """
 
-
 CATEGORY_NAMES = {
     "BL_COMPARISON": "BL Comparison",
     "GENERAL": "General",
 }
-
 
 REASON_NAMES = {
     "missing_value": "Missing value",
     "unreadable": "Unreadable document",
     "extraction_failed": "Extraction failed",
 }
-
 
 FIELD_LABELS = {
     "shipper": "Shipper",
@@ -30,42 +28,98 @@ FIELD_LABELS = {
     "gross_weight_kg": "Gross Weight (kg)",
 }
 
+STATUS_BADGES = {
+    "OK": "🟢 NO MISMATCH",
+    "MISMATCH": "🔴 MISMATCH",
+    "NEEDS_REVIEW": "🟠 NEEDS REVIEW",
+    "CLASSIFIED_ONLY": "⚪ CLASSIFIED ONLY",
+    "ERROR": "⚫ ERROR",
+}
+
+STATUS_OPTIONS = ["All", "OK", "MISMATCH", "NEEDS_REVIEW", "CLASSIFIED_ONLY"]
+
+
+# ---------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------
 
 def format_category(category):
-    return CATEGORY_NAMES.get(
-        category,
-        category or "Unknown",
-    )
-
-
-def format_status(status):
-    return status or "Unknown"
+    if not category:
+        return "Unknown"
+    return CATEGORY_NAMES.get(category, category.replace("_", " ").title())
 
 
 def format_review_reason(reason):
     if not reason:
         return "—"
+    return REASON_NAMES.get(reason, reason.replace("_", " ").title())
 
-    return REASON_NAMES.get(
-        reason,
-        reason.replace("_", " ").title(),
-    )
+
+def display_status(item):
+    """Non-comparison emails are only classified, never checked."""
+    category = item.get("category")
+    status = item.get("status") or "UNKNOWN"
+
+    if category and category != "BL_COMPARISON" and status == "OK":
+        return "CLASSIFIED_ONLY"
+
+    return status
 
 
 def status_badge(status):
-    status = status or "UNKNOWN"
+    return STATUS_BADGES.get(status, f"⚪ {status}")
 
-    if status == "OK":
-        return "🟢 OK"
 
-    if status == "MISMATCH":
-        return "🔴 MISMATCH"
+def _fmt(value):
+    """Readable single-line value for display."""
+    if value is None:
+        return "NOT FOUND"
 
-    if status == "NEEDS_REVIEW":
-        return "🟠 NEEDS REVIEW"
+    text = " | ".join(
+        line.strip()
+        for line in str(value).splitlines()
+        if line.strip()
+    )
 
-    return f"⚪ {status}"
+    return text or "NOT FOUND"
 
+
+def _unverified_fields(report):
+    results = report.get("field_results") or {}
+    return [f for f, r in results.items() if r == "UNKNOWN"]
+
+
+def _label(field):
+    return FIELD_LABELS.get(field, field.replace("_", " ").title())
+
+
+# ---------------------------------------------------------------
+# Summary bar
+# ---------------------------------------------------------------
+
+def render_summary(emails):
+    """Overview counts across all processed emails."""
+
+    if not emails:
+        return
+
+    counts = {}
+
+    for email in emails:
+        s = display_status(email)
+        counts[s] = counts.get(s, 0) + 1
+
+    cols = st.columns(5)
+    cols[0].metric("Total emails", len(emails))
+    cols[1].metric("No mismatch", counts.get("OK", 0))
+    cols[2].metric("Mismatch", counts.get("MISMATCH", 0))
+    cols[3].metric("Needs review", counts.get("NEEDS_REVIEW", 0))
+    cols[4].metric("Classified only", counts.get("CLASSIFIED_ONLY", 0))
+
+
+# ---------------------------------------------------------------
+# Inbox
+# ---------------------------------------------------------------
 
 def render_inbox(emails):
     """Display the processed email inbox with search/filter/sort."""
@@ -81,133 +135,97 @@ def render_inbox(emails):
         placeholder="Search email ID, subject, or sender...",
     )
 
-    status_options = [
-        "All",
-        "OK",
-        "MISMATCH",
-        "NEEDS_REVIEW",
-    ]
-
-    selected_status = st.selectbox(
-        "Status",
-        status_options,
+    categories = sorted(
+        {e.get("category") for e in emails if e.get("category")}
     )
 
-    sort_options = [
-        "Email ID",
-        "Subject",
-        "Status",
-    ]
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        selected_status = st.selectbox(
+            "Status",
+            STATUS_OPTIONS,
+            format_func=lambda s: "All" if s == "All" else status_badge(s),
+        )
+
+    with col_b:
+        selected_category = st.selectbox(
+            "Category",
+            ["All"] + categories,
+            format_func=lambda c: "All" if c == "All" else format_category(c),
+        )
 
     sort_by = st.selectbox(
         "Sort by",
-        sort_options,
+        ["Email ID", "Subject", "Status"],
     )
 
     filtered = emails
 
-    # Search by email ID, subject, or sender.
     if search:
-        search_lower = search.lower()
-
+        q = search.lower()
         filtered = [
-            email
-            for email in filtered
-            if search_lower
-            in str(
-                email.get("email_id", "")
-            ).lower()
-            or search_lower
-            in str(
-                email.get("subject", "")
-            ).lower()
-            or search_lower
-            in str(
-                email.get("from", "")
-            ).lower()
+            e for e in filtered
+            if q in str(e.get("email_id", "")).lower()
+            or q in str(e.get("subject", "")).lower()
+            or q in str(e.get("from", "")).lower()
         ]
 
-    # Filter by verification status.
     if selected_status != "All":
         filtered = [
-            email
-            for email in filtered
-            if email.get("status") == selected_status
+            e for e in filtered
+            if display_status(e) == selected_status
         ]
 
-    # Sort the processed results.
-    if sort_by == "Email ID":
-        filtered = sorted(
-            filtered,
-            key=lambda email: email.get(
-                "email_id",
-                "",
-            ),
-        )
+    if selected_category != "All":
+        filtered = [
+            e for e in filtered
+            if e.get("category") == selected_category
+        ]
 
+    if sort_by == "Email ID":
+        filtered = sorted(filtered, key=lambda e: e.get("email_id", ""))
     elif sort_by == "Subject":
         filtered = sorted(
-            filtered,
-            key=lambda email: email.get(
-                "subject",
-                "",
-            ).lower(),
+            filtered, key=lambda e: str(e.get("subject", "")).lower()
         )
-
     elif sort_by == "Status":
-        filtered = sorted(
-            filtered,
-            key=lambda email: email.get(
-                "status",
-                "",
-            ),
-        )
+        filtered = sorted(filtered, key=display_status)
 
-    st.caption(
-        f"Showing {len(filtered)} of {len(emails)} emails"
-    )
+    st.caption(f"Showing {len(filtered)} of {len(emails)} emails")
 
     if not filtered:
         st.info("No emails match your search/filter.")
         return
 
+    selected_id = st.session_state.get("selected_email_id")
+
     for email in filtered:
-        email_id = email.get(
-            "email_id",
-            "",
-        )
-
-        subject = email.get(
-            "subject",
-            "(No subject)",
-        )
-
-        sender = email.get(
-            "from",
-            "(Unknown sender)",
-        )
-
-        status = email.get(
-            "status",
-            "OK",
-        )
-
-        # Show the email ID so specific test cases
-        # such as email_434 can be found easily.
-        label = f"{email_id} — {subject}"
+        email_id = email.get("email_id", "")
+        subject = email.get("subject", "(No subject)")
+        sender = email.get("from", "(Unknown sender)")
+        category = email.get("category")
 
         if st.button(
-            label,
+            f"{email_id} — {subject}",
             key=f"email_{email_id}",
             use_container_width=True,
+            type="primary" if email_id == selected_id else "secondary",
         ):
             st.session_state.selected_email_id = email_id
             st.rerun()
 
+        cat_text = f"{format_category(category)}  |  " if category else ""
+
         st.caption(
-            f"From: {sender}  |  {status_badge(status)}"
+            f"From: {sender}  |  {cat_text}"
+            f"{status_badge(display_status(email))}"
         )
 
+
+# ---------------------------------------------------------------
+# Report
+# ---------------------------------------------------------------
 
 def render_report(email):
     """Display the already-processed verification report."""
@@ -216,153 +234,129 @@ def render_report(email):
         st.info("Select an email from the inbox.")
         return
 
-    email_id = email.get(
-        "email_id",
-        "",
-    )
+    email_id = email.get("email_id", "")
 
     st.subheader("📄 Verification Report")
-
-    st.markdown(
-        f"**Email ID:** `{email_id}`"
-    )
-
-    st.markdown(
-        f"**Subject:** {email.get('subject', '—')}"
-    )
-
-    st.markdown(
-        f"**From:** {email.get('from', '—')}"
-    )
+    st.markdown(f"**Email ID:** `{email_id}`")
+    st.markdown(f"**Subject:** {email.get('subject', '—')}")
+    st.markdown(f"**From:** {email.get('from', '—')}")
 
     st.divider()
 
-    # Load the already-generated verification result.
     report = fetch_report(email_id)
 
     if not report:
-        st.warning(
-            "No verification report available for this email."
+        st.warning("No verification report available for this email.")
+        return
+
+    status = display_status(report)
+    category = report.get("category")
+    reason = report.get("review_reason")
+    defect_fields = report.get("defect_fields") or []
+    unverified = _unverified_fields(report)
+    comparison = get_comparison(report)
+
+    st.markdown(f"### Status: {status_badge(status)}")
+
+    # Non-comparison emails stop here.
+    if status == "CLASSIFIED_ONLY":
+        st.info(
+            f"Classified as **{format_category(category)}**. "
+            "Only BL comparison requests go through the document check."
         )
         return
 
-    status = report.get(
-        "status",
-        "UNKNOWN",
-    )
+    if status == "MISMATCH":
+        st.error(f"{len(defect_fields)} mismatch(es) found. See details below.")
 
-    category = report.get(
-        "category",
-        "UNKNOWN",
-    )
+    elif status == "NEEDS_REVIEW":
+        st.warning(f"Human review required: {format_review_reason(reason)}")
 
-    reason = report.get(
-        "review_reason"
-    )
+    elif status == "OK":
+        if unverified:
+            st.warning(
+                "No mismatch detected in the checked fields, but these "
+                "could not be verified: "
+                + ", ".join(_label(f) for f in unverified)
+            )
+        else:
+            st.success("No mismatch detected. All 7 fields match.")
 
-    defect_fields = report.get(
-        "defect_fields",
-        [],
-    )
-
-    # Main status.
-    st.markdown(
-        f"### Status: {status_badge(status)}"
-    )
-
-    # Summary cards.
     col1, col2, col3 = st.columns(3)
+    col1.metric("Category", format_category(category))
+    col2.metric("Mismatches", len(defect_fields))
+    col3.metric("Unverified fields", len(unverified))
 
-    with col1:
-        st.metric(
-            "Category",
-            format_category(category),
-        )
+    _render_issues(defect_fields, comparison)
+    _render_comparison_table(report, comparison)
 
-    with col2:
-        st.metric(
-            "Status",
-            format_status(status),
-        )
 
-    with col3:
-        st.metric(
-            "Defects",
-            len(defect_fields),
-        )
+def _render_issues(defect_fields, comparison):
+    if not defect_fields:
+        return
 
-    # Human review reason.
-    if reason:
-        st.warning(
-            f"Review reason: "
-            f"{format_review_reason(reason)}"
-        )
+    st.markdown("### ⚠️ Issues Detected")
 
-    # Side-by-side SI / BL comparison.
-    _render_comparison_table(report)
-
-    # Defect list.
-    if defect_fields:
-        st.markdown("### ⚠️ Issues Detected")
-
-        for field in defect_fields:
-            label = FIELD_LABELS.get(
-                field,
-                field.replace(
-                    "_",
-                    " ",
-                ).title(),
-            )
-
+    for field in defect_fields:
+        if field in comparison:
+            si, bl = comparison[field]
             st.write(
-                f"• **{label}**"
+                f"• **{_label(field)}** — "
+                f"SI: `{_fmt(si)}` / BL: `{_fmt(bl)}`"
             )
+        else:
+            st.write(f"• **{_label(field)}**")
 
 
-def _render_comparison_table(report):
-    """Display SI and BL values side by side."""
+def _highlight_row(row):
+    colors = {
+        "❌ MISMATCH": "background-color: rgba(220, 53, 69, 0.18)",
+        "⚠️ UNVERIFIED": "background-color: rgba(255, 165, 0, 0.18)",
+    }
+    return [colors.get(row["RESULT"], "")] * len(row)
+
+
+def _render_comparison_table(report, comparison):
+    """Always show all 7 fields side by side for BL comparison emails."""
 
     st.markdown("### Field Comparison")
 
-    comparison = get_comparison(report)
-
-    if not comparison:
-        st.info(
-            "Detailed field comparison is not "
-            "available in this saved report."
-        )
-        return
-
-    defect_fields = set(
-        report.get(
-            "defect_fields",
-            [],
-        )
-    )
+    defect_fields = set(report.get("defect_fields") or [])
+    field_results = report.get("field_results") or {}
+    has_values = bool(comparison)
 
     rows = []
 
-    for field_key, values in comparison.items():
-        si_value, bl_value = values
+    for field in FIELD_LABELS:
+        si_value, bl_value = comparison.get(field, (None, None))
+        outcome = field_results.get(field)
 
-        if field_key in defect_fields:
+        if field in defect_fields or outcome == "MISMATCH":
             result = "❌ MISMATCH"
-        else:
+        elif outcome == "UNKNOWN":
+            result = "⚠️ UNVERIFIED"
+        elif outcome == "MATCH":
             result = "✅ MATCH"
+        else:
+            result = "—"
 
         rows.append(
             {
-                "FIELD": FIELD_LABELS.get(
-                    field_key,
-                    field_key.replace(
-                        "_",
-                        " ",
-                    ).title(),
-                ),
-                "SI VALUE": si_value,
-                "BL VALUE": bl_value,
+                "FIELD": _label(field),
+                "SI VALUE": _fmt(si_value) if has_values else "—",
+                "BL VALUE": _fmt(bl_value) if has_values else "—",
                 "RESULT": result,
             }
         )
 
-    st.table(rows)
+    st.dataframe(
+        pd.DataFrame(rows).style.apply(_highlight_row, axis=1),
+        hide_index=True,
+        use_container_width=True,
+    )
+
+    if not has_values:
+        st.caption(
+            "SI/BL values were not saved for this email. "
+            "Re-run the pipeline for it to see them."
+        )
