@@ -14,7 +14,7 @@ from fastapi import FastAPI, HTTPException
 # ============================================================
 
 APP_DIR = Path(__file__).resolve().parent
-PROJECT_DIR = APP_DIR.parent
+PROJECT_DIR = APP_DIR
 DATA_DIR = PROJECT_DIR / "data"
 
 # Make sure Python can import files inside app/
