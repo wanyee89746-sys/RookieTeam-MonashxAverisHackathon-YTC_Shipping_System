@@ -12,8 +12,10 @@ import streamlit as st
 
 import os
 
-API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
-
+API_BASE_URL = os.getenv(
+    "API_BASE_URL",
+    "http://127.0.0.1:8000"
+)
 
 @st.cache_data(ttl=30)
 def fetch_raw(email_id):
@@ -28,7 +30,7 @@ def fetch_raw(email_id):
 @st.cache_data(ttl=300)
 def fetch_evidence(email_id):
     try:
-        r = requests.get(f"{API_BASE_URL}/emails/{email_id}/evidence", timeout=30)
+        r = requests.get(f"{API_BASE_URL}/emails/{email_id}/evidence", timeout=60)
         r.raise_for_status()
         return r.json()
     except requests.RequestException:
