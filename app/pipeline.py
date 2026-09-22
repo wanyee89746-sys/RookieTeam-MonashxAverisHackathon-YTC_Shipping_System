@@ -16,22 +16,29 @@ def read_attachment_text(
     """
     Return plain text for an attachment.
 
-    For normal PDFs, use the existing text extraction.
+    Normal PDFs use pypdf text extraction first.
 
-    If a PDF contains no usable text, fall back to Gemini Vision:
-        PDF -> rendered page image -> Gemini Vision -> structured text
-
-    The Vision path is only a fallback. It does not replace the
-    existing extraction path that currently achieves 520/520.
+    If the PDF is unreadable, Gemini Vision is used as a
+    fallback. The Vision result is returned as normal text
+    so it can be displayed by the frontend.
     """
 
     try:
         raw = inbox.read_bytes(path)
 
-    except Exception:
+    except Exception as e:
+        print(
+            f"[EXTRACTION] Failed to read {path}: "
+            f"{type(e).__name__}: {e}",
+            flush=True,
+        )
         return None
 
     if not raw:
+        print(
+            f"[EXTRACTION] Empty attachment: {path}",
+            flush=True,
+        )
         return None
 
     if path.endswith(".txt"):
@@ -41,14 +48,19 @@ def read_attachment_text(
         )
 
     if path.endswith(".pdf"):
+
+        # First try normal PDF text extraction.
         text = _pdf_text(raw)
 
         if text:
+            print(
+                f"[EXTRACTION] Normal PDF extraction: {path}",
+                flush=True,
+            )
             return text
 
         # -----------------------------------------------------
-        # Advanced fallback:
-        # scanned/image-only PDF -> Gemini Vision
+        # Vision LLM fallback
         # -----------------------------------------------------
 
         print(
@@ -56,7 +68,29 @@ def read_attachment_text(
             flush=True,
         )
 
-        return _pdf_vision_text(raw, path)
+        vision_text = _pdf_vision_text(
+            raw,
+            path,
+        )
+
+        if vision_text:
+            print(
+                f"[VISION] Recovered text for {path}:",
+                flush=True,
+            )
+            print(
+                vision_text,
+                flush=True,
+            )
+
+            return vision_text
+
+        print(
+            f"[VISION] Could not recover text: {path}",
+            flush=True,
+        )
+
+        return None
 
     if path.endswith(".docx"):
         return _docx_text(raw)
@@ -98,13 +132,12 @@ def _pdf_vision_text(
     path: str,
 ) -> str | None:
     """
-    Render a PDF page as an image and ask Gemini Vision
-    to extract the seven shipping fields.
+    Render a PDF as images and use Gemini Vision to extract
+    the seven shipping fields.
 
-    Returns the fields as ordinary labelled text so the
-    existing extract_fields() function can process them.
-
-    No temporary image files are created.
+    The returned text is ordinary labelled text so that:
+        1. extract_fields() can process it
+        2. /evidence can display it in the frontend
     """
 
     import io
@@ -127,7 +160,9 @@ def _pdf_vision_text(
             )
         )
 
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv(
+            "GEMINI_API_KEY"
+        )
 
         if not api_key:
             print(
@@ -142,7 +177,7 @@ def _pdf_vision_text(
         )
 
         # -----------------------------------------------------
-        # Open PDF directly from memory
+        # Open PDF from memory
         # -----------------------------------------------------
 
         doc = pymupdf.open(
@@ -158,11 +193,7 @@ def _pdf_vision_text(
             return None
 
         # -----------------------------------------------------
-        # Render pages in memory.
-        #
-        # Most shipping documents are one or a few pages.
-        # Limit to the first 5 pages to avoid excessive
-        # multimodal requests.
+        # Render PDF pages
         # -----------------------------------------------------
 
         images = []
@@ -186,6 +217,10 @@ def _pdf_vision_text(
             images.append(image)
 
         if not images:
+            print(
+                f"[VISION] No images rendered: {path}",
+                flush=True,
+            )
             return None
 
         # -----------------------------------------------------
@@ -254,17 +289,46 @@ Rules:
             )
             return None
 
+        # -----------------------------------------------------
+        # Clean returned text
+        # -----------------------------------------------------
+
+        text = text.strip()
+
         print(
             f"[VISION] Successfully extracted: {path}",
             flush=True,
         )
 
+        print(
+            "========== VISION RECOVERED TEXT ==========",
+            flush=True,
+        )
+
+        print(
+            text,
+            flush=True,
+        )
+
+        print(
+            "============================================",
+            flush=True,
+        )
+
+        # IMPORTANT:
+        # Return the actual Vision text.
+        # This becomes si_text / bl_text in /evidence.
         return text
 
     except Exception as e:
-        print(f"[VISION] Failed for {path}: {type(e).__name__}: {e}", flush=True)
-        raise
 
+        print(
+            f"[VISION] Failed for {path}: "
+            f"{type(e).__name__}: {e}",
+            flush=True,
+        )
+
+        return None
 
 def _docx_text(raw: bytes) -> str | None:
 
