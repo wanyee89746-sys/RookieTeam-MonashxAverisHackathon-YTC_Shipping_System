@@ -206,35 +206,53 @@ def get_raw(email_id: str):
 
 @lru_cache(maxsize=256)
 def _attachment_text(path):
-    try:
-        from pipeline import read_attachment_text
-        return read_attachment_text(inbox, path) or ""
-    except Exception:
-        return ""
+    from pipeline import read_attachment_text
+
+    text = read_attachment_text(inbox, path)
+
+    print(
+        f"[EVIDENCE] {path} -> {len(text or '')} characters",
+        flush=True,
+    )
+
+    return text or ""
 
 
 @app.get("/emails/{email_id}/evidence")
 def get_evidence(email_id: str):
     """Extracted SI/BL text, shown to the reviewer as source evidence."""
 
-    print("=== EVIDENCE ENDPOINT HIT ===", flush=True)
-
     try:
         atts = inbox.get(email_id).get("attachments", [])
-    except Exception:
-        raise HTTPException(404, f"No email {email_id}")
+    except Exception as e:
+        raise HTTPException(
+            404,
+            f"No email {email_id}: {e}",
+        )
 
-    si = next((a for a in atts if "_SI" in a), None)
-    bl = next((a for a in atts if "_BL" in a), None)
+    si = next(
+        (a for a in atts if "_SI" in a),
+        None,
+    )
 
-    print(f"[EVIDENCE] SI path: {si}", flush=True)
-    print(f"[EVIDENCE] BL path: {bl}", flush=True)
+    bl = next(
+        (a for a in atts if "_BL" in a),
+        None,
+    )
 
-    si_text = _attachment_text(si) if si else ""
-    bl_text = _attachment_text(bl) if bl else ""
+    try:
+        si_text = _attachment_text(si) if si else ""
+        bl_text = _attachment_text(bl) if bl else ""
 
-    print(f"[EVIDENCE] SI text length: {len(si_text)}", flush=True)
-    print(f"[EVIDENCE] BL text length: {len(bl_text)}", flush=True)
+    except Exception as e:
+        # Do NOT silently return blank text.
+        raise HTTPException(
+            500,
+            detail={
+                "error": type(e).__name__,
+                "message": str(e),
+            },
+        )
 
     return {
         "si_path": si,
@@ -244,16 +262,6 @@ def get_evidence(email_id: str):
         "si_text_length": len(si_text),
         "bl_text_length": len(bl_text),
     }
-
-
-class ReviewIn(BaseModel):
-    corrections: dict = {}
-    note: str = ""
-
-
-class ResolveIn(BaseModel):
-    resolved: bool = True
-    note: str = ""
 
 
 @app.post("/emails/{email_id}/review")
