@@ -262,14 +262,8 @@ Rules:
         return text
 
     except Exception as e:
-
-        print(
-            f"[VISION] Failed for {path}: "
-            f"{type(e).__name__}: {e}",
-            flush=True,
-        )
-
-        return None
+        print(f"[VISION] Failed for {path}: {type(e).__name__}: {e}", flush=True)
+        raise
 
 
 def _docx_text(raw: bytes) -> str | None:
