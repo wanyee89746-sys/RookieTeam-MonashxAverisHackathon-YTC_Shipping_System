@@ -11,3 +11,4 @@ pdfplumber
 uvicorn
 fastapi
 pypdf
+pymupdf
