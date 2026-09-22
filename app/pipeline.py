@@ -52,7 +52,8 @@ def read_attachment_text(
         # -----------------------------------------------------
 
         print(
-            f"[VISION] No readable PDF text: {path}"
+            f"[VISION] No readable PDF text: {path}",
+            flush=True,
         )
 
         return _pdf_vision_text(raw, path)
@@ -115,19 +116,30 @@ def _pdf_vision_text(
 
     try:
 
-        # The project's existing .env is inside app/
+        # -----------------------------------------------------
+        # Load Gemini API key
+        # -----------------------------------------------------
+
         load_dotenv(
             os.path.join(
                 os.path.dirname(__file__),
                 ".env",
             )
         )
-        
+
+        api_key = os.getenv("GEMINI_API_KEY")
+
         if not api_key:
-            print("[VISION] GEMINI_API_KEY not found", flush=True)
+            print(
+                "[VISION] GEMINI_API_KEY not found",
+                flush=True,
+            )
             return None
 
-        print("[VISION] GEMINI_API_KEY found", flush=True)
+        print(
+            "[VISION] GEMINI_API_KEY found",
+            flush=True,
+        )
 
         # -----------------------------------------------------
         # Open PDF directly from memory
@@ -140,7 +152,8 @@ def _pdf_vision_text(
 
         if len(doc) == 0:
             print(
-                f"[VISION] PDF has no pages: {path}"
+                f"[VISION] PDF has no pages: {path}",
+                flush=True,
             )
             return None
 
@@ -236,19 +249,25 @@ Rules:
 
         if not text:
             print(
-                f"[VISION] Gemini returned no text: {path}"
+                f"[VISION] Gemini returned no text: {path}",
+                flush=True,
             )
             return None
 
         print(
-            f"[VISION] Successfully extracted: {path}"
+            f"[VISION] Successfully extracted: {path}",
+            flush=True,
         )
 
         return text
 
     except Exception as e:
 
-        print(f"[VISION] Failed for {path}: {type(e).__name__}: {e}", flush=True)
+        print(
+            f"[VISION] Failed for {path}: "
+            f"{type(e).__name__}: {e}",
+            flush=True,
+        )
 
         return None
 
@@ -467,6 +486,7 @@ def process_comparison(
 
     return result
 
+
 def vision_test(
     source: str,
     attachment_path: str,
@@ -492,6 +512,7 @@ def vision_test(
         print("Vision extraction failed.")
 
     return result
+
 
 def process_one(
     source: str,
@@ -941,6 +962,7 @@ def run_holdout_eval(
             f"{c}/{total} = "
             f"{c / total:.2%}"
         )
+
 
 if __name__ == "__main__":
 
