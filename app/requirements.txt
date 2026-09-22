@@ -10,3 +10,4 @@ openpyxl
 pdfplumber
 uvicorn
 fastapi
+pypdf
