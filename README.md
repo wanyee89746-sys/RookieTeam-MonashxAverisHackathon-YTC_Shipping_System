@@ -41,7 +41,22 @@ docker-compose.yml
 
 ---
 
-## 2. Prerequisites
+## 2. Quick Start — Live Demo (no setup required)
+
+The app is already deployed on Render. This is the fastest way for judges to explore it — **no installation needed**.
+
+- 🖥️ **Frontend (Streamlit dashboard):** https://rookieteam-monashxaverishackathon-ytc-dw87.onrender.com
+- ⚙️ **Backend (FastAPI):** https://rookieteam-monashxaverishackathon-ytc-sr26.onrender.com
+  - Health check: https://rookieteam-monashxaverishackathon-ytc-sr26.onrender.com/health
+  - Sample endpoint: https://rookieteam-monashxaverishackathon-ytc-sr26.onrender.com/emails
+
+> ⏳ **Note:** These are hosted on Render's free tier, which spins down after inactivity. The **first request may take 30–60 seconds** to wake the service up — this is expected, not a bug. Subsequent requests are fast.
+
+If you'd rather run it yourself (e.g. to inspect logs or modify the pipeline), see the local/Docker instructions below.
+
+---
+
+## 3. Prerequisites
 
 - **Python 3.12+**
 - **Docker & Docker Compose** (recommended — easiest path for judges)
@@ -49,7 +64,7 @@ docker-compose.yml
 
 ---
 
-## 3. Quick Start (Docker — recommended)
+## 4. Quick Start (Docker — recommended)
 
 This spins up the FastAPI backend only. It's the fastest way to verify the pipeline works.
 
@@ -75,7 +90,7 @@ curl http://localhost:8000/emails/email_004/report
 
 ---
 
-## 4. Running Locally (without Docker)
+## 5. Running Locally (without Docker)
 
 ### 4.1 Backend
 
@@ -107,7 +122,7 @@ Open the URL Streamlit prints (usually **http://localhost:8501**). You can brows
 
 ---
 
-## 5. Re-running the Pipeline
+## 6. Re-running the Pipeline
 
 A precomputed `submission.json` is already included so the API/UI work out of the box. To regenerate it from scratch:
 
@@ -136,7 +151,7 @@ The pipeline is **resumable** — it checkpoints `submission.json` every 10 emai
 
 ---
 
-## 6. Scoring the Submission
+## 7. Scoring the Submission
 
 Once `submission.json` exists, evaluate it against ground truth:
 
@@ -149,7 +164,7 @@ This prints accuracy and writes a detailed breakdown of any incorrect prediction
 
 ---
 
-## 7. How It Works
+## 8. How It Works
 
 1. **Classification** (`classifier.py`) — Deterministic keyword/regex rules handle the majority of emails; anything ambiguous is batched off to Gemini (`gemini-3.5-flash-lite`) with few-shot prompting. Results are cached on disk (`.llm_cache.json`) to avoid repeat API calls.
 2. **Extraction** (`extractor.py`) — Parses labeled fields (shipper, consignee, notify party, ports, container count, gross weight) from `.txt`/`.pdf`/`.docx`/`.xlsx` attachments using table/line-based heuristics, falling back to Gemini (and Gemini Vision for unreadable/scanned PDFs) when local extraction is incomplete.
@@ -159,8 +174,9 @@ This prints accuracy and writes a detailed breakdown of any incorrect prediction
 
 ---
 
-## 8. Notes for Judges
+## 9. Notes for Judges
 
+- The **easiest way to evaluate this project is the live demo** in Section 2 — no setup needed.
 - `submission.json`, `classification_debug.json`, and `.llm_cache.json` are already populated from a full run over the 500-email sample dataset — you don't need to re-run anything to explore results.
 - `evaluation_failures.txt` currently shows **no failures** against `ground_truth.json` for the processed set.
 - If the Gemini key in `app/.env` hits a rate/quota limit, the pipeline gracefully falls back to purely rule-based classification and local extraction — results may become slightly less complete but the app will not crash.
