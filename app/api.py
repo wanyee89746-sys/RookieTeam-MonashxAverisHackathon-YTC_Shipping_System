@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from datetime import datetime, timezone
 from functools import lru_cache
+
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 
@@ -40,36 +41,82 @@ SUBMISSION_PATH = PROJECT_DIR / "submission.json"
 OVERRIDES_PATH = PROJECT_DIR / "overrides.json"
 
 FIELDS = [
-    "shipper", "consignee", "notify_party", "port_of_loading",
-    "port_of_discharge", "container_count", "gross_weight_kg",
+    "shipper",
+    "consignee",
+    "notify_party",
+    "port_of_loading",
+    "port_of_discharge",
+    "container_count",
+    "gross_weight_kg",
 ]
 
+
+# ============================================================
+# REQUEST MODELS
+# ============================================================
+
+class ReviewIn(BaseModel):
+    corrections: dict = {}
+    note: str = ""
+
+
+class ResolveIn(BaseModel):
+    resolved: bool
+    note: str = ""
+
+
+# ============================================================
+# OVERRIDES
+# ============================================================
 
 def load_overrides():
     if not OVERRIDES_PATH.exists():
         return {}
+
     try:
-        return json.loads(OVERRIDES_PATH.read_text(encoding="utf-8"))
+        return json.loads(
+            OVERRIDES_PATH.read_text(
+                encoding="utf-8"
+            )
+        )
+
     except Exception:
         return {}
 
 
 def save_overrides(data):
     OVERRIDES_PATH.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False),
+        json.dumps(
+            data,
+            indent=2,
+            ensure_ascii=False,
+        ),
         encoding="utf-8",
     )
 
 
 def apply_override(report, ov):
     """Merge reviewer decisions over the computed result."""
+
     report = dict(report)
     ov = ov or {}
 
-    report["resolved"] = bool(ov.get("resolved"))
-    report["note"] = ov.get("note", "")
-    corrections = ov.get("corrections")
-    report["reviewed"] = bool(corrections)
+    report["resolved"] = bool(
+        ov.get("resolved")
+    )
+
+    report["note"] = ov.get(
+        "note",
+        "",
+    )
+
+    corrections = ov.get(
+        "corrections"
+    )
+
+    report["reviewed"] = bool(
+        corrections
+    )
 
     if not corrections:
         return report
@@ -78,25 +125,49 @@ def apply_override(report, ov):
 
     values = {
         f: dict(v)
-        for f, v in (report.get("field_values") or {}).items()
+        for f, v in (
+            report.get("field_values") or {}
+        ).items()
     }
+
     for f, c in corrections.items():
-        values.setdefault(f, {"si": None, "bl": None}).update(c)
+
+        values.setdefault(
+            f,
+            {
+                "si": None,
+                "bl": None,
+            },
+        ).update(c)
 
     d = compare_detailed(
-        {f: values.get(f, {}).get("si") for f in FIELDS},
-        {f: values.get(f, {}).get("bl") for f in FIELDS},
+        {
+            f: values.get(f, {}).get("si")
+            for f in FIELDS
+        },
+        {
+            f: values.get(f, {}).get("bl")
+            for f in FIELDS
+        },
     )
 
-    report["original_status"] = report.get("status")
+    report["original_status"] = report.get(
+        "status"
+    )
+
     report.update(
         field_values=d["field_values"],
         field_results=d["field_results"],
         defect_fields=d["defect_fields"],
         has_defect=d["has_defect"],
-        status="MISMATCH" if d["has_defect"] else "OK",
+        status=(
+            "MISMATCH"
+            if d["has_defect"]
+            else "OK"
+        ),
         review_reason=None,
     )
+
     return report
 
 
@@ -117,7 +188,13 @@ def load_submission():
         return {}
 
     try:
-        with open(SUBMISSION_PATH, "r", encoding="utf-8") as f:
+
+        with open(
+            SUBMISSION_PATH,
+            "r",
+            encoding="utf-8",
+        ) as f:
+
             return json.load(f)
 
     except Exception:
@@ -130,9 +207,11 @@ def load_submission():
 
 @app.get("/health")
 def health_check():
+
     return {
         "status": "ok"
     }
+
 
 # ============================================================
 # EMAIL LIST
@@ -140,78 +219,202 @@ def health_check():
 
 @app.get("/emails")
 def get_emails():
+
     submission = load_submission()
     overrides = load_overrides()
+
     result = []
 
     for email in inbox.emails():
+
         email_id = email["email_id"]
+
         report = apply_override(
-            submission.get(email_id, {}), overrides.get(email_id)
+            submission.get(
+                email_id,
+                {},
+            ),
+            overrides.get(
+                email_id
+            ),
         )
 
-        result.append({
-            "email_id": email_id,
-            "subject": email.get("subject", ""),
-            "from": email.get("from", ""),
-            "attachments": email.get("attachments", []),
-            "category": report.get("category", "GENERAL"),
-            "status": report.get("status", "OK"),
-            "review_reason": report.get("review_reason"),
-            "defect_fields": report.get("defect_fields", []),
-            "has_defect": report.get("has_defect", False),
-            "resolved": report["resolved"],
-            "reviewed": report["reviewed"],
-        })
+        result.append(
+            {
+                "email_id": email_id,
+                "subject": email.get(
+                    "subject",
+                    "",
+                ),
+                "from": email.get(
+                    "from",
+                    "",
+                ),
+                "attachments": email.get(
+                    "attachments",
+                    [],
+                ),
+                "category": report.get(
+                    "category",
+                    "GENERAL",
+                ),
+                "status": report.get(
+                    "status",
+                    "OK",
+                ),
+                "review_reason": report.get(
+                    "review_reason"
+                ),
+                "defect_fields": report.get(
+                    "defect_fields",
+                    [],
+                ),
+                "has_defect": report.get(
+                    "has_defect",
+                    False,
+                ),
+                "resolved": report.get(
+                    "resolved",
+                    False,
+                ),
+                "reviewed": report.get(
+                    "reviewed",
+                    False,
+                ),
+            }
+        )
 
     return result
 
+
+# ============================================================
+# FRESH FIELD VALUES
+# ============================================================
+
 @lru_cache(maxsize=600)
 def _fresh_values(email_id):
-    """Recompute SI/BL values for entries saved before field_values existed."""
+    """
+    Recompute SI/BL values for entries saved before
+    field_values existed.
+    """
+
     try:
+
         from pipeline import process_comparison
-        fresh = process_comparison(inbox, inbox.get(email_id))
-        return fresh.get("field_values") or {}
+
+        fresh = process_comparison(
+            inbox,
+            inbox.get(email_id),
+        )
+
+        return fresh.get(
+            "field_values"
+        ) or {}
+
     except Exception as e:
-        print(f"[values] {email_id}: {e}")
+
+        print(
+            f"[VALUES] {email_id}: {e}",
+            flush=True,
+        )
+
         return {}
-    
+
+
+# ============================================================
+# REPORT
+# ============================================================
+
 @app.get("/emails/{email_id}/report")
 def get_report(email_id: str):
+
     submission = load_submission()
 
     if email_id not in submission:
-        raise HTTPException(404, f"No report found for {email_id}")
 
-    report = dict(submission[email_id])
+        raise HTTPException(
+            404,
+            f"No report found for {email_id}",
+        )
 
-    if report.get("category") == "BL_COMPARISON" and not report.get("field_values"):
-        vals = _fresh_values(email_id)
+    report = dict(
+        submission[email_id]
+    )
+
+    if (
+        report.get("category")
+        == "BL_COMPARISON"
+        and not report.get("field_values")
+    ):
+
+        vals = _fresh_values(
+            email_id
+        )
+
         if vals:
-            report["field_values"] = {f: dict(v) for f, v in vals.items()}
 
-    report = apply_override(report, load_overrides().get(email_id))
-    return {"email_id": email_id, **report}
+            report["field_values"] = {
+                f: dict(v)
+                for f, v in vals.items()
+            }
 
+    report = apply_override(
+        report,
+        load_overrides().get(
+            email_id
+        ),
+    )
+
+    return {
+        "email_id": email_id,
+        **report,
+    }
+
+
+# ============================================================
+# RAW EMAIL
+# ============================================================
 
 @app.get("/emails/{email_id}/raw")
 def get_raw(email_id: str):
     """The email as received, before any pipeline processing."""
-    try:
-        return inbox.get(email_id)
-    except Exception:
-        raise HTTPException(404, f"No email {email_id}")
 
+    try:
+
+        return inbox.get(
+            email_id
+        )
+
+    except Exception:
+
+        raise HTTPException(
+            404,
+            f"No email {email_id}",
+        )
+
+
+# ============================================================
+# LIVE DOCUMENT TEXT
+# ============================================================
 
 @lru_cache(maxsize=256)
 def _attachment_text(path):
+
     from pipeline import read_attachment_text
 
-    text = read_attachment_text(inbox, path)
+    print(
+        f"[EVIDENCE] Extracting: {path}",
+        flush=True,
+    )
+
+    text = read_attachment_text(
+        inbox,
+        path,
+    )
 
     print(
-        f"[EVIDENCE] {path} -> {len(text or '')} characters",
+        f"[EVIDENCE] {path} -> "
+        f"{len(text or '')} characters",
         flush=True,
     )
 
@@ -220,32 +423,73 @@ def _attachment_text(path):
 
 @app.get("/emails/{email_id}/evidence")
 def get_evidence(email_id: str):
-    """Extracted SI/BL text, shown to the reviewer as source evidence."""
+    """
+    Extract SI/BL document text for reviewer evidence.
+
+    Normal PDF text extraction is used first.
+    If the PDF is unreadable, pipeline.py uses Gemini Vision.
+    The actual recovered text is returned here.
+    """
 
     try:
-        atts = inbox.get(email_id).get("attachments", [])
+
+        atts = inbox.get(
+            email_id
+        ).get(
+            "attachments",
+            [],
+        )
+
     except Exception as e:
+
         raise HTTPException(
             404,
             f"No email {email_id}: {e}",
         )
 
     si = next(
-        (a for a in atts if "_SI" in a),
+        (
+            a
+            for a in atts
+            if "_SI" in a
+        ),
         None,
     )
 
     bl = next(
-        (a for a in atts if "_BL" in a),
+        (
+            a
+            for a in atts
+            if "_BL" in a
+        ),
         None,
     )
 
     try:
-        si_text = _attachment_text(si) if si else ""
-        bl_text = _attachment_text(bl) if bl else ""
+
+        si_text = (
+            _attachment_text(si)
+            if si
+            else ""
+        )
+
+        bl_text = (
+            _attachment_text(bl)
+            if bl
+            else ""
+        )
 
     except Exception as e:
-        # Do NOT silently return blank text.
+
+        # Do not silently convert an extraction
+        # failure into an empty string.
+
+        print(
+            f"[EVIDENCE] Extraction failed: "
+            f"{type(e).__name__}: {e}",
+            flush=True,
+        )
+
         raise HTTPException(
             500,
             detail={
@@ -264,31 +508,109 @@ def get_evidence(email_id: str):
     }
 
 
+# ============================================================
+# REVIEW
+# ============================================================
+
 @app.post("/emails/{email_id}/review")
-def save_review(email_id: str, body: ReviewIn):
+def save_review(
+    email_id: str,
+    body: ReviewIn,
+):
+
     if email_id not in load_submission():
-        raise HTTPException(404, f"No report found for {email_id}")
+
+        raise HTTPException(
+            404,
+            f"No report found for {email_id}",
+        )
 
     overrides = load_overrides()
-    entry = overrides.get(email_id, {})
-    entry["corrections"] = {**entry.get("corrections", {}), **body.corrections}
-    entry["note"] = body.note or entry.get("note", "")
-    entry["reviewed_at"] = datetime.now(timezone.utc).isoformat()
-    overrides[email_id] = entry
-    save_overrides(overrides)
-    return {"ok": True}
 
+    entry = overrides.get(
+        email_id,
+        {},
+    )
+
+    entry["corrections"] = {
+        **entry.get(
+            "corrections",
+            {},
+        ),
+        **body.corrections,
+    }
+
+    entry["note"] = (
+        body.note
+        or entry.get(
+            "note",
+            "",
+        )
+    )
+
+    entry["reviewed_at"] = (
+        datetime.now(
+            timezone.utc
+        ).isoformat()
+    )
+
+    overrides[email_id] = entry
+
+    save_overrides(
+        overrides
+    )
+
+    return {
+        "ok": True
+    }
+
+
+# ============================================================
+# RESOLVE
+# ============================================================
 
 @app.post("/emails/{email_id}/resolve")
-def resolve(email_id: str, body: ResolveIn):
+def resolve(
+    email_id: str,
+    body: ResolveIn,
+):
+
     if email_id not in load_submission():
-        raise HTTPException(404, f"No report found for {email_id}")
+
+        raise HTTPException(
+            404,
+            f"No report found for {email_id}",
+        )
 
     overrides = load_overrides()
-    entry = overrides.get(email_id, {})
+
+    entry = overrides.get(
+        email_id,
+        {},
+    )
+
     entry["resolved"] = body.resolved
-    entry["note"] = body.note or entry.get("note", "")
-    entry["resolved_at"] = datetime.now(timezone.utc).isoformat()
+
+    entry["note"] = (
+        body.note
+        or entry.get(
+            "note",
+            "",
+        )
+    )
+
+    entry["resolved_at"] = (
+        datetime.now(
+            timezone.utc
+        ).isoformat()
+    )
+
     overrides[email_id] = entry
-    save_overrides(overrides)
-    return {"ok": True}
+
+    save_overrides(
+        overrides
+    )
+
+    return {
+        "ok": True
+    }
